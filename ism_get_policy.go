@@ -256,5 +256,5 @@ type IsmPolicyStateTransition struct {
 type IsmPolicyTemplate struct {
 	IndexPatterns   []string `json:"index_patterns,omitempty"`
 	Priority        *int64   `json:"priority,omitempty"`
-	LastUpdatedTime int64   `json:"last_updated_time,omitempty"`
+	LastUpdatedTime *int64   `json:"last_updated_time,omitempty"`
 }
