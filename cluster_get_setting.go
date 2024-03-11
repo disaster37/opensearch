@@ -21,8 +21,10 @@ type ClusterGetSettingService struct {
 	filterPath []string    // list of filters used to reduce the response
 	headers    http.Header // custom request-level HTTP headers
 
-	masterTimeout string
-	timeout       string
+	flatSettings          *bool  // Whether to return settings in the flat form, which can improve readability, especially for heavily nested settings. For example, the flat form of "cluster": { "max_shards_per_node": 500 } is "cluster.max_shards_per_node": "500".
+	includeDefaults       *bool  // 	Whether to include default settings as part of the response. This parameter is useful for identifying the names and current values of settings you want to update.
+	clusterManagerTimeout string //The amount of time to wait for a response from the cluster manager node. Default is 30 seconds.
+	timeout               string //The amount of time to wait for a response from the cluster. Default is 30 seconds.
 }
 
 // NewClusterGetSettingService creates a new ClusterGetSettingService.
@@ -73,14 +75,26 @@ func (s *ClusterGetSettingService) Headers(headers http.Header) *ClusterGetSetti
 }
 
 // MasterTimeout specifies an explicit operation timeout for connection to master node.
-func (s *ClusterGetSettingService) MasterTimeout(masterTimeout string) *ClusterGetSettingService {
-	s.masterTimeout = masterTimeout
+func (s *ClusterGetSettingService) CLusterManagerTimeout(masterTimeout string) *ClusterGetSettingService {
+	s.clusterManagerTimeout = masterTimeout
 	return s
 }
 
 // Timeout specifies an explicit operation timeout.
 func (s *ClusterGetSettingService) Timeout(timeout string) *ClusterGetSettingService {
 	s.timeout = timeout
+	return s
+}
+
+// FlatSettings specified an explicit flat settings
+func (s *ClusterGetSettingService) FlatSettings(flatSettings bool) *ClusterGetSettingService {
+	s.flatSettings = &flatSettings
+	return s
+}
+
+// IncludeDefaults specified an explicit include defaults
+func (s *ClusterGetSettingService) IncludeDefaults(includeDefault bool) *ClusterGetSettingService {
+	s.includeDefaults = &includeDefault
 	return s
 }
 
@@ -103,11 +117,17 @@ func (s *ClusterGetSettingService) buildURL() (string, url.Values, error) {
 	if len(s.filterPath) > 0 {
 		params.Set("filter_path", strings.Join(s.filterPath, ","))
 	}
-	if s.masterTimeout != "" {
-		params.Set("master_timeout", s.masterTimeout)
+	if s.clusterManagerTimeout != "" {
+		params.Set("cluster_manager_timeout", s.clusterManagerTimeout)
 	}
 	if s.timeout != "" {
 		params.Set("timeout", s.timeout)
+	}
+	if s.flatSettings != nil {
+		params.Set("flat_settings", fmt.Sprint(*s.flatSettings))
+	}
+	if s.includeDefaults != nil {
+		params.Set("include_defaults", fmt.Sprint(*s.includeDefaults))
 	}
 
 	return path, params, nil
@@ -119,7 +139,7 @@ func (s *ClusterGetSettingService) Validate() error {
 }
 
 // Do executes the operation.
-func (s *ClusterGetSettingService) Do(ctx context.Context) (*ClusterGetSettingResponse, error) {
+func (s *ClusterGetSettingService) Do(ctx context.Context) (map[string]any, error) {
 	// Check pre-conditions
 	if err := s.Validate(); err != nil {
 		return nil, err
@@ -143,33 +163,9 @@ func (s *ClusterGetSettingService) Do(ctx context.Context) (*ClusterGetSettingRe
 	}
 
 	// Return operation response
-	ret := new(ClusterGetSettingResponse)
-	if err := s.client.decoder.Decode(res.Body, ret); err != nil {
+	ret := map[string]any{}
+	if err := s.client.decoder.Decode(res.Body, &ret); err != nil {
 		return nil, err
 	}
 	return ret, nil
-}
-
-// ClusterGetSettingResponse is the response of ClusterGetSettingService.Do.
-type ClusterGetSettingResponse struct {
-	ClusterName                    string  `json:"cluster_name"`
-	Status                         string  `json:"status"`
-	TimedOut                       bool    `json:"timed_out"`
-	NumberOfNodes                  int     `json:"number_of_nodes"`
-	NumberOfDataNodes              int     `json:"number_of_data_nodes"`
-	ActivePrimaryShards            int     `json:"active_primary_shards"`
-	ActiveShards                   int     `json:"active_shards"`
-	RelocatingShards               int     `json:"relocating_shards"`
-	InitializingShards             int     `json:"initializing_shards"`
-	UnassignedShards               int     `json:"unassigned_shards"`
-	DelayedUnassignedShards        int     `json:"delayed_unassigned_shards"`
-	NumberOfPendingTasks           int     `json:"number_of_pending_tasks"`
-	NumberOfInFlightFetch          int     `json:"number_of_in_flight_fetch"`
-	TaskMaxWaitTimeInQueue         string  `json:"task_max_waiting_in_queue"`        // "0s"
-	TaskMaxWaitTimeInQueueInMillis int     `json:"task_max_waiting_in_queue_millis"` // 0
-	ActiveShardsPercent            string  `json:"active_shards_percent"`            // "100.0%"
-	ActiveShardsPercentAsNumber    float64 `json:"active_shards_percent_as_number"`  // 100.0
-
-	// Index name -> index health
-	Indices map[string]*ClusterIndexHealth `json:"indices"`
 }

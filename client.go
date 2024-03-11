@@ -1992,9 +1992,18 @@ func (c *Client) TasksGetTask() *TasksGetTaskService {
 	return NewTasksGetTaskService(c)
 }
 
+// ClusterGetSetting retrieves the cluster settings
+func (c *Client) ClusterGetSetting() *ClusterGetSettingService {
+	return NewClusterGetSettingService(c)
+}
+
+// CLusterPutSetting update the cluster settings
+func (c *Client) ClusterPutSetting() *ClusterPutSettingService {
+	return NewClusterPutSettingService(c)
+}
+
 // TODO Pending cluster tasks
 // TODO Cluster Reroute
-// TODO Cluster Update Settings
 // TODO Nodes Stats
 // TODO Nodes hot_threads
 

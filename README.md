@@ -231,7 +231,7 @@ Here's a [link to a complete working example for v2](@todo).
 - [x] Cluster Stats
 - [ ] Pending Cluster Tasks
 - [x] Cluster Reroute
-- [ ] Cluster Update Settings
+- [x] Cluster Settings
 - [x] Nodes Stats
 - [x] Nodes Info
 - [ ] Nodes Feature Usage
