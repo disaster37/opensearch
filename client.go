@@ -2317,3 +2317,40 @@ func (c *Client) AlertingPostMonitor() *AlertingPostMonitorService {
 func (c *Client) AlertingPutMonitor(monitorId string) *AlertingPutMonitorService {
 	return NewAlertingPutMonitorService(c).Id(monitorId)
 }
+
+// -- Transform plugin --
+
+// TransformDeleteJob deletes a transform job.
+func (c *Client) TransformDeleteJob(jobName string) *TransformDeleteJobService {
+	return NewTransformDeleteJobService(c).Name(jobName)
+}
+
+// TransformGetJob gets a transform job.
+func (c *Client) TransformGetJob(jobName string) *TransformGetJobService {
+	return NewTransformGetJobService(c).Name(jobName)
+}
+
+// TransformPutJob adds a transform job.
+func (c *Client) TransformPutJob(jobName string) *TransformPutJobService {
+	return NewTransformPutJobService(c).Name(jobName)
+}
+
+// TransformExplainJob explain the current status of transform job
+func (c *Client) TransformExplainJob(jobName string) *TransformExplainJobService {
+	return NewTransformExplainJobService(c).Name(jobName)
+}
+
+// TransformPreviewJobResults get a preview result of transform job
+func (c *Client) TransformPreviewJobResults(body any) *TransformPreviewJobResultsService {
+	return NewTransformPreviewJobResultsService(c).Body(body)
+}
+
+// TransformStartJob start a transform job
+func (c *Client) TransformStartJob(jobName string) *TransformStartJobService {
+	return NewTransformStartJobService(c).Name(jobName)
+}
+
+// TransformStopJob stop a transform job
+func (c *Client) TransformStopJob(jobName string) *TransformStopJobService {
+	return NewTransformStopJobService(c).Name(jobName)
+}
