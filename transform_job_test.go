@@ -67,6 +67,15 @@ func TestTransformJob(t *testing.T) {
 	assert.NotNil(t, resGet)
 	assert.NotNil(t, resGet.Transform)
 
+	// Search transform jon
+	resSearch, err := client.TransformSearchJob().Search("tes*").Size(1000).Do(context.Background())
+	if err != nil {
+		t.Fatal(err)
+	}
+	assert.NotNil(t, resGet)
+	assert.Equal(t, int64(1), resSearch.TotalTransforms)
+	assert.NotEmpty(t, resSearch.Transforms)
+
 	// Update transform job
 	expecedTransformJob.Transform.Description = ptr.To[string]("test")
 	_, err = client.TransformPutJob("test").Body(expecedTransformJob).SequenceNumber(resGet.SequenceNumber).PrimaryTerm(resGet.PrimaryTerm).Do(context.Background())

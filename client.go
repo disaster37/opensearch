@@ -2330,6 +2330,11 @@ func (c *Client) TransformGetJob(jobName string) *TransformGetJobService {
 	return NewTransformGetJobService(c).Name(jobName)
 }
 
+// TransformSearchJob searchs transform jobs.
+func (c *Client) TransformSearchJob() *TransformSearchJobService {
+	return NewTransformSearchJobService(c)
+}
+
 // TransformPutJob adds a transform job.
 func (c *Client) TransformPutJob(jobName string) *TransformPutJobService {
 	return NewTransformPutJobService(c).Name(jobName)
