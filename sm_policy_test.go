@@ -77,6 +77,14 @@ func TestSmPolicy(t *testing.T) {
 	assert.NotNil(t, resGet)
 	assert.NotNil(t, resGet.Policy)
 
+	// Explain SM policy
+	resExplain, err := client.SmExplainPolicy("test").Do(context.Background())
+	if err != nil {
+		t.Fatal(err)
+	}
+	assert.NotNil(t, resExplain)
+	assert.Equal(t, 1, len(resExplain.Policies))
+
 	// Update SM policy
 	expecedSmPolicy.Description = ptr.To[string]("test")
 	_, err = client.SmPutPolicy("test").Body(expecedSmPolicy).SequenceNumber(resGet.SequenceNumber).PrimaryTerm(resGet.PrimaryTerm).Do(context.Background())

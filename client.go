@@ -2286,6 +2286,11 @@ func (c *Client) SmGetPolicy(policyName string) *SmGetPolicyService {
 	return NewSmGetPolicyService(c).Name(policyName)
 }
 
+// SmExplainPolicy explain a SM policy.
+func (c *Client) SmExplainPolicy(policyNames ...string) *SmExplainPolicyService {
+	return NewSmExplainPolicyService(c).Names(policyNames...)
+}
+
 // SmPostPolicy create a policy.
 func (c *Client) SmPostPolicy(policyName string) *SmPostPolicyService {
 	return NewSmPostPolicyService(c).Name(policyName)
