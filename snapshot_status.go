@@ -201,6 +201,14 @@ type SnapshotStatus struct {
 	ShardsStats        SnapshotShardsStats            `json:"shards_stats"`
 	Stats              SnapshotStats                  `json:"stats"`
 	Indices            map[string]SnapshotIndexStatus `json:"indices"`
+	Failures           []SnapshotFailure              `json:"failures,omitempty"`
+}
+
+type SnapshotFailure struct {
+	NodeID string `json:"node_id,omitempty"`
+	Indice string `json:"index,omitempty"`
+	Reason string `json:"reason,omitempty"`
+	Status string `json:"status,omitempty"`
 }
 
 type SnapshotShardsStats struct {
