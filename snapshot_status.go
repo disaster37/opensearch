@@ -11,6 +11,7 @@ import (
 	"net/http"
 	"net/url"
 	"strings"
+	"time"
 
 	"github.com/disaster37/opensearch/v2/uritemplates"
 )
@@ -202,6 +203,8 @@ type SnapshotStatus struct {
 	Stats              SnapshotStats                  `json:"stats"`
 	Indices            map[string]SnapshotIndexStatus `json:"indices"`
 	Failures           []SnapshotFailure              `json:"failures,omitempty"`
+	StartTime          time.Time                      `json:"start_time,omitempty"`
+	EndTime            time.Time                      `json:"end_time,omitempty"`
 }
 
 type SnapshotFailure struct {
