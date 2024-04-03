@@ -4,13 +4,16 @@ import (
 	"context"
 	"testing"
 
+	"github.com/sirupsen/logrus"
 	"github.com/stretchr/testify/assert"
 	"k8s.io/utils/ptr"
 )
 
 func TestIsmPolicy(t *testing.T) {
-	client := setupTestClient(t)
+	client := setupTestClientAndCreateIndex(t)
 	var err error
+
+	logrus.SetLevel(logrus.TraceLevel)
 
 	expecedIsmPolicy := &IsmPutPolicy{
 		Policy: IsmPolicyBase{
@@ -52,6 +55,12 @@ func TestIsmPolicy(t *testing.T) {
 					},
 				},
 			},
+			IsmTemplate: []IsmPolicyTemplate{
+				{
+					IndexPatterns: []string{testIndexName},
+					Priority:      ptr.To[int64](1),
+				},
+			},
 		},
 	}
 
@@ -69,6 +78,14 @@ func TestIsmPolicy(t *testing.T) {
 	}
 	assert.NotNil(t, resGet)
 	assert.NotNil(t, resGet.Policy)
+
+	// Explain ISM policy
+	resExplain, err := client.IsmExplainPolicy(testIndexName).Do(context.Background())
+	if err != nil {
+		t.Fatal(err)
+	}
+	assert.NotNil(t, resExplain)
+	assert.NotEmpty(t, resExplain.TotalManagedIndices)
 
 	// Update ISM policy
 	expecedIsmPolicy.Policy.Description = ptr.To[string]("test")

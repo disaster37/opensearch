@@ -2269,6 +2269,11 @@ func (c *Client) IsmPutPolicy(policyName string) *IsmPutPolicyService {
 	return NewIsmPutPolicyService(c).Name(policyName)
 }
 
+// IsmExplainPolicy explain a ISM policy on given index name
+func (c *Client) IsmExplainPolicy(indexName string) *IsmExplainPolicyService {
+	return NewIsmExplainPolicyService(c).IndexName(indexName)
+}
+
 // -- Snapshot Management plugin --
 
 // SmDeletePolicy deletes a SM policy.
