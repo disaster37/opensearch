@@ -22,7 +22,8 @@ type TransformDeleteJobService struct {
 	filterPath []string    // list of filters used to reduce the response
 	headers    http.Header // custom request-level HTTP headers
 
-	name string
+	name  string
+	force *bool
 }
 
 // NewTransformDeleteJobService creates a new TransformDeleteJobService.
@@ -78,6 +79,12 @@ func (s *TransformDeleteJobService) Name(name string) *TransformDeleteJobService
 	return s
 }
 
+// Force permit to force delete the job transform
+func (s *TransformDeleteJobService) Force(force bool) *TransformDeleteJobService {
+	s.force = &force
+	return s
+}
+
 // buildURL builds the URL for the operation.
 func (s *TransformDeleteJobService) buildURL() (string, url.Values, error) {
 	// Build URL
@@ -101,6 +108,9 @@ func (s *TransformDeleteJobService) buildURL() (string, url.Values, error) {
 	}
 	if len(s.filterPath) > 0 {
 		params.Set("filter_path", strings.Join(s.filterPath, ","))
+	}
+	if v := s.force; v != nil {
+		params.Set("force", fmt.Sprint(*v))
 	}
 	return path, params, nil
 }
