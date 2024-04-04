@@ -11,6 +11,8 @@ import (
 	"net/http"
 	"strings"
 	"testing"
+
+	"github.com/hashicorp/go-version"
 )
 
 func TestUpdateByQueryBuildURL(t *testing.T) {
@@ -125,7 +127,15 @@ func TestUpdateByQuery(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	if esversion < "2.3.0" {
+	currentVersion, err := version.NewVersion(esversion)
+	if err != nil {
+		t.Fatal(err)
+	}
+	minVersion, err := version.NewVersion("2.0.0")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if currentVersion.LessThan(minVersion) {
 		t.Skipf("Opensearch %v does not support update-by-query yet", esversion)
 	}
 
@@ -155,7 +165,15 @@ func TestUpdateByQueryAsync(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	if esversion < "2.3.0" {
+	currentVersion, err := version.NewVersion(esversion)
+	if err != nil {
+		t.Fatal(err)
+	}
+	minVersion, err := version.NewVersion("2.0.0")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if currentVersion.LessThan(minVersion) {
 		t.Skipf("Opensearch %v does not support update-by-query yet", esversion)
 	}
 

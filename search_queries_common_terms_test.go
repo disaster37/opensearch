@@ -9,6 +9,8 @@ import (
 	"encoding/json"
 	_ "net/http"
 	"testing"
+
+	"github.com/hashicorp/go-version"
 )
 
 func TestCommonTermsQuery(t *testing.T) {
@@ -37,8 +39,16 @@ func TestSearchQueriesCommonTermsQuery(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	if esversion < "7.3.0" {
-		t.Skipf("Opensearch versions >= 7.3.0 deprecated Common Terms Query. "+
+	currentVersion, err := version.NewVersion(esversion)
+	if err != nil {
+		t.Fatal(err)
+	}
+	maxVersion, err := version.NewVersion("2.0.0")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if currentVersion.GreaterThanOrEqual(maxVersion) {
+		t.Skipf("Opensearch versions >= 2.0.0 deprecated Common Terms Query. "+
 			"See https://www.opensearch.co/guide/en/opensearchsearch/reference/current/query-dsl-common-terms-query.html. "+
 			"You are running Opensearch %v.", esversion)
 	}

@@ -85,7 +85,7 @@ func TestIsmPolicy(t *testing.T) {
 		t.Fatal(err)
 	}
 	assert.NotNil(t, resExplain)
-	assert.NotEmpty(t, resExplain.TotalManagedIndices)
+	assert.Equal(t, int64(0), resExplain.TotalManagedIndices)
 
 	// Update ISM policy
 	expecedIsmPolicy.Policy.Description = ptr.To[string]("test")

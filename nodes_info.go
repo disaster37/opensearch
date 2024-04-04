@@ -260,7 +260,7 @@ func (n *NodesInfoNode) HasRole(role string) bool {
 
 // IsMaster returns true if the node is a master node.
 func (n *NodesInfoNode) IsMaster() bool {
-	return n.HasRole("master")
+	return n.HasRole("cluster_manager")
 }
 
 // IsData returns true if the node is a data node.

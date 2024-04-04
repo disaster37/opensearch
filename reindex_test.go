@@ -8,6 +8,8 @@ import (
 	"context"
 	"encoding/json"
 	"testing"
+
+	"github.com/hashicorp/go-version"
 )
 
 func TestReindexSourceWithBodyMap(t *testing.T) {
@@ -393,7 +395,15 @@ func TestReindexWithWaitForCompletionTrueCannotBeStarted(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	if esversion < "2.3.0" {
+	currentVersion, err := version.NewVersion(esversion)
+	if err != nil {
+		t.Fatal(err)
+	}
+	minVersion, err := version.NewVersion("2.0.0")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if currentVersion.LessThan(minVersion) {
 		t.Skipf("Opensearch %v does not support Reindex API yet", esversion)
 	}
 

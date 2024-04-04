@@ -5,6 +5,7 @@ go 1.20
 require (
 	github.com/fortytw2/leaktest v1.3.0
 	github.com/google/go-cmp v0.6.0
+	github.com/hashicorp/go-version v1.6.0
 	github.com/mailru/easyjson v0.7.7
 	github.com/opentracing/opentracing-go v1.2.0
 	github.com/pkg/errors v0.9.1
