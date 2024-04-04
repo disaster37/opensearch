@@ -10,7 +10,7 @@ import (
 	"net/http"
 	"net/url"
 
-	"github.com/pkg/errors"
+	"emperror.dev/errors"
 	"go.opencensus.io/trace"
 )
 

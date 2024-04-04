@@ -12,7 +12,7 @@ import (
 	"net/http"
 	"net/url"
 
-	"github.com/pkg/errors"
+	"emperror.dev/errors"
 )
 
 // checkResponse will return an error if the request/response indicates

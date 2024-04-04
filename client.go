@@ -17,7 +17,7 @@ import (
 	"sync"
 	"time"
 
-	"github.com/pkg/errors"
+	"emperror.dev/errors"
 	"github.com/sirupsen/logrus"
 
 	"github.com/disaster37/opensearch/v2/config"
