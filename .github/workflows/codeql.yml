@@ -49,7 +49,7 @@ jobs:
         languages: go
 
     - name: Run Docker containers
-      run: docker-compose up -d
+      run: make start
 
     - name: Check Docker containers
       run: docker ps -a
