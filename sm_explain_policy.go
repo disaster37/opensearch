@@ -185,6 +185,7 @@ type SmExplainPolicyTrigger struct {
 }
 
 type SmExplainPolicyLatestExecution struct {
+	Status    string              `json:"status,omitempty"`
 	StartTime int64               `json:"start_time,omitempty"`
 	EndTime   int64               `json:"end_time,omitempty"`
 	Info      SmExplainPolicyInfo `json:"info,omitempty"`
