@@ -825,6 +825,11 @@ func (c *Client) infof(format string, args ...interface{}) {
 	c.log.Infof(format, args...)
 }
 
+// debugf logs to the debug log.
+func (c *Client) debugf(format string, args ...interface{}) {
+	c.log.Debugf(format, args...)
+}
+
 // tracef logs to the trace log.
 func (c *Client) tracef(format string, args ...interface{}) {
 	c.log.Tracef(format, args...)
@@ -1475,7 +1480,7 @@ func (c *Client) PerformRequest(ctx context.Context, opt PerformRequestOptions) 
 	}
 
 	duration := time.Now().UTC().Sub(start)
-	c.tracef("%s %s [status:%d, request:%.3fs]",
+	c.debugf("%s %s [status:%d, request:%.3fs]",
 		strings.ToUpper(opt.Method),
 		req.URL.Redacted(),
 		resp.StatusCode,
