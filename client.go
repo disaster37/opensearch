@@ -1341,7 +1341,7 @@ func (c *Client) PerformRequest(ctx context.Context, opt PerformRequestOptions) 
 
 		// Get a connection
 		conn, err = c.next()
-		if errors.Cause(err) == ErrNoClient {
+		if errors.Is(err, ErrNoClient) {
 			n++
 			if !retried {
 				// Force a healtcheck as all connections seem to be dead.
