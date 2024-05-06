@@ -1,6 +1,6 @@
 module github.com/disaster37/opensearch/v2
 
-go 1.20
+go 1.22
 
 require (
 	emperror.dev/errors v0.8.1
