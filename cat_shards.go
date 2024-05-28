@@ -326,6 +326,7 @@ type CatShardsResponseRow struct {
 	SearchPointInTimeCurrent      string `json:"search.point_in_time_current"`
 	SearchPointInTimeTime         string `json:"search.point_in_time_time"`
 	SearchPointInTimeTotal        string `json:"search.point_in_time_total"`
+	SearchIdlReactivateCountTotal string `json:"search.search_idle_reactivate_count_total"`
 	DocsDeleted                   string `json:"docs.deleted"`
 }
 
