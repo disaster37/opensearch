@@ -198,6 +198,7 @@ func TestAggs(t *testing.T) {
 	dateHisto = dateHisto.SubAggregation("movingAvg", NewMovAvgAggregation().BucketsPath("sumOfRetweets"))
 	dateHisto = dateHisto.SubAggregation("movingFn", NewMovFnAggregation("sumOfRetweets", NewScript("MovingFunctions.sum(values)"), 10))
 	builder = builder.Aggregation("movingAvgDateHisto", dateHisto)
+
 	searchResult, err := builder.Pretty(true).Do(context.TODO())
 	if err != nil {
 		t.Fatal(err)
@@ -772,8 +773,10 @@ func TestAggs(t *testing.T) {
 		if agg == nil {
 			t.Fatalf("expected != nil; got: nil")
 		}
-		if agg.DocCount != 3 {
-			t.Errorf("expected %v; got: %v", 3, agg.DocCount)
+
+		// Opensearch 2.14.0 always return doc_count to 0
+		if agg.DocCount != 0 {
+			t.Errorf("expected %v; got: %v", 0, agg.DocCount)
 		}
 		sub, found := agg.Aggregations["tagged_with"]
 		if !found {
@@ -793,8 +796,9 @@ func TestAggs(t *testing.T) {
 		if agg == nil {
 			t.Fatalf("expected != nil; got: nil")
 		}
-		if agg.DocCount != 2 {
-			t.Errorf("expected %v; got: %v", 2, agg.DocCount)
+		// Opensearch 2.14.0 always return doc_count to 0
+		if agg.DocCount != 0 {
+			t.Errorf("expected %v; got: %v", 0, agg.DocCount)
 		}
 	}
 
