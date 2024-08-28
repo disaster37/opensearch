@@ -22,7 +22,7 @@ Here's the version matrix:
 
 Opensearch version | Opensearch version  | Package URL | Remarks |
 ----------------------|------------------|-------------|---------|
-2.x                   | 2.12.0              | [`gopkg.in/disaster37/opensearch.v2`](https://gopkg.in/disaster37/opensearch.v2) ([source](https://github.com/disaster37/opensearch/tree/release-branch.v2) [doc](http://godoc.org/gopkg.in/disaster37/opensearch.v2)) | Last version
+2.x                   | 2.16.0              | [`gopkg.in/disaster37/opensearch.v2`](https://gopkg.in/disaster37/opensearch.v2) ([source](https://github.com/disaster37/opensearch/tree/release-branch.v2) [doc](http://godoc.org/gopkg.in/disaster37/opensearch.v2)) | Last version
 
 **Example:**
 

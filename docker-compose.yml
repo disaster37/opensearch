@@ -1,6 +1,6 @@
 services:
   opensearch:
-    image: opensearchproject/opensearch:${VERSION:-2.14.0}
+    image: opensearchproject/opensearch:${VERSION:-2.16.0}
     hostname: opensearchsearch
     environment:
       - cluster.name=opensearchsearch
