@@ -23,7 +23,9 @@ jobs:
       run: |
         sudo apt-get install -y netcat
         sudo sysctl -w vm.max_map_count=262144
-
+    - uses: KengoTODA/actions-setup-docker-compose@main
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     - name: Setup Go ${{ matrix.go }}
       uses: actions/setup-go@v4
       with:
