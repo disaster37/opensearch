@@ -774,8 +774,7 @@ func TestAggs(t *testing.T) {
 			t.Fatalf("expected != nil; got: nil")
 		}
 
-		// Opensearch 2.14.0 always return doc_count to 0
-		if agg.DocCount != 0 {
+		if agg.DocCount != 3 {
 			t.Errorf("expected %v; got: %v", 0, agg.DocCount)
 		}
 		sub, found := agg.Aggregations["tagged_with"]
@@ -796,8 +795,7 @@ func TestAggs(t *testing.T) {
 		if agg == nil {
 			t.Fatalf("expected != nil; got: nil")
 		}
-		// Opensearch 2.14.0 always return doc_count to 0
-		if agg.DocCount != 0 {
+		if agg.DocCount != 2 {
 			t.Errorf("expected %v; got: %v", 0, agg.DocCount)
 		}
 	}
