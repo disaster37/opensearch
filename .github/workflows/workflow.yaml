@@ -22,7 +22,7 @@ jobs:
         with:
           version: "latest"
           verb: call
-          module: local
+          module: ci/dagger
           args: --src . ci --ci --code-cove-token env:CODECOV_TOKEN --git-token env:GITHUB_TOKEN
         env:
           CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
