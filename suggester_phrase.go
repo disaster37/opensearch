@@ -248,7 +248,7 @@ func (q *PhraseSuggester) Source(includeName bool) (interface{}, error) {
 	if q.tokenLimit != nil {
 		suggester["token_limit"] = *q.tokenLimit
 	}
-	if q.generators != nil && len(q.generators) > 0 {
+	if len(q.generators) > 0 {
 		for typ, generators := range q.generators {
 			var arr []interface{}
 			for _, g := range generators {

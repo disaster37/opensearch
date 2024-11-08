@@ -69,7 +69,9 @@ func TestIndexGetIndexTemplateService(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	defer client.IndexDeleteIndexTemplate("template_1").Pretty(true).Do(context.TODO())
+	defer func() {
+		_, _ = client.IndexDeleteIndexTemplate("template_1").Pretty(true).Do(context.TODO())
+	}()
 
 	res, err := client.IndexGetIndexTemplate("template_1").Pretty(true).Do(context.TODO())
 	if err != nil {

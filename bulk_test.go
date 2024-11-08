@@ -636,7 +636,7 @@ func benchmarkBulkAllocs(b *testing.B, size, num int) {
 		}
 	}
 	for i := 0; i < b.N; i++ {
-		s.bodyAsString()
+		_, _ = s.bodyAsString()
 	}
 	b.ReportAllocs()
 }

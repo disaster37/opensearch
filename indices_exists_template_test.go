@@ -44,7 +44,9 @@ func TestIndexExistsTemplate(t *testing.T) {
 	}
 
 	// Always delete template
-	defer client.IndexDeleteTemplate("opensearch-template").Do(context.TODO())
+	defer func() {
+		_, _ = client.IndexDeleteTemplate("opensearch-template").Do(context.TODO())
+	}()
 
 	// Check if template exists
 	exists, err := client.IndexTemplateExists("opensearch-template").Do(context.TODO())

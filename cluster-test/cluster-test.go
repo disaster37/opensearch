@@ -189,7 +189,7 @@ func (t *TestCase) setup() error {
 	options = append(options, opensearch.SetLogger(logger))
 
 	options = append(options, opensearch.SetURL(t.nodes...))
-	options = append(options, opensearch.SetMaxRetries(t.maxRetries))
+	options = append(options, opensearch.SetRetrier(opensearch.NewBackoffRetrier(opensearch.NewSimpleBackoff(t.maxRetries))))
 	options = append(options, opensearch.SetSniff(t.sniff))
 	options = append(options, opensearch.SetSnifferInterval(t.snifferInterval))
 	options = append(options, opensearch.SetHealthcheck(t.healthcheck))
@@ -232,7 +232,6 @@ func (t *TestCase) setup() error {
 	tweet1 := Tweet{User: "olivere", Message: "Take Five", Retweets: 0}
 	_, err = t.client.Index().
 		Index(t.index).
-		Type("tweet").
 		Id("1").
 		BodyJson(tweet1).
 		Do(ctx)
@@ -244,7 +243,6 @@ func (t *TestCase) setup() error {
 	tweet2 := `{"user" : "olivere", "message" : "It's a Raggy Waltz"}`
 	_, err = t.client.Index().
 		Index(t.index).
-		Type("tweet").
 		Id("2").
 		BodyString(tweet2).
 		Do(ctx)
@@ -269,7 +267,6 @@ func (t *TestCase) search() {
 		// Get tweet with specified ID
 		_, err := t.client.Get().
 			Index(t.index).
-			Type("tweet").
 			Id("1").
 			Do(ctx)
 		if err != nil {
@@ -323,9 +320,6 @@ func (t *TestCase) search() {
 				// Work with tweet
 				//fmt.Printf("Tweet by %s: %s\n", t.User, t.Message)
 			}
-		} else {
-			// No hits
-			//fmt.Print("Found no tweets\n")
 		}
 
 		t.runCh <- RunInfo{Success: true}

@@ -9,7 +9,6 @@ import (
 	"compress/gzip"
 	"encoding/json"
 	"io"
-	"io/ioutil"
 	"net/http"
 	"strings"
 )
@@ -57,7 +56,10 @@ func (r *Request) setBodyJson(data interface{}) error {
 		return err
 	}
 	r.Header.Set("Content-Type", "application/json")
-	r.setBodyReader(bytes.NewReader(body))
+	if err = r.setBodyReader(bytes.NewReader(body)); err != nil {
+		return err
+	}
+
 	return nil
 }
 
@@ -106,7 +108,7 @@ func (r *Request) setBodyGzip(body interface{}) error {
 func (r *Request) setBodyReader(body io.Reader) error {
 	rc, ok := body.(io.ReadCloser)
 	if !ok && body != nil {
-		rc = ioutil.NopCloser(body)
+		rc = io.NopCloser(body)
 	}
 	r.Body = rc
 	if body != nil {

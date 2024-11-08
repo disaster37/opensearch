@@ -36,7 +36,7 @@ func TestTransportIntegration(t *testing.T) {
 
 	// Create a simple Ping request via Elastic
 	client, err := opensearch.NewClient(
-		opensearch.SetURL("https://127.0.0.1:9200"),
+		opensearch.SetURL("https://opensearch.svc:9200"),
 		opensearch.SetHealthcheck(false),
 		opensearch.SetSniff(false),
 		opensearch.SetBasicAuth("admin", "vLPeJYa8.3RqtZCcAK6jNz"),
@@ -67,10 +67,10 @@ func TestTransportIntegration(t *testing.T) {
 	if !ok || httpURL == "" {
 		t.Fatalf("want http.url tag=%q to be a non-empty string (found type %T)", "http.url", span.Tag("http.url"))
 	}
-	if want, have := "https://127.0.0.1:9200/_all/_search", httpURL; want != have {
+	if want, have := "https://opensearch.svc:9200/_all/_search", httpURL; want != have {
 		t.Fatalf("want http.url tag=%q, have %q", want, have)
 	}
-	if strings.Contains(httpURL, "opensearch") {
+	if strings.Contains(httpURL, "admin") {
 		t.Fatalf("want http.url tag %q to not contain username and/or password: %s", "URL", span.Tag("http.url"))
 	}
 	if want, have := "POST", span.Tag("http.method"); want != have {

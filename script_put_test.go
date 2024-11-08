@@ -57,10 +57,12 @@ func TestPutScript(t *testing.T) {
 		t.Fatal(err)
 	}
 	// Cleanup
-	client.PerformRequest(
+	if _, err = client.PerformRequest(
 		context.Background(),
 		PerformRequestOptions{
 			Method: "DELETE",
 			Path:   "/_scripts/" + scriptID,
-		})
+		}); err != nil {
+		t.Fatal(err)
+	}
 }

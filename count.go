@@ -377,11 +377,9 @@ func (s *CountService) Do(ctx context.Context) (int64, error) {
 	if err := s.client.decoder.Decode(res.Body, ret); err != nil {
 		return 0, err
 	}
-	if ret != nil {
-		return ret.Count, nil
-	}
 
-	return int64(0), nil
+	return ret.Count, nil
+
 }
 
 // CountResponse is the response of using the Count API.

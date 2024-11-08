@@ -66,7 +66,7 @@ func TestIndicesGetURL(t *testing.T) {
 func TestIndicesGetService(t *testing.T) {
 	client := setupTestClientAndCreateIndex(t)
 
-	esversion, err := client.OpensearchVersion(DefaultURL)
+	esversion, err := client.OpensearchVersion("https://opensearch.svc:9200")
 	if err != nil {
 		t.Fatal(err)
 	}

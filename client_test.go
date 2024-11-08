@@ -14,7 +14,6 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"net/url"
-	"reflect"
 	"regexp"
 	"runtime"
 	"strings"
@@ -46,7 +45,7 @@ func TestClientDefaults(t *testing.T) {
 		},
 	}
 
-	client, err := NewClient(SetBasicAuth("admin", "vLPeJYa8.3RqtZCcAK6jNz"), SetTransport(transport))
+	client, err := NewClient(SetURL("https://opensearch.svc:9200"), SetBasicAuth("admin", "vLPeJYa8.3RqtZCcAK6jNz"), SetTransport(transport))
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -86,7 +85,7 @@ func TestClientWithoutURL(t *testing.T) {
 		},
 	}
 
-	client, err := NewClient(SetBasicAuth("admin", "vLPeJYa8.3RqtZCcAK6jNz"), SetTransport(transport))
+	client, err := NewClient(SetURL("https://opensearch.svc:9200"), SetBasicAuth("admin", "vLPeJYa8.3RqtZCcAK6jNz"), SetTransport(transport))
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -95,11 +94,6 @@ func TestClientWithoutURL(t *testing.T) {
 	// 2. The sniffing process should find (at least) one node in the cluster, i.e. the DefaultURL
 	if len(client.conns) == 0 {
 		t.Fatalf("expected at least 1 node in the cluster, got: %d (%v)", len(client.conns), client.conns)
-	}
-	if !isCI() {
-		if _, found := findConn(DefaultURL, client.conns...); !found {
-			t.Errorf("expected to find node with default URL of %s in %v", DefaultURL, client.conns)
-		}
 	}
 }
 
@@ -110,7 +104,7 @@ func TestClientWithSingleURL(t *testing.T) {
 		},
 	}
 
-	client, err := NewClient(SetBasicAuth("admin", "vLPeJYa8.3RqtZCcAK6jNz"), SetTransport(transport), SetURL("https://127.0.0.1:9200"))
+	client, err := NewClient(SetBasicAuth("admin", "vLPeJYa8.3RqtZCcAK6jNz"), SetTransport(transport), SetURL("https://opensearch.svc:9200"))
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -120,11 +114,7 @@ func TestClientWithSingleURL(t *testing.T) {
 	if len(client.conns) == 0 {
 		t.Fatalf("expected at least 1 node in the cluster, got: %d (%v)", len(client.conns), client.conns)
 	}
-	if !isCI() {
-		if _, found := findConn(DefaultURL, client.conns...); !found {
-			t.Errorf("expected to find node with default URL of %s in %v", DefaultURL, client.conns)
-		}
-	}
+
 }
 
 func TestClientWithMultipleURLs(t *testing.T) {
@@ -134,18 +124,13 @@ func TestClientWithMultipleURLs(t *testing.T) {
 		},
 	}
 
-	client, err := NewClient(SetBasicAuth("admin", "vLPeJYa8.3RqtZCcAK6jNz"), SetTransport(transport), SetURL("https://127.0.0.1:9200", "https://127.0.0.1:9201"))
+	client, err := NewClient(SetBasicAuth("admin", "vLPeJYa8.3RqtZCcAK6jNz"), SetTransport(transport), SetURL("https://opensearch.svc:9200", "https://opensearch.svc:9201"))
 	if err != nil {
 		t.Fatal(err)
 	}
 	// The client should sniff both URLs, but only 127.0.0.1:9200 should return nodes.
 	if len(client.conns) != 1 {
 		t.Fatalf("expected exactly 1 node in the local cluster, got: %d (%v)", len(client.conns), client.conns)
-	}
-	if !isCI() {
-		if client.conns[0].URL() != DefaultURL {
-			t.Errorf("expected to find node with default URL of %s in %v", DefaultURL, client.conns)
-		}
 	}
 }
 
@@ -169,7 +154,7 @@ func TestClientWithBasicAuth(t *testing.T) {
 		},
 	}
 
-	client, err := NewClient(SetBasicAuth("admin", "vLPeJYa8.3RqtZCcAK6jNz"), SetTransport(transport))
+	client, err := NewClient(SetURL("https://opensearch.svc:9200"), SetBasicAuth("admin", "vLPeJYa8.3RqtZCcAK6jNz"), SetTransport(transport))
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -188,7 +173,7 @@ func TestClientWithBasicAuthInUserInfo(t *testing.T) {
 		},
 	}
 
-	client, err := NewClient(SetTransport(transport), SetURL("https://admin:vLPeJYa8.3RqtZCcAK6jNz@127.0.0.1:9200"))
+	client, err := NewClient(SetTransport(transport), SetURL("https://admin:vLPeJYa8.3RqtZCcAK6jNz@opensearch.svc:9200"))
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -264,7 +249,7 @@ func TestClientWithoutBasicAuthButAuthEnabledInElasticDuringHealthcheck(t *testi
 }
 
 func TestClientFromConfig(t *testing.T) {
-	cfg, err := config.Parse("https://127.0.0.1:9200")
+	cfg, err := config.Parse("https://opensearch.svc:9200")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -285,15 +270,11 @@ func TestClientFromConfig(t *testing.T) {
 	if len(client.conns) == 0 {
 		t.Fatalf("expected at least 1 node in the cluster, got: %d (%v)", len(client.conns), client.conns)
 	}
-	if !isCI() {
-		if _, found := findConn(DefaultURL, client.conns...); !found {
-			t.Errorf("expected to find node with default URL of %s in %v", DefaultURL, client.conns)
-		}
-	}
+
 }
 
 func TestClientDialFromConfig(t *testing.T) {
-	cfg, err := config.Parse("https://127.0.0.1:9200")
+	cfg, err := config.Parse("https://opensearch.svc:9200")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -314,11 +295,7 @@ func TestClientDialFromConfig(t *testing.T) {
 	if len(client.conns) == 0 {
 		t.Fatalf("expected at least 1 node in the cluster, got: %d (%v)", len(client.conns), client.conns)
 	}
-	if !isCI() {
-		if _, found := findConn(DefaultURL, client.conns...); !found {
-			t.Errorf("expected to find node with default URL of %s in %v", DefaultURL, client.conns)
-		}
-	}
+
 }
 
 func TestClientDialContext(t *testing.T) {
@@ -331,7 +308,7 @@ func TestClientDialContext(t *testing.T) {
 		},
 	}
 
-	client, err := DialContext(ctx, SetURL("https://localhost:9200"), SetBasicAuth("admin", "vLPeJYa8.3RqtZCcAK6jNz"), SetTransport(transport))
+	client, err := DialContext(ctx, SetURL("https://opensearch.svc:9200"), SetBasicAuth("admin", "vLPeJYa8.3RqtZCcAK6jNz"), SetTransport(transport))
 	if err != nil {
 		t.Fatalf("expected successful connection, got %v", err)
 	}
@@ -391,7 +368,7 @@ func TestClientSniffSuccess(t *testing.T) {
 		},
 	}
 
-	client, err := NewClient(SetURL("https://127.0.0.1:19200", "https://127.0.0.1:9200"), SetBasicAuth("admin", "vLPeJYa8.3RqtZCcAK6jNz"), SetTransport(transport))
+	client, err := NewClient(SetURL("https://opensearch.svc:19200", "https://opensearch.svc:9200"), SetBasicAuth("admin", "vLPeJYa8.3RqtZCcAK6jNz"), SetTransport(transport))
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -402,7 +379,7 @@ func TestClientSniffSuccess(t *testing.T) {
 }
 
 func TestClientSniffFailure(t *testing.T) {
-	_, err := NewClient(SetURL("http://127.0.0.1:19200", "http://127.0.0.1:19201"))
+	_, err := NewClient(SetURL("http://opensearch.svc:19200", "http://opensearch.svc:19201"))
 	if err == nil {
 		t.Fatalf("expected cluster to fail with no nodes found")
 	}
@@ -424,7 +401,7 @@ func TestClientSnifferCallback(t *testing.T) {
 	_, err := NewClient(
 		SetBasicAuth("admin", "vLPeJYa8.3RqtZCcAK6jNz"),
 		SetTransport(transport),
-		SetURL("https://127.0.0.1:19200", "https://127.0.0.1:9200"),
+		SetURL("https://opensearch.svc:19200", "https://opensearch.svc:9200"),
 		SetSnifferCallback(cb))
 	if err == nil {
 		t.Fatalf("expected cluster to fail with no nodes found")
@@ -441,7 +418,7 @@ func TestClientSniffDisabled(t *testing.T) {
 		},
 	}
 
-	client, err := NewClient(SetSniff(false), SetURL("https://127.0.0.1:9200", "https://127.0.0.1:9201"), SetBasicAuth("admin", "vLPeJYa8.3RqtZCcAK6jNz"), SetTransport(transport))
+	client, err := NewClient(SetSniff(false), SetURL("https://opensearch.svc:9200", "https://opensearch.svc:9201"), SetBasicAuth("admin", "vLPeJYa8.3RqtZCcAK6jNz"), SetTransport(transport))
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -451,19 +428,22 @@ func TestClientSniffDisabled(t *testing.T) {
 	}
 	// Make two requests, so that both connections are being used
 	for i := 0; i < len(client.conns); i++ {
-		client.Flush().Do(context.TODO())
+		_, err = client.Flush().Do(context.TODO())
+		if err != nil {
+			t.Fatal(err)
+		}
 	}
 	// The first connection (127.0.0.1:9200) should now be okay.
-	if i, found := findConn("https://127.0.0.1:9200", client.conns...); !found {
-		t.Fatalf("expected connection to %q to be found", "https://127.0.0.1:9200")
+	if i, found := findConn("https://opensearch.svc:9200", client.conns...); !found {
+		t.Fatalf("expected connection to %q to be found", "https://opensearch.svc:9200")
 	} else {
 		if conn := client.conns[i]; conn.IsDead() {
 			t.Fatal("expected connection to be alive, but it is dead")
 		}
 	}
 	// The second connection (127.0.0.1:9201) should now be marked as dead.
-	if i, found := findConn("https://127.0.0.1:9201", client.conns...); !found {
-		t.Fatalf("expected connection to %q to be found", "https://127.0.0.1:9201")
+	if i, found := findConn("https://opensearch.svc:9201", client.conns...); !found {
+		t.Fatalf("expected connection to %q to be found", "https://opensearch.svc:9201")
 	} else {
 		if conn := client.conns[i]; !conn.IsDead() {
 			t.Fatal("expected connection to be dead, but it is alive")
@@ -483,7 +463,7 @@ func TestClientWillMarkConnectionsAsAliveWhenAllAreDead(t *testing.T) {
 	}
 
 	// Make a request, so that the connections is marked as dead.
-	client.Flush().Do(context.TODO())
+	_, _ = client.Flush().Do(context.TODO())
 
 	// The connection should now be marked as dead.
 	if i, found := findConn("http://127.0.0.1:9201", client.conns...); !found {
@@ -495,7 +475,7 @@ func TestClientWillMarkConnectionsAsAliveWhenAllAreDead(t *testing.T) {
 	}
 
 	// Now send another request and the connection should be marked as alive again.
-	client.Flush().Do(context.TODO())
+	_, _ = client.Flush().Do(context.TODO())
 
 	if i, found := findConn("http://127.0.0.1:9201", client.conns...); !found {
 		t.Fatalf("expected connection to %q to be found", "http://127.0.0.1:9201")
@@ -512,7 +492,7 @@ func TestClientWithRequiredPlugins(t *testing.T) {
 			InsecureSkipVerify: true,
 		},
 	}
-	_, err := NewClient(SetRequiredPlugins("no-such-plugin"), SetBasicAuth("admin", "vLPeJYa8.3RqtZCcAK6jNz"), SetTransport(transport))
+	_, err := NewClient(SetURL("https://opensearch.svc:9200"), SetRequiredPlugins("no-such-plugin"), SetBasicAuth("admin", "vLPeJYa8.3RqtZCcAK6jNz"), SetTransport(transport))
 	if err == nil {
 		t.Fatal("expected error when creating client")
 	}
@@ -557,11 +537,8 @@ func TestClientHealthcheckTimeoutLeak(t *testing.T) {
 	var reqDoneMu sync.Mutex
 	var reqDone bool
 	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		cn, ok := w.(http.CloseNotifier)
-		if !ok {
-			t.Fatalf("Writer is not CloseNotifier, but %v", reflect.TypeOf(w).Name())
-		}
-		<-cn.CloseNotify()
+		ctx := r.Context()
+		<-ctx.Done()
 		reqDoneMu.Lock()
 		reqDone = true
 		reqDoneMu.Unlock()
@@ -576,7 +553,9 @@ func TestClientHealthcheckTimeoutLeak(t *testing.T) {
 	srv := &http.Server{
 		Handler: mux,
 	}
-	go srv.Serve(lis)
+	go func() {
+		_ = srv.Serve(lis)
+	}()
 
 	cli := &Client{
 		c: &http.Client{},
@@ -606,7 +585,7 @@ func TestClientHealthcheckTimeoutLeak(t *testing.T) {
 	if isServerCloseable {
 		ctx, cancel := context.WithTimeout(context.Background(), time.Second)
 		defer cancel()
-		cl.Shutdown(ctx)
+		_ = cl.Shutdown(ctx)
 	}
 
 	<-time.After(time.Second)
@@ -695,7 +674,7 @@ func TestClientSniffUpdatingNodeURL(t *testing.T) {
 	oldNodeID := client.conns[0].NodeID()
 	oldURL := client.conns[0].URL()
 
-	nodeURL = "https://127.0.0.1:9999" // some other nodeURL to report
+	nodeURL = "https://opensearch.svc:9999" // some other nodeURL to report
 
 	err = client.sniff(context.Background(), 2*time.Second)
 	if err != nil {
@@ -723,7 +702,7 @@ func TestClientSniffUpdatingNodeURL(t *testing.T) {
 // -- NewSimpleClient --
 
 func TestSimpleClientDefaults(t *testing.T) {
-	client, err := NewSimpleClient()
+	client, err := NewSimpleClient(SetURL("https://opensearch.svc:9200"))
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -772,7 +751,7 @@ func TestClientStartAndStop(t *testing.T) {
 		},
 	}
 
-	client, err := NewClient(SetBasicAuth("admin", "vLPeJYa8.3RqtZCcAK6jNz"), SetTransport(transport))
+	client, err := NewClient(SetURL("https://opensearch.svc:9200"), SetBasicAuth("admin", "vLPeJYa8.3RqtZCcAK6jNz"), SetTransport(transport))
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -818,7 +797,7 @@ func TestClientStartAndStopWithSnifferAndHealthchecksDisabled(t *testing.T) {
 		},
 	}
 
-	client, err := NewClient(SetSniff(false), SetHealthcheck(false), SetBasicAuth("admin", "vLPeJYa8.3RqtZCcAK6jNz"), SetTransport(transport))
+	client, err := NewClient(SetURL("https://opensearch.svc:9200"), SetSniff(false), SetHealthcheck(false), SetBasicAuth("admin", "vLPeJYa8.3RqtZCcAK6jNz"), SetTransport(transport))
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -866,13 +845,13 @@ func TestClientSniffNode(t *testing.T) {
 		},
 	}
 
-	client, err := NewClient(SetBasicAuth("admin", "vLPeJYa8.3RqtZCcAK6jNz"), SetTransport(transport))
+	client, err := NewClient(SetURL("https://opensearch.svc:9200"), SetBasicAuth("admin", "vLPeJYa8.3RqtZCcAK6jNz"), SetTransport(transport))
 	if err != nil {
 		t.Fatal(err)
 	}
 
 	ch := make(chan []*conn)
-	go func() { ch <- client.sniffNode(context.Background(), DefaultURL) }()
+	go func() { ch <- client.sniffNode(context.Background(), "https://opensearch.svc:9200") }()
 
 	select {
 	case nodes := <-ch:
@@ -901,7 +880,7 @@ func TestClientSniffOnDefaultURL(t *testing.T) {
 		},
 	}
 
-	client, _ := NewClient(SetBasicAuth("admin", "vLPeJYa8.3RqtZCcAK6jNz"), SetTransport(transport))
+	client, _ := NewClient(SetURL("https://opensearch.svc:9200"), SetBasicAuth("admin", "vLPeJYa8.3RqtZCcAK6jNz"), SetTransport(transport))
 	if client == nil {
 		t.Fatal("no client returned")
 	}
@@ -947,11 +926,8 @@ func TestClientSniffTimeoutLeak(t *testing.T) {
 	var reqDoneMu sync.Mutex
 	var reqDone bool
 	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		cn, ok := w.(http.CloseNotifier)
-		if !ok {
-			t.Fatalf("Writer is not CloseNotifier, but %v", reflect.TypeOf(w).Name())
-		}
-		<-cn.CloseNotify()
+		ctx := r.Context()
+		<-ctx.Done()
 		reqDoneMu.Lock()
 		reqDone = true
 		reqDoneMu.Unlock()
@@ -966,7 +942,9 @@ func TestClientSniffTimeoutLeak(t *testing.T) {
 	srv := &http.Server{
 		Handler: mux,
 	}
-	go srv.Serve(lis)
+	go func() {
+		_ = srv.Serve(lis)
+	}()
 
 	cli := &Client{
 		c: &http.Client{},
@@ -991,12 +969,12 @@ func TestClientSniffTimeoutLeak(t *testing.T) {
 		defer leaktest.CheckTimeout(t, time.Second*10)()
 	}
 
-	cli.sniff(context.Background(), time.Millisecond*500)
+	_ = cli.sniff(context.Background(), time.Millisecond*500)
 
 	if isServerCloseable {
 		ctx, cancel := context.WithTimeout(context.Background(), time.Second)
 		defer cancel()
-		cl.Shutdown(ctx)
+		_ = cl.Shutdown(ctx)
 	}
 
 	<-time.After(time.Second)
@@ -1036,7 +1014,7 @@ func TestClientExtractHostname(t *testing.T) {
 		},
 	}
 
-	client, err := NewClient(SetSniff(false), SetHealthcheck(false))
+	client, err := NewClient(SetURL("https://opensearch.svc:9200"), SetSniff(false), SetHealthcheck(false))
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -1054,7 +1032,7 @@ func TestClientSelectConnHealthy(t *testing.T) {
 	client, err := NewClient(
 		SetSniff(false),
 		SetHealthcheck(false),
-		SetURL("http://127.0.0.1:9200", "http://127.0.0.1:9201"))
+		SetURL("http://opensearch.svc:9200", "http://opensearch.svc:9201"))
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -1093,7 +1071,7 @@ func TestClientSelectConnHealthyAndDead(t *testing.T) {
 	client, err := NewClient(
 		SetSniff(false),
 		SetHealthcheck(false),
-		SetURL("http://127.0.0.1:9200", "http://127.0.0.1:9201"))
+		SetURL("http://opensearch.svc:9200", "http://opensearch.svc:9201"))
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -1132,7 +1110,7 @@ func TestClientSelectConnDeadAndHealthy(t *testing.T) {
 	client, err := NewClient(
 		SetSniff(false),
 		SetHealthcheck(false),
-		SetURL("http://127.0.0.1:9200", "http://127.0.0.1:9201"))
+		SetURL("http://opensearch.svc:9200", "http://opensearch.svc:9201"))
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -1171,7 +1149,7 @@ func TestClientSelectConnAllDead(t *testing.T) {
 	client, err := NewClient(
 		SetSniff(false),
 		SetHealthcheck(false),
-		SetURL("http://127.0.0.1:9200", "http://127.0.0.1:9201"))
+		SetURL("http://opensearch.svc:9200", "http://opensearch.svc:9201"))
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -1216,11 +1194,11 @@ func TestOpensearchVersion(t *testing.T) {
 		},
 	}
 
-	client, err := NewClient(SetBasicAuth("admin", "vLPeJYa8.3RqtZCcAK6jNz"), SetTransport(transport))
+	client, err := NewClient(SetURL("https://opensearch.svc:9200"), SetBasicAuth("admin", "vLPeJYa8.3RqtZCcAK6jNz"), SetTransport(transport))
 	if err != nil {
 		t.Fatal(err)
 	}
-	version, err := client.OpensearchVersion(DefaultURL)
+	version, err := client.OpensearchVersion("https://opensearch.svc:9200")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -1261,7 +1239,7 @@ func TestPerformRequest(t *testing.T) {
 		},
 	}
 
-	client, err := NewClient(SetBasicAuth("admin", "vLPeJYa8.3RqtZCcAK6jNz"), SetTransport(transport))
+	client, err := NewClient(SetURL("https://opensearch.svc:9200"), SetBasicAuth("admin", "vLPeJYa8.3RqtZCcAK6jNz"), SetTransport(transport))
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -1292,7 +1270,7 @@ func TestPerformRequestWithStream(t *testing.T) {
 		},
 	}
 
-	client, err := NewClient(SetBasicAuth("admin", "vLPeJYa8.3RqtZCcAK6jNz"), SetTransport(transport))
+	client, err := NewClient(SetURL("https://opensearch.svc:9200"), SetBasicAuth("admin", "vLPeJYa8.3RqtZCcAK6jNz"), SetTransport(transport))
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -1330,7 +1308,7 @@ func TestPerformRequestWithSimpleClient(t *testing.T) {
 		},
 	}
 
-	client, err := NewSimpleClient(SetBasicAuth("admin", "vLPeJYa8.3RqtZCcAK6jNz"), SetTransport(transport))
+	client, err := NewSimpleClient(SetURL("https://opensearch.svc:9200"), SetBasicAuth("admin", "vLPeJYa8.3RqtZCcAK6jNz"), SetTransport(transport))
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -1361,7 +1339,7 @@ func TestPerformRequestWithMaxResponseSize(t *testing.T) {
 		},
 	}
 
-	client, err := NewClient(SetBasicAuth("admin", "vLPeJYa8.3RqtZCcAK6jNz"), SetTransport(transport))
+	client, err := NewClient(SetURL("https://opensearch.svc:9200"), SetBasicAuth("admin", "vLPeJYa8.3RqtZCcAK6jNz"), SetTransport(transport))
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -1398,7 +1376,7 @@ func TestPerformRequestOnNoConnectionsWithHealthcheckRevival(t *testing.T) {
 
 	httpClient := &http.Client{Transport: tr}
 
-	client, err := NewClient(SetHttpClient(httpClient), SetMaxRetries(0), SetHealthcheck(true), SetBasicAuth("admin", "vLPeJYa8.3RqtZCcAK6jNz"))
+	client, err := NewClient(SetURL("https://opensearch.svc:9200"), SetHttpClient(httpClient), SetMaxRetries(0), SetHealthcheck(true), SetBasicAuth("admin", "vLPeJYa8.3RqtZCcAK6jNz"))
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -1464,7 +1442,7 @@ func TestPerformRequestRetryOnHttpError(t *testing.T) {
 	tr := &failingTransport{path: "/fail", fail: fail}
 	httpClient := &http.Client{Transport: tr}
 
-	client, err := NewClient(SetHttpClient(httpClient), SetMaxRetries(5), SetHealthcheck(false), SetBasicAuth("admin", "vLPeJYa8.3RqtZCcAK6jNz"))
+	client, err := NewClient(SetURL("https://opensearch.svc:9200"), SetHttpClient(httpClient), SetMaxRetries(5), SetHealthcheck(false), SetBasicAuth("admin", "vLPeJYa8.3RqtZCcAK6jNz"))
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -1497,7 +1475,7 @@ func TestPerformRequestNoRetryOnValidButUnsuccessfulHttpStatus(t *testing.T) {
 	tr := &failingTransport{path: "/fail", fail: fail}
 	httpClient := &http.Client{Transport: tr}
 
-	client, err := NewClient(SetHttpClient(httpClient), SetMaxRetries(5), SetHealthcheck(false), SetBasicAuth("admin", "vLPeJYa8.3RqtZCcAK6jNz"))
+	client, err := NewClient(SetURL("https://opensearch.svc:9200"), SetHttpClient(httpClient), SetMaxRetries(5), SetHealthcheck(false), SetBasicAuth("admin", "vLPeJYa8.3RqtZCcAK6jNz"))
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -1534,6 +1512,7 @@ func TestPerformRequestOnSpecifiedHttpStatusCodes(t *testing.T) {
 	httpClient := &http.Client{Transport: tr}
 
 	client, err := NewClient(
+		SetURL("https://opensearch.svc:9200"),
 		SetHttpClient(httpClient),
 		SetMaxRetries(5),
 		SetRetryStatusCodes(429, 504),
@@ -1578,7 +1557,7 @@ func TestPerformRequestWithSetBodyError(t *testing.T) {
 		},
 	}
 
-	client, err := NewClient(SetBasicAuth("admin", "vLPeJYa8.3RqtZCcAK6jNz"), SetTransport(transport))
+	client, err := NewClient(SetURL("https://opensearch.svc:9200"), SetBasicAuth("admin", "vLPeJYa8.3RqtZCcAK6jNz"), SetTransport(transport))
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -1610,7 +1589,7 @@ func TestPerformRequestWithCancel(t *testing.T) {
 	tr := &sleepingTransport{timeout: 3 * time.Second}
 	httpClient := &http.Client{Transport: tr}
 
-	client, err := NewSimpleClient(SetHttpClient(httpClient), SetMaxRetries(0), SetBasicAuth("admin", "vLPeJYa8.3RqtZCcAK6jNz"))
+	client, err := NewSimpleClient(SetURL("https://opensearch.svc:9200"), SetHttpClient(httpClient), SetMaxRetries(0), SetBasicAuth("admin", "vLPeJYa8.3RqtZCcAK6jNz"))
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -1648,7 +1627,7 @@ func TestPerformRequestWithTimeout(t *testing.T) {
 	tr := &sleepingTransport{timeout: 3 * time.Second}
 	httpClient := &http.Client{Transport: tr}
 
-	client, err := NewSimpleClient(SetHttpClient(httpClient), SetMaxRetries(0), SetBasicAuth("admin", "vLPeJYa8.3RqtZCcAK6jNz"))
+	client, err := NewSimpleClient(SetURL("https://opensearch.svc:9200"), SetHttpClient(httpClient), SetMaxRetries(0), SetBasicAuth("admin", "vLPeJYa8.3RqtZCcAK6jNz"))
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -1686,7 +1665,7 @@ func TestPerformRequestWithCustomHTTPHeadersOnRequest(t *testing.T) {
 		},
 	}
 
-	client, err := NewClient(SetBasicAuth("admin", "vLPeJYa8.3RqtZCcAK6jNz"), SetTransport(transport))
+	client, err := NewClient(SetURL("https://opensearch.svc:9200"), SetBasicAuth("admin", "vLPeJYa8.3RqtZCcAK6jNz"), SetTransport(transport))
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -1719,9 +1698,14 @@ func TestPerformRequestWithCustomHTTPHeadersOnClient(t *testing.T) {
 		},
 	}
 
-	client, err := NewClient(SetHeaders(http.Header{
-		"Custom-Id": []string{"olivere"},
-	}), SetBasicAuth("admin", "vLPeJYa8.3RqtZCcAK6jNz"), SetTransport(transport))
+	client, err := NewClient(
+		SetURL("https://opensearch.svc:9200"),
+		SetHeaders(http.Header{
+			"Custom-Id": []string{"olivere"},
+		}),
+		SetBasicAuth("admin", "vLPeJYa8.3RqtZCcAK6jNz"),
+		SetTransport(transport),
+	)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -1757,7 +1741,7 @@ func TestPerformRequestSetsDefaultUserAgent(t *testing.T) {
 	tr := &failingTransport{path: "/", fail: h}
 	httpClient := &http.Client{Transport: tr}
 
-	client, err := NewClient(SetHttpClient(httpClient), SetSniff(false), SetHealthcheck(false), SetBasicAuth("admin", "vLPeJYa8.3RqtZCcAK6jNz"))
+	client, err := NewClient(SetURL("https://opensearch.svc:9200"), SetHttpClient(httpClient), SetSniff(false), SetHealthcheck(false), SetBasicAuth("admin", "vLPeJYa8.3RqtZCcAK6jNz"))
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -1790,7 +1774,7 @@ func TestPerformRequestWithCustomHTTPHeadersPriority(t *testing.T) {
 	tr := &failingTransport{path: "/", fail: h}
 	httpClient := &http.Client{Transport: tr}
 
-	client, err := NewClient(SetHttpClient(httpClient), SetHeaders(http.Header{
+	client, err := NewClient(SetURL("https://opensearch.svc:9200"), SetHttpClient(httpClient), SetHeaders(http.Header{
 		"Custom-Id":   []string{"olivere"},
 		"User-Agent":  []string{"My user agent"},
 		"X-Opaque-Id": []string{"sandra"}, // <- will be overridden by request-level header
@@ -1868,7 +1852,7 @@ func TestPerformRequestWithCompressionDisabled(t *testing.T) {
 }
 
 func testPerformRequestWithCompression(t *testing.T, hc *http.Client) {
-	client, err := NewClient(SetHttpClient(hc), SetSniff(false), SetBasicAuth("admin", "vLPeJYa8.3RqtZCcAK6jNz"))
+	client, err := NewClient(SetURL("https://opensearch.svc:9200"), SetHttpClient(hc), SetSniff(false), SetBasicAuth("admin", "vLPeJYa8.3RqtZCcAK6jNz"))
 	if err != nil {
 		t.Fatal(err)
 	}

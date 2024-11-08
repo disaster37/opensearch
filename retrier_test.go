@@ -57,6 +57,7 @@ func TestRetrier(t *testing.T) {
 	}
 
 	client, err := NewClient(
+		SetURL("https://opensearch.svc:9200"),
 		SetBasicAuth("admin", "vLPeJYa8.3RqtZCcAK6jNz"),
 		SetHttpClient(httpClient),
 		SetMaxRetries(5),
@@ -103,6 +104,7 @@ func TestRetrierWithError(t *testing.T) {
 	}
 
 	client, err := NewClient(
+		SetURL("https://opensearch.svc:9200"),
 		SetHttpClient(httpClient),
 		SetMaxRetries(5),
 		SetHealthcheck(false),
@@ -150,6 +152,7 @@ func TestRetrierOnPerformRequest(t *testing.T) {
 
 	client, err := NewClient(
 		SetHttpClient(httpClient),
+		SetURL("https://opensearch.svc:9200"),
 		SetBasicAuth("admin", "vLPeJYa8.3RqtZCcAK6jNz"),
 		SetHealthcheck(false),
 		SetRetrier(defaultRetrier))

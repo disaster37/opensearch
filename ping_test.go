@@ -13,7 +13,7 @@ import (
 func TestPingGet(t *testing.T) {
 	client := setupTestClientAndCreateIndex(t)
 
-	res, code, err := client.Ping(DefaultURL).Do(context.TODO())
+	res, code, err := client.Ping("https://opensearch.svc:9200").Do(context.TODO())
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -34,7 +34,7 @@ func TestPingGet(t *testing.T) {
 func TestPingHead(t *testing.T) {
 	client := setupTestClientAndCreateIndex(t)
 
-	res, code, err := client.Ping(DefaultURL).HttpHeadOnly(true).Do(context.TODO())
+	res, code, err := client.Ping("https://opensearch.svc:9200").HttpHeadOnly(true).Do(context.TODO())
 	if err != nil {
 		t.Fatal(err)
 	}

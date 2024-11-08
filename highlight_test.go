@@ -195,7 +195,7 @@ func TestHighlightWithTermQuery(t *testing.T) {
 	if err := json.Unmarshal(hit.Source, &tw); err != nil {
 		t.Fatal(err)
 	}
-	if hit.Highlight == nil || len(hit.Highlight) == 0 {
+	if len(hit.Highlight) == 0 {
 		t.Fatal("expected hit to have a highlight; got nil")
 	}
 	if hl, found := hit.Highlight["message"]; found {

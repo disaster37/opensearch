@@ -99,7 +99,7 @@ func (a *ScriptedMetricAggregation) Source() (interface{}, error) {
 		opts["reduce_script"] = src
 	}
 
-	if a.params != nil && len(a.params) > 0 {
+	if len(a.params) > 0 {
 		opts["params"] = a.params
 	}
 

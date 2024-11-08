@@ -38,3 +38,48 @@ following things in mind before submitting your pull request:
 
 * [GitHub documentation](https://help.github.com/)
 * [GitHub pull request documentation](https://help.github.com/en/articles/creating-a-pull-request)
+
+
+## Develop
+
+### Lint code
+
+```bash
+dagger call --src . lint
+```
+
+### Test code
+
+```bash
+dagger call --src . test
+```
+
+### Debug tests
+
+Create file `.vscode/launch.json`.
+```json
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Connect to server",
+            "type": "go",
+            "request": "attach",
+            "mode": "remote",
+            "remotePath": "/src",
+            "port": 4000,
+            "host": "127.0.0.1"
+        }
+    ]
+}
+```
+
+Run
+```bash
+dagger call --src . debug-test --run TestNAME up
+```
+
+To finish, Run de debug on Vsocode

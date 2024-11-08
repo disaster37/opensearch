@@ -7,7 +7,7 @@ package opensearch
 import (
 	"bytes"
 	"fmt"
-	"io/ioutil"
+	"io"
 	"net/http"
 	"testing"
 )
@@ -25,7 +25,7 @@ func BenchmarkResponse(b *testing.B) {
 			Header: http.Header{
 				"X-Iteration": []string{iteration},
 			},
-			Body:       ioutil.NopCloser(bytes.NewBufferString(body)),
+			Body:       io.NopCloser(bytes.NewBufferString(body)),
 			StatusCode: http.StatusOK,
 		}
 		var err error

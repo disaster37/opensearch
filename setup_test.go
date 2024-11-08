@@ -317,7 +317,7 @@ func setupTestClient(t logger, options ...ClientOptionFunc) (client *Client) {
 		},
 	}
 
-	options = append(options, SetURL("https://127.0.0.1:9200"), SetBasicAuth("admin", "vLPeJYa8.3RqtZCcAK6jNz"), SetTransport(transport), SetScheme("https"))
+	options = append(options, SetBasicAuth("admin", "vLPeJYa8.3RqtZCcAK6jNz"), SetTransport(transport), SetScheme("https"), SetURL("https://opensearch.svc:9200"))
 
 	client, err = NewClient(options...)
 	if err != nil {
@@ -350,22 +350,23 @@ func setupTestClient(t logger, options ...ClientOptionFunc) (client *Client) {
 		}
 	}
 
-	client.DeleteIndex(testIndexName).Do(context.TODO())
-	client.DeleteIndex(testIndexName2).Do(context.TODO())
-	client.DeleteIndex(testIndexName3).Do(context.TODO())
-	client.DeleteIndex(testIndexName4).Do(context.TODO())
-	client.DeleteIndex(testIndexName5).Do(context.TODO())
-	client.DeleteIndex(testIndexNameEmpty).Do(context.TODO())
-	client.DeleteIndex(testOrderIndex).Do(context.TODO())
-	client.DeleteIndex(testNoSourceIndexName).Do(context.TODO())
+	_, _ = client.DeleteIndex(testIndexName).Do(context.TODO())
+	_, _ = client.DeleteIndex(testIndexName2).Do(context.TODO())
+	_, _ = client.DeleteIndex(testIndexName3).Do(context.TODO())
+	_, _ = client.DeleteIndex(testIndexName4).Do(context.TODO())
+	_, _ = client.DeleteIndex(testIndexName5).Do(context.TODO())
+	_, _ = client.DeleteIndex(testIndexNameEmpty).Do(context.TODO())
+	_, _ = client.DeleteIndex(testOrderIndex).Do(context.TODO())
+	_, _ = client.DeleteIndex(testNoSourceIndexName).Do(context.TODO())
 	//client.DeleteIndex(testDoctypeIndex).Do(context.TODO())
-	client.DeleteIndex(testQueryIndex).Do(context.TODO())
-	client.DeleteIndex(testJoinIndex).Do(context.TODO())
+	_, _ = client.DeleteIndex(testQueryIndex).Do(context.TODO())
+	_, _ = client.DeleteIndex(testJoinIndex).Do(context.TODO())
 
 	return client
 }
 
 func setupTestClientAndCreateIndex(t logger, options ...ClientOptionFunc) *Client {
+	options = append(options, SetURL("https://opensearch.svc:9200"))
 	client := setupTestClient(t, options...)
 
 	// Create index
@@ -424,6 +425,7 @@ func setupTestClientAndCreateIndexAndLog(t logger, options ...ClientOptionFunc) 
 var _ = setupTestClientAndCreateIndexAndLog // remove unused warning in staticcheck
 
 func setupTestClientAndCreateIndexAndAddDocs(t logger, options ...ClientOptionFunc) *Client {
+	options = append(options, SetURL("https://opensearch.svc:9200"))
 	client := setupTestClientAndCreateIndex(t, options...)
 
 	// Add tweets
@@ -471,6 +473,7 @@ func setupTestClientAndCreateIndexAndAddDocs(t logger, options ...ClientOptionFu
 }
 
 func setupTestClientAndCreateIndexAndAddDocsNoSource(t logger, options ...ClientOptionFunc) *Client {
+	options = append(options, SetURL("https://opensearch.svc:9200"))
 	client := setupTestClientAndCreateIndex(t, options...)
 
 	// Add tweets

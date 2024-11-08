@@ -535,7 +535,7 @@ func (w *bulkWorker) commit(ctx context.Context) error {
 		res, err = w.service.Do(ctx)
 		if err == nil {
 			// Overall bulk request was OK.  But each bulk response item also has a status
-			if w.p.retryItemStatusCodes != nil && len(w.p.retryItemStatusCodes) > 0 {
+			if len(w.p.retryItemStatusCodes) > 0 {
 				// Check res.Items since some might be soft failures
 				if res.Items != nil && res.Errors {
 					// res.Items will be 1 to 1 with reqs in same order

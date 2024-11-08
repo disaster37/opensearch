@@ -14,7 +14,6 @@
 //	values["repo"] = "uritemplates"
 //	expanded, _ := template.Expand(values)
 //	fmt.Printf(expanded)
-//
 package uritemplates
 
 import (
@@ -28,9 +27,9 @@ import (
 )
 
 var (
-	unreserved = regexp.MustCompile("[^A-Za-z0-9\\-._~]")
-	reserved   = regexp.MustCompile("[^A-Za-z0-9\\-._~:/?#[\\]@!$&'()*+,;=]")
-	validname  = regexp.MustCompile("^([A-Za-z0-9_\\.]|%[0-9A-Fa-f][0-9A-Fa-f])+$")
+	unreserved = regexp.MustCompile(`[^A-Za-z0-9\-._~]`)
+	reserved   = regexp.MustCompile(`[^A-Za-z0-9\-._~:/?#[\]@!$&'()*+,;=]`)
+	validname  = regexp.MustCompile(`^([A-Za-z0-9_\.]|%[0-9A-Fa-f][0-9A-Fa-f])+$`)
 	hex        = []byte("0123456789ABCDEF")
 )
 

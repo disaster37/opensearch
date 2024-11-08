@@ -889,10 +889,10 @@ func (a *AggregationValueMetric) UnmarshalJSON(data []byte) error {
 		return err
 	}
 	if v, ok := aggs["value"]; ok && v != nil {
-		json.Unmarshal(v, &a.Value)
+		_ = json.Unmarshal(v, &a.Value)
 	}
 	if v, ok := aggs["meta"]; ok && v != nil {
-		json.Unmarshal(v, &a.Meta)
+		_ = json.Unmarshal(v, &a.Meta)
 	}
 	a.Aggregations = aggs
 	return nil
@@ -919,22 +919,22 @@ func (a *AggregationStatsMetric) UnmarshalJSON(data []byte) error {
 		return err
 	}
 	if v, ok := aggs["count"]; ok && v != nil {
-		json.Unmarshal(v, &a.Count)
+		_ = json.Unmarshal(v, &a.Count)
 	}
 	if v, ok := aggs["min"]; ok && v != nil {
-		json.Unmarshal(v, &a.Min)
+		_ = json.Unmarshal(v, &a.Min)
 	}
 	if v, ok := aggs["max"]; ok && v != nil {
-		json.Unmarshal(v, &a.Max)
+		_ = json.Unmarshal(v, &a.Max)
 	}
 	if v, ok := aggs["avg"]; ok && v != nil {
-		json.Unmarshal(v, &a.Avg)
+		_ = json.Unmarshal(v, &a.Avg)
 	}
 	if v, ok := aggs["sum"]; ok && v != nil {
-		json.Unmarshal(v, &a.Sum)
+		_ = json.Unmarshal(v, &a.Sum)
 	}
 	if v, ok := aggs["meta"]; ok && v != nil {
-		json.Unmarshal(v, &a.Meta)
+		_ = json.Unmarshal(v, &a.Meta)
 	}
 	a.Aggregations = aggs
 	return nil
@@ -964,31 +964,31 @@ func (a *AggregationExtendedStatsMetric) UnmarshalJSON(data []byte) error {
 		return err
 	}
 	if v, ok := aggs["count"]; ok && v != nil {
-		json.Unmarshal(v, &a.Count)
+		_ = json.Unmarshal(v, &a.Count)
 	}
 	if v, ok := aggs["min"]; ok && v != nil {
-		json.Unmarshal(v, &a.Min)
+		_ = json.Unmarshal(v, &a.Min)
 	}
 	if v, ok := aggs["max"]; ok && v != nil {
-		json.Unmarshal(v, &a.Max)
+		_ = json.Unmarshal(v, &a.Max)
 	}
 	if v, ok := aggs["avg"]; ok && v != nil {
-		json.Unmarshal(v, &a.Avg)
+		_ = json.Unmarshal(v, &a.Avg)
 	}
 	if v, ok := aggs["sum"]; ok && v != nil {
-		json.Unmarshal(v, &a.Sum)
+		_ = json.Unmarshal(v, &a.Sum)
 	}
 	if v, ok := aggs["sum_of_squares"]; ok && v != nil {
-		json.Unmarshal(v, &a.SumOfSquares)
+		_ = json.Unmarshal(v, &a.SumOfSquares)
 	}
 	if v, ok := aggs["variance"]; ok && v != nil {
-		json.Unmarshal(v, &a.Variance)
+		_ = json.Unmarshal(v, &a.Variance)
 	}
 	if v, ok := aggs["std_deviation"]; ok && v != nil {
-		json.Unmarshal(v, &a.StdDeviation)
+		_ = json.Unmarshal(v, &a.StdDeviation)
 	}
 	if v, ok := aggs["meta"]; ok && v != nil {
-		json.Unmarshal(v, &a.Meta)
+		_ = json.Unmarshal(v, &a.Meta)
 	}
 	a.Aggregations = aggs
 	return nil
@@ -1025,10 +1025,10 @@ func (a *AggregationMatrixStats) UnmarshalJSON(data []byte) error {
 	}
 	if v, ok := aggs["fields"]; ok && v != nil {
 		// RunningStats for every field
-		json.Unmarshal(v, &a.Fields)
+		_ = json.Unmarshal(v, &a.Fields)
 	}
 	if v, ok := aggs["meta"]; ok && v != nil {
-		json.Unmarshal(v, &a.Meta)
+		_ = json.Unmarshal(v, &a.Meta)
 	}
 	a.Aggregations = aggs
 	return nil
@@ -1051,10 +1051,10 @@ func (a *AggregationPercentilesMetric) UnmarshalJSON(data []byte) error {
 		return err
 	}
 	if v, ok := aggs["values"]; ok && v != nil {
-		json.Unmarshal(v, &a.Values)
+		_ = json.Unmarshal(v, &a.Values)
 	}
 	if v, ok := aggs["meta"]; ok && v != nil {
-		json.Unmarshal(v, &a.Meta)
+		_ = json.Unmarshal(v, &a.Meta)
 	}
 	a.Aggregations = aggs
 	return nil
@@ -1079,10 +1079,10 @@ func (a *AggregationTopHitsMetric) UnmarshalJSON(data []byte) error {
 	a.Aggregations = aggs
 	a.Hits = new(SearchHits)
 	if v, ok := aggs["hits"]; ok && v != nil {
-		json.Unmarshal(v, &a.Hits)
+		_ = json.Unmarshal(v, &a.Hits)
 	}
 	if v, ok := aggs["meta"]; ok && v != nil {
-		json.Unmarshal(v, &a.Meta)
+		_ = json.Unmarshal(v, &a.Meta)
 	}
 	return nil
 }
@@ -1114,10 +1114,10 @@ func (a *AggregationGeoBoundsMetric) UnmarshalJSON(data []byte) error {
 		return err
 	}
 	if v, ok := aggs["bounds"]; ok && v != nil {
-		json.Unmarshal(v, &a.Bounds)
+		_ = json.Unmarshal(v, &a.Bounds)
 	}
 	if v, ok := aggs["meta"]; ok && v != nil {
-		json.Unmarshal(v, &a.Meta)
+		_ = json.Unmarshal(v, &a.Meta)
 	}
 	a.Aggregations = aggs
 	return nil
@@ -1144,13 +1144,13 @@ func (a *AggregationGeoCentroidMetric) UnmarshalJSON(data []byte) error {
 		return err
 	}
 	if v, ok := aggs["location"]; ok && v != nil {
-		json.Unmarshal(v, &a.Location)
+		_ = json.Unmarshal(v, &a.Location)
 	}
 	if v, ok := aggs["meta"]; ok && v != nil {
-		json.Unmarshal(v, &a.Meta)
+		_ = json.Unmarshal(v, &a.Meta)
 	}
 	if v, ok := aggs["count"]; ok && v != nil {
-		json.Unmarshal(v, &a.Count)
+		_ = json.Unmarshal(v, &a.Count)
 	}
 	a.Aggregations = aggs
 	return nil
@@ -1173,10 +1173,10 @@ func (a *AggregationSingleBucket) UnmarshalJSON(data []byte) error {
 		return err
 	}
 	if v, ok := aggs["doc_count"]; ok && v != nil {
-		json.Unmarshal(v, &a.DocCount)
+		_ = json.Unmarshal(v, &a.DocCount)
 	}
 	if v, ok := aggs["meta"]; ok && v != nil {
-		json.Unmarshal(v, &a.Meta)
+		_ = json.Unmarshal(v, &a.Meta)
 	}
 	a.Aggregations = aggs
 	return nil
@@ -1202,16 +1202,16 @@ func (a *AggregationBucketRangeItems) UnmarshalJSON(data []byte) error {
 		return err
 	}
 	if v, ok := aggs["doc_count_error_upper_bound"]; ok && v != nil {
-		json.Unmarshal(v, &a.DocCountErrorUpperBound)
+		_ = json.Unmarshal(v, &a.DocCountErrorUpperBound)
 	}
 	if v, ok := aggs["sum_other_doc_count"]; ok && v != nil {
-		json.Unmarshal(v, &a.SumOfOtherDocCount)
+		_ = json.Unmarshal(v, &a.SumOfOtherDocCount)
 	}
 	if v, ok := aggs["buckets"]; ok && v != nil {
-		json.Unmarshal(v, &a.Buckets)
+		_ = json.Unmarshal(v, &a.Buckets)
 	}
 	if v, ok := aggs["meta"]; ok && v != nil {
-		json.Unmarshal(v, &a.Meta)
+		_ = json.Unmarshal(v, &a.Meta)
 	}
 	a.Aggregations = aggs
 	return nil
@@ -1235,16 +1235,16 @@ func (a *AggregationBucketKeyedRangeItems) UnmarshalJSON(data []byte) error {
 		return err
 	}
 	if v, ok := aggs["doc_count_error_upper_bound"]; ok && v != nil {
-		json.Unmarshal(v, &a.DocCountErrorUpperBound)
+		_ = json.Unmarshal(v, &a.DocCountErrorUpperBound)
 	}
 	if v, ok := aggs["sum_other_doc_count"]; ok && v != nil {
-		json.Unmarshal(v, &a.SumOfOtherDocCount)
+		_ = json.Unmarshal(v, &a.SumOfOtherDocCount)
 	}
 	if v, ok := aggs["buckets"]; ok && v != nil {
-		json.Unmarshal(v, &a.Buckets)
+		_ = json.Unmarshal(v, &a.Buckets)
 	}
 	if v, ok := aggs["meta"]; ok && v != nil {
-		json.Unmarshal(v, &a.Meta)
+		_ = json.Unmarshal(v, &a.Meta)
 	}
 	a.Aggregations = aggs
 	return nil
@@ -1269,22 +1269,22 @@ func (a *AggregationBucketRangeItem) UnmarshalJSON(data []byte) error {
 		return err
 	}
 	if v, ok := aggs["key"]; ok && v != nil {
-		json.Unmarshal(v, &a.Key)
+		_ = json.Unmarshal(v, &a.Key)
 	}
 	if v, ok := aggs["doc_count"]; ok && v != nil {
-		json.Unmarshal(v, &a.DocCount)
+		_ = json.Unmarshal(v, &a.DocCount)
 	}
 	if v, ok := aggs["from"]; ok && v != nil {
-		json.Unmarshal(v, &a.From)
+		_ = json.Unmarshal(v, &a.From)
 	}
 	if v, ok := aggs["from_as_string"]; ok && v != nil {
-		json.Unmarshal(v, &a.FromAsString)
+		_ = json.Unmarshal(v, &a.FromAsString)
 	}
 	if v, ok := aggs["to"]; ok && v != nil {
-		json.Unmarshal(v, &a.To)
+		_ = json.Unmarshal(v, &a.To)
 	}
 	if v, ok := aggs["to_as_string"]; ok && v != nil {
-		json.Unmarshal(v, &a.ToAsString)
+		_ = json.Unmarshal(v, &a.ToAsString)
 	}
 	a.Aggregations = aggs
 	return nil
@@ -1310,16 +1310,16 @@ func (a *AggregationBucketKeyItems) UnmarshalJSON(data []byte) error {
 		return err
 	}
 	if v, ok := aggs["doc_count_error_upper_bound"]; ok && v != nil {
-		json.Unmarshal(v, &a.DocCountErrorUpperBound)
+		_ = json.Unmarshal(v, &a.DocCountErrorUpperBound)
 	}
 	if v, ok := aggs["sum_other_doc_count"]; ok && v != nil {
-		json.Unmarshal(v, &a.SumOfOtherDocCount)
+		_ = json.Unmarshal(v, &a.SumOfOtherDocCount)
 	}
 	if v, ok := aggs["buckets"]; ok && v != nil {
-		json.Unmarshal(v, &a.Buckets)
+		_ = json.Unmarshal(v, &a.Buckets)
 	}
 	if v, ok := aggs["meta"]; ok && v != nil {
-		json.Unmarshal(v, &a.Meta)
+		_ = json.Unmarshal(v, &a.Meta)
 	}
 	a.Aggregations = aggs
 	return nil
@@ -1344,14 +1344,14 @@ func (a *AggregationBucketKeyItem) UnmarshalJSON(data []byte) error {
 		return err
 	}
 	if v, ok := aggs["key"]; ok && v != nil {
-		json.Unmarshal(v, &a.Key)
-		json.Unmarshal(v, &a.KeyNumber)
+		_ = json.Unmarshal(v, &a.Key)
+		_ = json.Unmarshal(v, &a.KeyNumber)
 	}
 	if v, ok := aggs["key_as_string"]; ok && v != nil {
-		json.Unmarshal(v, &a.KeyAsString)
+		_ = json.Unmarshal(v, &a.KeyAsString)
 	}
 	if v, ok := aggs["doc_count"]; ok && v != nil {
-		json.Unmarshal(v, &a.DocCount)
+		_ = json.Unmarshal(v, &a.DocCount)
 	}
 	a.Aggregations = aggs
 	return nil
@@ -1375,16 +1375,16 @@ func (a *AggregationBucketMultiKeyItems) UnmarshalJSON(data []byte) error {
 		return err
 	}
 	if v, ok := aggs["doc_count_error_upper_bound"]; ok && v != nil {
-		json.Unmarshal(v, &a.DocCountErrorUpperBound)
+		_ = json.Unmarshal(v, &a.DocCountErrorUpperBound)
 	}
 	if v, ok := aggs["sum_other_doc_count"]; ok && v != nil {
-		json.Unmarshal(v, &a.SumOfOtherDocCount)
+		_ = json.Unmarshal(v, &a.SumOfOtherDocCount)
 	}
 	if v, ok := aggs["buckets"]; ok && v != nil {
-		json.Unmarshal(v, &a.Buckets)
+		_ = json.Unmarshal(v, &a.Buckets)
 	}
 	if v, ok := aggs["meta"]; ok && v != nil {
-		json.Unmarshal(v, &a.Meta)
+		_ = json.Unmarshal(v, &a.Meta)
 	}
 	a.Aggregations = aggs
 	return nil
@@ -1409,14 +1409,14 @@ func (a *AggregationBucketMultiKeyItem) UnmarshalJSON(data []byte) error {
 		return err
 	}
 	if v, ok := aggs["key"]; ok && v != nil {
-		json.Unmarshal(v, &a.Key)
-		json.Unmarshal(v, &a.KeyNumber)
+		_ = json.Unmarshal(v, &a.Key)
+		_ = json.Unmarshal(v, &a.KeyNumber)
 	}
 	if v, ok := aggs["key_as_string"]; ok && v != nil {
-		json.Unmarshal(v, &a.KeyAsString)
+		_ = json.Unmarshal(v, &a.KeyAsString)
 	}
 	if v, ok := aggs["doc_count"]; ok && v != nil {
-		json.Unmarshal(v, &a.DocCount)
+		_ = json.Unmarshal(v, &a.DocCount)
 	}
 	a.Aggregations = aggs
 	return nil
@@ -1441,13 +1441,13 @@ func (a *AggregationBucketSignificantTerms) UnmarshalJSON(data []byte) error {
 		return err
 	}
 	if v, ok := aggs["doc_count"]; ok && v != nil {
-		json.Unmarshal(v, &a.DocCount)
+		_ = json.Unmarshal(v, &a.DocCount)
 	}
 	if v, ok := aggs["buckets"]; ok && v != nil {
-		json.Unmarshal(v, &a.Buckets)
+		_ = json.Unmarshal(v, &a.Buckets)
 	}
 	if v, ok := aggs["meta"]; ok && v != nil {
-		json.Unmarshal(v, &a.Meta)
+		_ = json.Unmarshal(v, &a.Meta)
 	}
 	a.Aggregations = aggs
 	return nil
@@ -1470,16 +1470,16 @@ func (a *AggregationBucketSignificantTerm) UnmarshalJSON(data []byte) error {
 		return err
 	}
 	if v, ok := aggs["key"]; ok && v != nil {
-		json.Unmarshal(v, &a.Key)
+		_ = json.Unmarshal(v, &a.Key)
 	}
 	if v, ok := aggs["doc_count"]; ok && v != nil {
-		json.Unmarshal(v, &a.DocCount)
+		_ = json.Unmarshal(v, &a.DocCount)
 	}
 	if v, ok := aggs["bg_count"]; ok && v != nil {
-		json.Unmarshal(v, &a.BgCount)
+		_ = json.Unmarshal(v, &a.BgCount)
 	}
 	if v, ok := aggs["score"]; ok && v != nil {
-		json.Unmarshal(v, &a.Score)
+		_ = json.Unmarshal(v, &a.Score)
 	}
 	a.Aggregations = aggs
 	return nil
@@ -1504,11 +1504,11 @@ func (a *AggregationBucketFilters) UnmarshalJSON(data []byte) error {
 		return err
 	}
 	if v, ok := aggs["buckets"]; ok && v != nil {
-		json.Unmarshal(v, &a.Buckets)
-		json.Unmarshal(v, &a.NamedBuckets)
+		_ = json.Unmarshal(v, &a.Buckets)
+		_ = json.Unmarshal(v, &a.NamedBuckets)
 	}
 	if v, ok := aggs["meta"]; ok && v != nil {
-		json.Unmarshal(v, &a.Meta)
+		_ = json.Unmarshal(v, &a.Meta)
 	}
 	a.Aggregations = aggs
 	return nil
@@ -1532,10 +1532,10 @@ func (a *AggregationBucketAdjacencyMatrix) UnmarshalJSON(data []byte) error {
 		return err
 	}
 	if v, ok := aggs["buckets"]; ok && v != nil {
-		json.Unmarshal(v, &a.Buckets)
+		_ = json.Unmarshal(v, &a.Buckets)
 	}
 	if v, ok := aggs["meta"]; ok && v != nil {
-		json.Unmarshal(v, &a.Meta)
+		_ = json.Unmarshal(v, &a.Meta)
 	}
 	a.Aggregations = aggs
 	return nil
@@ -1559,10 +1559,10 @@ func (a *AggregationBucketHistogramItems) UnmarshalJSON(data []byte) error {
 		return err
 	}
 	if v, ok := aggs["buckets"]; ok && v != nil {
-		json.Unmarshal(v, &a.Buckets)
+		_ = json.Unmarshal(v, &a.Buckets)
 	}
 	if v, ok := aggs["meta"]; ok && v != nil {
-		json.Unmarshal(v, &a.Meta)
+		_ = json.Unmarshal(v, &a.Meta)
 	}
 	a.Aggregations = aggs
 	return nil
@@ -1584,10 +1584,10 @@ func (a *AggregationBucketKeyedHistogramItems) UnmarshalJSON(data []byte) error 
 		return err
 	}
 	if v, ok := aggs["buckets"]; ok && v != nil {
-		json.Unmarshal(v, &a.Buckets)
+		_ = json.Unmarshal(v, &a.Buckets)
 	}
 	if v, ok := aggs["meta"]; ok && v != nil {
-		json.Unmarshal(v, &a.Meta)
+		_ = json.Unmarshal(v, &a.Meta)
 	}
 	a.Aggregations = aggs
 	return nil
@@ -1609,13 +1609,13 @@ func (a *AggregationBucketHistogramItem) UnmarshalJSON(data []byte) error {
 		return err
 	}
 	if v, ok := aggs["key"]; ok && v != nil {
-		json.Unmarshal(v, &a.Key)
+		_ = json.Unmarshal(v, &a.Key)
 	}
 	if v, ok := aggs["key_as_string"]; ok && v != nil {
-		json.Unmarshal(v, &a.KeyAsString)
+		_ = json.Unmarshal(v, &a.KeyAsString)
 	}
 	if v, ok := aggs["doc_count"]; ok && v != nil {
-		json.Unmarshal(v, &a.DocCount)
+		_ = json.Unmarshal(v, &a.DocCount)
 	}
 	a.Aggregations = aggs
 	return nil
@@ -1640,13 +1640,13 @@ func (a *AggregationPipelineSimpleValue) UnmarshalJSON(data []byte) error {
 		return err
 	}
 	if v, ok := aggs["value"]; ok && v != nil {
-		json.Unmarshal(v, &a.Value)
+		_ = json.Unmarshal(v, &a.Value)
 	}
 	if v, ok := aggs["value_as_string"]; ok && v != nil {
-		json.Unmarshal(v, &a.ValueAsString)
+		_ = json.Unmarshal(v, &a.ValueAsString)
 	}
 	if v, ok := aggs["meta"]; ok && v != nil {
-		json.Unmarshal(v, &a.Meta)
+		_ = json.Unmarshal(v, &a.Meta)
 	}
 	a.Aggregations = aggs
 	return nil
@@ -1672,16 +1672,16 @@ func (a *AggregationPipelineBucketMetricValue) UnmarshalJSON(data []byte) error 
 		return err
 	}
 	if v, ok := aggs["keys"]; ok && v != nil {
-		json.Unmarshal(v, &a.Keys)
+		_ = json.Unmarshal(v, &a.Keys)
 	}
 	if v, ok := aggs["value"]; ok && v != nil {
-		json.Unmarshal(v, &a.Value)
+		_ = json.Unmarshal(v, &a.Value)
 	}
 	if v, ok := aggs["value_as_string"]; ok && v != nil {
-		json.Unmarshal(v, &a.ValueAsString)
+		_ = json.Unmarshal(v, &a.ValueAsString)
 	}
 	if v, ok := aggs["meta"]; ok && v != nil {
-		json.Unmarshal(v, &a.Meta)
+		_ = json.Unmarshal(v, &a.Meta)
 	}
 	a.Aggregations = aggs
 	return nil
@@ -1708,19 +1708,19 @@ func (a *AggregationPipelineDerivative) UnmarshalJSON(data []byte) error {
 		return err
 	}
 	if v, ok := aggs["value"]; ok && v != nil {
-		json.Unmarshal(v, &a.Value)
+		_ = json.Unmarshal(v, &a.Value)
 	}
 	if v, ok := aggs["value_as_string"]; ok && v != nil {
-		json.Unmarshal(v, &a.ValueAsString)
+		_ = json.Unmarshal(v, &a.ValueAsString)
 	}
 	if v, ok := aggs["normalized_value"]; ok && v != nil {
-		json.Unmarshal(v, &a.NormalizedValue)
+		_ = json.Unmarshal(v, &a.NormalizedValue)
 	}
 	if v, ok := aggs["normalized_value_as_string"]; ok && v != nil {
-		json.Unmarshal(v, &a.NormalizedValueAsString)
+		_ = json.Unmarshal(v, &a.NormalizedValueAsString)
 	}
 	if v, ok := aggs["meta"]; ok && v != nil {
-		json.Unmarshal(v, &a.Meta)
+		_ = json.Unmarshal(v, &a.Meta)
 	}
 	a.Aggregations = aggs
 	return nil
@@ -1754,37 +1754,37 @@ func (a *AggregationPipelineStatsMetric) UnmarshalJSON(data []byte) error {
 		return err
 	}
 	if v, ok := aggs["count"]; ok && v != nil {
-		json.Unmarshal(v, &a.Count)
+		_ = json.Unmarshal(v, &a.Count)
 	}
 	if v, ok := aggs["count_as_string"]; ok && v != nil {
-		json.Unmarshal(v, &a.CountAsString)
+		_ = json.Unmarshal(v, &a.CountAsString)
 	}
 	if v, ok := aggs["min"]; ok && v != nil {
-		json.Unmarshal(v, &a.Min)
+		_ = json.Unmarshal(v, &a.Min)
 	}
 	if v, ok := aggs["min_as_string"]; ok && v != nil {
-		json.Unmarshal(v, &a.MinAsString)
+		_ = json.Unmarshal(v, &a.MinAsString)
 	}
 	if v, ok := aggs["max"]; ok && v != nil {
-		json.Unmarshal(v, &a.Max)
+		_ = json.Unmarshal(v, &a.Max)
 	}
 	if v, ok := aggs["max_as_string"]; ok && v != nil {
-		json.Unmarshal(v, &a.MaxAsString)
+		_ = json.Unmarshal(v, &a.MaxAsString)
 	}
 	if v, ok := aggs["avg"]; ok && v != nil {
-		json.Unmarshal(v, &a.Avg)
+		_ = json.Unmarshal(v, &a.Avg)
 	}
 	if v, ok := aggs["avg_as_string"]; ok && v != nil {
-		json.Unmarshal(v, &a.AvgAsString)
+		_ = json.Unmarshal(v, &a.AvgAsString)
 	}
 	if v, ok := aggs["sum"]; ok && v != nil {
-		json.Unmarshal(v, &a.Sum)
+		_ = json.Unmarshal(v, &a.Sum)
 	}
 	if v, ok := aggs["sum_as_string"]; ok && v != nil {
-		json.Unmarshal(v, &a.SumAsString)
+		_ = json.Unmarshal(v, &a.SumAsString)
 	}
 	if v, ok := aggs["meta"]; ok && v != nil {
-		json.Unmarshal(v, &a.Meta)
+		_ = json.Unmarshal(v, &a.Meta)
 	}
 	a.Aggregations = aggs
 	return nil
@@ -1808,10 +1808,10 @@ func (a *AggregationPipelinePercentilesMetric) UnmarshalJSON(data []byte) error 
 		return err
 	}
 	if v, ok := aggs["values"]; ok && v != nil {
-		json.Unmarshal(v, &a.Values)
+		_ = json.Unmarshal(v, &a.Values)
 	}
 	if v, ok := aggs["meta"]; ok && v != nil {
-		json.Unmarshal(v, &a.Meta)
+		_ = json.Unmarshal(v, &a.Meta)
 	}
 	a.Aggregations = aggs
 	return nil
@@ -1836,13 +1836,13 @@ func (a *AggregationBucketCompositeItems) UnmarshalJSON(data []byte) error {
 		return err
 	}
 	if v, ok := aggs["buckets"]; ok && v != nil {
-		json.Unmarshal(v, &a.Buckets)
+		_ = json.Unmarshal(v, &a.Buckets)
 	}
 	if v, ok := aggs["meta"]; ok && v != nil {
-		json.Unmarshal(v, &a.Meta)
+		_ = json.Unmarshal(v, &a.Meta)
 	}
 	if v, ok := aggs["after_key"]; ok && v != nil {
-		json.Unmarshal(v, &a.AfterKey)
+		_ = json.Unmarshal(v, &a.AfterKey)
 	}
 	a.Aggregations = aggs
 	return nil
@@ -1865,10 +1865,10 @@ func (a *AggregationBucketCompositeItem) UnmarshalJSON(data []byte) error {
 		return err
 	}
 	if v, ok := aggs["key"]; ok && v != nil {
-		json.Unmarshal(v, &a.Key)
+		_ = json.Unmarshal(v, &a.Key)
 	}
 	if v, ok := aggs["doc_count"]; ok && v != nil {
-		json.Unmarshal(v, &a.DocCount)
+		_ = json.Unmarshal(v, &a.DocCount)
 	}
 	a.Aggregations = aggs
 	return nil
@@ -1892,10 +1892,10 @@ func (a *AggregationScriptedMetric) UnmarshalJSON(data []byte) error {
 	if v, ok := aggs["value"]; ok && v != nil {
 		decoder := json.NewDecoder(bytes.NewReader(v))
 		decoder.UseNumber()
-		decoder.Decode(&a.Value)
+		_ = decoder.Decode(&a.Value)
 	}
 	if v, ok := aggs["meta"]; ok && v != nil {
-		json.Unmarshal(v, &a.Meta)
+		_ = json.Unmarshal(v, &a.Meta)
 	}
 	a.Aggregations = aggs
 	return nil

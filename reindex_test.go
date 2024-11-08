@@ -391,7 +391,7 @@ func TestReindexAsync(t *testing.T) {
 
 func TestReindexWithWaitForCompletionTrueCannotBeStarted(t *testing.T) {
 	client := setupTestClientAndCreateIndexAndAddDocs(t)
-	esversion, err := client.OpensearchVersion(DefaultURL)
+	esversion, err := client.OpensearchVersion("https://opensearch.svc:9200")
 	if err != nil {
 		t.Fatal(err)
 	}

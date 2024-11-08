@@ -166,10 +166,10 @@ func (hl *Highlight) Source() (interface{}, error) {
 	if hl.tagsSchema != nil {
 		source["tags_schema"] = *hl.tagsSchema
 	}
-	if hl.preTags != nil && len(hl.preTags) > 0 {
+	if len(hl.preTags) > 0 {
 		source["pre_tags"] = hl.preTags
 	}
-	if hl.postTags != nil && len(hl.postTags) > 0 {
+	if len(hl.postTags) > 0 {
 		source["post_tags"] = hl.postTags
 	}
 	if hl.order != nil {
@@ -224,14 +224,14 @@ func (hl *Highlight) Source() (interface{}, error) {
 	if hl.phraseLimit != nil {
 		source["phrase_limit"] = *hl.phraseLimit
 	}
-	if hl.options != nil && len(hl.options) > 0 {
+	if len(hl.options) > 0 {
 		source["options"] = hl.options
 	}
 	if hl.forceSource != nil {
 		source["force_source"] = *hl.forceSource
 	}
 
-	if hl.fields != nil && len(hl.fields) > 0 {
+	if len(hl.fields) > 0 {
 		if hl.useExplicitFieldOrder {
 			// Use a slice for the fields
 			var fields []map[string]interface{}
@@ -415,10 +415,10 @@ func (f *HighlighterField) ForceSource(forceSource bool) *HighlighterField {
 func (f *HighlighterField) Source() (interface{}, error) {
 	source := make(map[string]interface{})
 
-	if f.preTags != nil && len(f.preTags) > 0 {
+	if len(f.preTags) > 0 {
 		source["pre_tags"] = f.preTags
 	}
-	if f.postTags != nil && len(f.postTags) > 0 {
+	if len(f.postTags) > 0 {
 		source["post_tags"] = f.postTags
 	}
 	if f.fragmentSize != -1 {
@@ -442,7 +442,7 @@ func (f *HighlighterField) Source() (interface{}, error) {
 	if f.boundaryMaxScan != -1 {
 		source["boundary_max_scan"] = f.boundaryMaxScan
 	}
-	if f.boundaryChars != nil && len(f.boundaryChars) > 0 {
+	if len(f.boundaryChars) > 0 {
 		source["boundary_chars"] = f.boundaryChars
 	}
 	if f.highlighterType != nil {
@@ -461,13 +461,13 @@ func (f *HighlighterField) Source() (interface{}, error) {
 	if f.noMatchSize != nil {
 		source["no_match_size"] = *f.noMatchSize
 	}
-	if f.matchedFields != nil && len(f.matchedFields) > 0 {
+	if len(f.matchedFields) > 0 {
 		source["matched_fields"] = f.matchedFields
 	}
 	if f.phraseLimit != nil {
 		source["phrase_limit"] = *f.phraseLimit
 	}
-	if f.options != nil && len(f.options) > 0 {
+	if len(f.options) > 0 {
 		source["options"] = f.options
 	}
 	if f.forceSource != nil {

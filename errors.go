@@ -8,7 +8,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
+	"io"
 	"net/http"
 	"net/url"
 
@@ -45,7 +45,7 @@ func createResponseError(res *http.Response) error {
 	if res.Body == nil {
 		return &Error{Status: res.StatusCode}
 	}
-	data, err := ioutil.ReadAll(res.Body)
+	data, err := io.ReadAll(res.Body)
 	if err != nil {
 		return &Error{Status: res.StatusCode}
 	}
@@ -54,13 +54,12 @@ func createResponseError(res *http.Response) error {
 	if err != nil {
 		return &Error{Status: res.StatusCode}
 	}
-	if errReply != nil {
-		if errReply.Status == 0 {
-			errReply.Status = res.StatusCode
-		}
-		return errReply
+
+	if errReply.Status == 0 {
+		errReply.Status = res.StatusCode
 	}
-	return &Error{Status: res.StatusCode}
+	return errReply
+
 }
 
 // Error encapsulates error details as returned from Opensearch.

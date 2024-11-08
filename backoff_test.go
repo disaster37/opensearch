@@ -5,7 +5,6 @@
 package opensearch
 
 import (
-	"math/rand"
 	"testing"
 	"time"
 )
@@ -83,7 +82,6 @@ func TestSimpleBackoff(t *testing.T) {
 }
 
 func TestExponentialBackoff(t *testing.T) {
-	rand.Seed(time.Now().UnixNano())
 
 	min := time.Duration(8) * time.Millisecond
 	max := time.Duration(256) * time.Millisecond

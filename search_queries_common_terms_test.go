@@ -35,7 +35,7 @@ func TestSearchQueriesCommonTermsQuery(t *testing.T) {
 
 	// Deprecated in >= 7.3.0
 	// https://www.opensearch.co/guide/en/opensearchsearch/reference/current/query-dsl-common-terms-query.html
-	esversion, err := client.OpensearchVersion(DefaultURL)
+	esversion, err := client.OpensearchVersion("https://opensearch.svc:9200")
 	if err != nil {
 		t.Fatal(err)
 	}

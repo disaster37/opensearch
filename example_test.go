@@ -249,14 +249,14 @@ func Example() {
 }
 
 func ExampleNewClient_default() {
-	// Obtain a client to the Opensearch instance on https://127.0.0.1:9200.
+	// Obtain a client to the Opensearch instance
 
 	transport := &http.Transport{
 		TLSClientConfig: &tls.Config{
 			InsecureSkipVerify: true,
 		},
 	}
-	client, err := opensearch.NewClient(opensearch.SetBasicAuth("admin", "vLPeJYa8.3RqtZCcAK6jNz"), opensearch.SetTransport(transport))
+	client, err := opensearch.NewClient(opensearch.SetURL("https://opensearch.svc:9200"), opensearch.SetBasicAuth("admin", "vLPeJYa8.3RqtZCcAK6jNz"), opensearch.SetTransport(transport))
 	if err != nil {
 		// Handle error
 		fmt.Printf("connection failed: %v\n", err)

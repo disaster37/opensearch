@@ -518,7 +518,7 @@ func (s *MultiTermvectorItem) Source() interface{} {
 	if s.doc != nil {
 		source["doc"] = s.doc
 	}
-	if s.perFieldAnalyzer != nil && len(s.perFieldAnalyzer) > 0 {
+	if len(s.perFieldAnalyzer) > 0 {
 		source["per_field_analyzer"] = s.perFieldAnalyzer
 	}
 

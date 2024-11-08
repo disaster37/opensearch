@@ -7,7 +7,7 @@ package opensearch
 import (
 	"context"
 	"encoding/json"
-	"io/ioutil"
+	"io"
 	"net/http"
 	"strings"
 	"testing"
@@ -123,7 +123,7 @@ func TestUpdateByQueryBodyWithQueryAndScript(t *testing.T) {
 
 func TestUpdateByQuery(t *testing.T) {
 	client := setupTestClientAndCreateIndexAndAddDocs(t) //, SetTraceLog(log.New(os.Stdout, "", 0)))
-	esversion, err := client.OpensearchVersion(DefaultURL)
+	esversion, err := client.OpensearchVersion("https://opensearch.svc:9200")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -161,7 +161,7 @@ func TestUpdateByQuery(t *testing.T) {
 
 func TestUpdateByQueryAsync(t *testing.T) {
 	client := setupTestClientAndCreateIndexAndAddDocs(t) //, SetTraceLog(log.New(os.Stdout, "", 0)))
-	esversion, err := client.OpensearchVersion(DefaultURL)
+	esversion, err := client.OpensearchVersion("https://opensearch.svc:9200")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -245,7 +245,7 @@ func TestUpdateByQueryConflict(t *testing.T) {
 		   }`
 		return &http.Response{
 			StatusCode:    http.StatusConflict,
-			Body:          ioutil.NopCloser(strings.NewReader(body)),
+			Body:          io.NopCloser(strings.NewReader(body)),
 			ContentLength: int64(len(body)),
 		}, nil
 	}
@@ -254,7 +254,7 @@ func TestUpdateByQueryConflict(t *testing.T) {
 	// retries correctly.
 	tr := &failingTransport{path: "/example/_update_by_query", fail: fail}
 	httpClient := &http.Client{Transport: tr}
-	client, err := NewClient(SetHttpClient(httpClient), SetHealthcheck(false), SetBasicAuth("admin", "vLPeJYa8.3RqtZCcAK6jNz"))
+	client, err := NewClient(SetURL("https://opensearch.svc:9200"), SetHttpClient(httpClient), SetHealthcheck(false), SetBasicAuth("admin", "vLPeJYa8.3RqtZCcAK6jNz"))
 	if err != nil {
 		t.Fatal(err)
 	}

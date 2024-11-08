@@ -23,7 +23,7 @@ func TestCatAliases(t *testing.T) {
 	}
 	defer func() {
 		// Remove aliases
-		client.Alias().
+		_, _ = client.Alias().
 			Remove(testIndexName, testAliasName).
 			Remove(testIndexName2, testAliasName2).
 			Do(context.TODO())

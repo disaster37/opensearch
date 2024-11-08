@@ -13,7 +13,7 @@ func TestNodesStats(t *testing.T) {
 	client := setupTestClient(t)
 
 	// TODO(oe) Remove this hack after a fix for https://github.com/opensearch/opensearchsearch/issues/78311 is released
-	version, err := client.OpensearchVersion(DefaultURL)
+	version, err := client.OpensearchVersion("https://opensearch.svc:9200")
 	if err != nil {
 		t.Fatal(err)
 	}

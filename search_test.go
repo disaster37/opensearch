@@ -1744,7 +1744,9 @@ func TestSearchWithDateMathIndices(t *testing.T) {
 		if err != nil {
 			t.Fatal(err)
 		}
-		defer client.DeleteIndex(indexName).Do(ctx)
+		defer func() {
+			_, _ = client.DeleteIndex(indexName).Do(ctx)
+		}()
 
 		// Add a document
 		id := fmt.Sprintf("%d", i+1)
