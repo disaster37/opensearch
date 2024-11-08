@@ -2,8 +2,7 @@
 // Use of this source code is governed by a MIT-license.
 // See http://olivere.mit-license.org/license.txt for details.
 
-// nolint:all
-package main
+package test
 
 import (
 	"context"
