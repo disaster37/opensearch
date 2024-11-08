@@ -1,0 +1,27 @@
+name: "build"
+
+on:
+  push:
+    branches:
+      - main
+      - 2.x
+    tags:
+      - "*"
+  pull_request:
+    branches:
+      - main
+      - 2.x
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Call Dagger Function
+        uses: dagger/dagger-for-github@v6
+        with:
+          version: "latest"
+          verb: call
+          args: --src . ci --ci --code-cove-token env:CODECOV_TOKEN
+        env:
+          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
