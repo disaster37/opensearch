@@ -62,6 +62,7 @@ func New(
 	base = mountCaches(ctx, base).
 		WithDirectory(goWorkDir, src).
 		WithWorkdir(goWorkDir).
+		WithExec(helper.ForgeCommand("go mod tidy")).
 		WithoutEntrypoint()
 
 	return &Opensearch{
