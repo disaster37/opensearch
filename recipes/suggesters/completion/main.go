@@ -52,26 +52,24 @@ type City struct {
 	NameSuggest *opensearch.SuggestField `json:"name_suggest,omitempty"`
 }
 
-var (
-	cities = []string{
-		"Amsterdam",
-		"Athens",
-		"Berlin",
-		"Barcelona",
-		"Brussels",
-		"Dublin",
-		"Helsinki",
-		"Madrid",
-		"Lisbon",
-		"London",
-		"Oslo",
-		"Paris",
-		"Stockholm",
-		"Rome",
-		"Valletta",
-		"Vienna",
-	}
-)
+var cities = []string{
+	"Amsterdam",
+	"Athens",
+	"Berlin",
+	"Barcelona",
+	"Brussels",
+	"Dublin",
+	"Helsinki",
+	"Madrid",
+	"Lisbon",
+	"London",
+	"Oslo",
+	"Paris",
+	"Stockholm",
+	"Rome",
+	"Valletta",
+	"Vienna",
+}
 
 func main() {
 	var (

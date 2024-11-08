@@ -5,7 +5,6 @@ import (
 )
 
 func TestIsmDeletePolicyBuildURL(t *testing.T) {
-
 	client := setupTestClient(t)
 
 	tests := []struct {

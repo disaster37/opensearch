@@ -54,6 +54,7 @@ func TestNodesInfoBuildURL(t *testing.T) {
 		}
 	}
 }
+
 func TestNodesInfo(t *testing.T) {
 	client := setupTestClient(t)
 

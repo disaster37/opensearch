@@ -5,7 +5,6 @@ import (
 )
 
 func TestSecurityPutUserBuildURL(t *testing.T) {
-
 	client := setupTestClient(t)
 
 	tests := []struct {

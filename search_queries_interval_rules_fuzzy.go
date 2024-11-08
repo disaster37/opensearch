@@ -1,8 +1,6 @@
 package opensearch
 
-var (
-	_ IntervalQueryRule = (*IntervalQueryRuleFuzzy)(nil)
-)
+var _ IntervalQueryRule = (*IntervalQueryRuleFuzzy)(nil)
 
 // IntervalQueryRuleFuzzy is an implementation of IntervalQueryRule.
 //

@@ -10,8 +10,8 @@ import (
 )
 
 func TestPercolate(t *testing.T) {
-	//client := setupTestClientAndCreateIndex(t, SetErrorLog(log.New(os.Stdout, "", 0)))
-	//client := setupTestClientAndCreateIndex(t, SetTraceLog(log.New(os.Stdout, "", 0)))
+	// client := setupTestClientAndCreateIndex(t, SetErrorLog(log.New(os.Stdout, "", 0)))
+	// client := setupTestClientAndCreateIndex(t, SetTraceLog(log.New(os.Stdout, "", 0)))
 	client := setupTestClientAndCreateIndex(t)
 
 	// Create query index

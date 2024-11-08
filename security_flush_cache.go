@@ -25,7 +25,6 @@ type SecurityFlushCacheService struct {
 	errorTrace *bool       // include the stack trace of returned errors
 	filterPath []string    // list of filters used to reduce the response
 	headers    http.Header // custom request-level HTTP headers
-
 }
 
 // NewSecurityFlushCacheService creates a new SecurityFlushCacheService.

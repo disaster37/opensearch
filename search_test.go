@@ -15,7 +15,7 @@ import (
 )
 
 func TestSearchMatchAll(t *testing.T) {
-	//client := setupTestClientAndCreateIndexAndAddDocs(t, SetTraceLog(log.New(os.Stdout, "", log.LstdFlags)))
+	// client := setupTestClientAndCreateIndexAndAddDocs(t, SetTraceLog(log.New(os.Stdout, "", log.LstdFlags)))
 	client := setupTestClientAndCreateIndexAndAddDocs(t)
 
 	// Match all should return all documents
@@ -51,7 +51,7 @@ func TestSearchMatchAll(t *testing.T) {
 }
 
 func TestSearchWithCustomHTTPHeaders(t *testing.T) {
-	//client := setupTestClientAndCreateIndexAndAddDocs(t, SetTraceLog(log.New(os.Stdout, "", log.LstdFlags)))
+	// client := setupTestClientAndCreateIndexAndAddDocs(t, SetTraceLog(log.New(os.Stdout, "", log.LstdFlags)))
 	client := setupTestClientAndCreateIndexAndAddDocs(t)
 
 	// Match all should return all documents
@@ -78,7 +78,7 @@ func TestSearchWithCustomHTTPHeaders(t *testing.T) {
 }
 
 func TestSearchMatchAllWithRequestCacheDisabled(t *testing.T) {
-	//client := setupTestClientAndCreateIndexAndAddDocs(t, SetTraceLog(log.New(os.Stdout, "", log.LstdFlags)))
+	// client := setupTestClientAndCreateIndexAndAddDocs(t, SetTraceLog(log.New(os.Stdout, "", log.LstdFlags)))
 	client := setupTestClientAndCreateIndexAndAddDocs(t)
 
 	// Match all should return all documents, with request cache disabled
@@ -338,7 +338,7 @@ func TestSearchSorting(t *testing.T) {
 	tweet2 := tweet{
 		User: "olivere", Retweets: 0,
 		Message: "Another unrelated topic.",
-		Created: time.Date(2012, 10, 10, 8, 12, 03, 0, time.UTC),
+		Created: time.Date(2012, 10, 10, 8, 12, 0o3, 0, time.UTC),
 	}
 	tweet3 := tweet{
 		User: "sandrae", Retweets: 12,
@@ -411,7 +411,7 @@ func TestSearchSortingBySorters(t *testing.T) {
 	tweet2 := tweet{
 		User: "olivere", Retweets: 0,
 		Message: "Another unrelated topic.",
-		Created: time.Date(2012, 10, 10, 8, 12, 03, 0, time.UTC),
+		Created: time.Date(2012, 10, 10, 8, 12, 0o3, 0, time.UTC),
 	}
 	tweet3 := tweet{
 		User: "sandrae", Retweets: 12,
@@ -608,7 +608,7 @@ func TestSearchExplain(t *testing.T) {
 	tweet2 := tweet{
 		User: "olivere", Retweets: 0,
 		Message: "Another unrelated topic.",
-		Created: time.Date(2012, 10, 10, 8, 12, 03, 0, time.UTC),
+		Created: time.Date(2012, 10, 10, 8, 12, 0o3, 0, time.UTC),
 	}
 	tweet3 := tweet{
 		User: "sandrae", Retweets: 12,
@@ -686,7 +686,7 @@ func TestSearchSource(t *testing.T) {
 	tweet2 := tweet{
 		User: "olivere", Retweets: 0,
 		Message: "Another unrelated topic.",
-		Created: time.Date(2012, 10, 10, 8, 12, 03, 0, time.UTC),
+		Created: time.Date(2012, 10, 10, 8, 12, 0o3, 0, time.UTC),
 	}
 	tweet3 := tweet{
 		User: "sandrae", Retweets: 12,
@@ -748,7 +748,7 @@ func TestSearchSourceWithString(t *testing.T) {
 	tweet2 := tweet{
 		User: "olivere", Retweets: 0,
 		Message: "Another unrelated topic.",
-		Created: time.Date(2012, 10, 10, 8, 12, 03, 0, time.UTC),
+		Created: time.Date(2012, 10, 10, 8, 12, 0o3, 0, time.UTC),
 	}
 	tweet3 := tweet{
 		User: "sandrae", Retweets: 12,
@@ -804,7 +804,7 @@ func TestSearchRawString(t *testing.T) {
 	tweet2 := tweet{
 		User: "olivere", Retweets: 0,
 		Message: "Another unrelated topic.",
-		Created: time.Date(2012, 10, 10, 8, 12, 03, 0, time.UTC),
+		Created: time.Date(2012, 10, 10, 8, 12, 0o3, 0, time.UTC),
 	}
 	tweet3 := tweet{
 		User: "sandrae", Retweets: 12,
@@ -860,7 +860,7 @@ func TestSearchSearchSource(t *testing.T) {
 	tweet2 := tweet{
 		User: "olivere", Retweets: 0,
 		Message: "Another unrelated topic.",
-		Created: time.Date(2012, 10, 10, 8, 12, 03, 0, time.UTC),
+		Created: time.Date(2012, 10, 10, 8, 12, 0o3, 0, time.UTC),
 	}
 	tweet3 := tweet{
 		User: "sandrae", Retweets: 12,
@@ -1165,7 +1165,7 @@ func TestSearchInnerHitsOnHasParent(t *testing.T) {
 }
 
 func TestSearchInnerHitsOnNested(t *testing.T) {
-	//client := setupTestClientAndCreateIndexAndLog(t)
+	// client := setupTestClientAndCreateIndexAndLog(t)
 	client := setupTestClientAndCreateIndex(t)
 
 	ctx := context.Background()
@@ -1491,7 +1491,7 @@ func TestSearchAfter(t *testing.T) {
 	tweet2 := tweet{
 		User: "olivere", Retweets: 0,
 		Message: "Another unrelated topic.",
-		Created: time.Date(2012, 10, 10, 8, 12, 03, 0, time.UTC),
+		Created: time.Date(2012, 10, 10, 8, 12, 0o3, 0, time.UTC),
 	}
 	tweet3 := tweet{
 		User: "sandrae", Retweets: 12,

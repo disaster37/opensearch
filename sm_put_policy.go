@@ -102,7 +102,6 @@ func (s *SmPutPolicyService) PrimaryTerm(primaryTerm int64) *SmPutPolicyService 
 
 // buildURL builds the URL for the operation.
 func (s *SmPutPolicyService) buildURL() (string, url.Values, error) {
-
 	// Build URL
 
 	path, err := uritemplates.Expand("/_plugins/_sm/policies/{name}?if_seq_no={seqNum}&if_primary_term={priTerm}", map[string]string{
@@ -110,7 +109,6 @@ func (s *SmPutPolicyService) buildURL() (string, url.Values, error) {
 		"seqNum":  strconv.FormatInt(s.sequenceNumber, 10),
 		"priTerm": strconv.FormatInt(s.primaryTerm, 10),
 	})
-
 	if err != nil {
 		return "", url.Values{}, err
 	}

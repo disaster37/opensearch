@@ -314,7 +314,7 @@ func TestIndexOptimistic(t *testing.T) {
 
 func TestIndexOnReadOnlyIndex(t *testing.T) {
 	client := setupTestClientAndCreateIndex(t)
-	//client := setupTestClientAndCreateIndexAndLog(t)
+	// client := setupTestClientAndCreateIndexAndLog(t)
 
 	// Change index to read-only
 	{

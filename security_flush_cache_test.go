@@ -5,7 +5,6 @@ import (
 )
 
 func TestSecurityFlushCacheBuildURL(t *testing.T) {
-
 	client := setupTestClient(t)
 
 	tests := []struct {

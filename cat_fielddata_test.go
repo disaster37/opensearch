@@ -45,5 +45,4 @@ func TestCatFielddata(t *testing.T) {
 	if !found {
 		t.Fatal("fielddata message not found")
 	}
-
 }

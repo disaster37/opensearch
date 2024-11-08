@@ -5,7 +5,6 @@ import (
 )
 
 func TestSecurityDeleteRoleMappingBuildURL(t *testing.T) {
-
 	client := setupTestClient(t)
 
 	tests := []struct {

@@ -65,6 +65,7 @@ func (a *GeoDistanceAggregation) Meta(metaData map[string]interface{}) *GeoDista
 	a.meta = metaData
 	return a
 }
+
 func (a *GeoDistanceAggregation) AddRange(from, to interface{}) *GeoDistanceAggregation {
 	a.ranges = append(a.ranges, geoDistAggRange{From: from, To: to})
 	return a

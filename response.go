@@ -11,10 +11,8 @@ import (
 	"net/http"
 )
 
-var (
-	// ErrResponseSize is raised if a response body exceeds the given max body size.
-	ErrResponseSize = errors.New("opensearch: response size too large")
-)
+// ErrResponseSize is raised if a response body exceeds the given max body size.
+var ErrResponseSize = errors.New("opensearch: response size too large")
 
 // Response represents a response from Opensearch.
 type Response struct {

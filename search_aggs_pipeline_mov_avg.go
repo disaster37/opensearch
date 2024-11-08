@@ -335,8 +335,7 @@ func (m *HoltWintersMovAvgModel) Settings() map[string]interface{} {
 //
 // For more details, see
 // https://www.opensearch.co/guide/en/opensearchsearch/reference/7.0/search-aggregations-pipeline-movavg-aggregation.html#_linear
-type LinearMovAvgModel struct {
-}
+type LinearMovAvgModel struct{}
 
 // NewLinearMovAvgModel creates and initializes a new LinearMovAvgModel.
 func NewLinearMovAvgModel() *LinearMovAvgModel {
@@ -359,8 +358,7 @@ func (m *LinearMovAvgModel) Settings() map[string]interface{} {
 //
 // For more details, see
 // https://www.opensearch.co/guide/en/opensearchsearch/reference/7.0/search-aggregations-pipeline-movavg-aggregation.html#_simple
-type SimpleMovAvgModel struct {
-}
+type SimpleMovAvgModel struct{}
 
 // NewSimpleMovAvgModel creates and initializes a new SimpleMovAvgModel.
 func NewSimpleMovAvgModel() *SimpleMovAvgModel {

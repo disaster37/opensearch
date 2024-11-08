@@ -36,8 +36,7 @@ type Retrier interface {
 // -- StopRetrier --
 
 // StopRetrier is an implementation that does no retries.
-type StopRetrier struct {
-}
+type StopRetrier struct{}
 
 // NewStopRetrier returns a retrier that does no retries.
 func NewStopRetrier() *StopRetrier {

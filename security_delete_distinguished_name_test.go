@@ -5,7 +5,6 @@ import (
 )
 
 func TestSecurityDeleteDistinguishedNameBuildURL(t *testing.T) {
-
 	client := setupTestClient(t)
 
 	tests := []struct {

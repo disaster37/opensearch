@@ -195,8 +195,7 @@ func (f *RankFeatureSigmoidScoreFunction) Source() (interface{}, error) {
 //
 // See here for details:
 // https://www.opensearch.co/guide/en/opensearchsearch/reference/7.14/query-dsl-rank-feature-query.html#rank-feature-query-linear
-type RankFeatureLinearScoreFunction struct {
-}
+type RankFeatureLinearScoreFunction struct{}
 
 // NewRankFeatureLinearScoreFunction initializes a new
 // RankFeatureLinearScoreFunction.

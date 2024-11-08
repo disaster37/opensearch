@@ -226,7 +226,7 @@ func TestScrollWithBody(t *testing.T) {
 	}
 
 	// Test with simple strings and a map
-	var tests = []struct {
+	tests := []struct {
 		Body              interface{}
 		ExpectedTotalHits int64
 		ExpectedDocs      int
@@ -636,7 +636,7 @@ func TestScrollWithFilterPathKeepingContext(t *testing.T) {
 }
 
 func TestScrollTotalHits(t *testing.T) {
-	//client := setupTestClientAndCreateIndexAndLog(t)
+	// client := setupTestClientAndCreateIndexAndLog(t)
 	client := setupTestClientAndCreateIndex(t)
 
 	tweet1 := tweet{User: "olivere", Message: "Welcome to Golang and Opensearch."}

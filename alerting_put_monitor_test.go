@@ -7,7 +7,6 @@ import (
 )
 
 func TestAlertingPutMonitorBuildURL(t *testing.T) {
-
 	client := setupTestClient(t)
 
 	tests := []struct {

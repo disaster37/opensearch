@@ -21,8 +21,8 @@ type ClusterPutSettingService struct {
 	filterPath []string    // list of filters used to reduce the response
 	headers    http.Header // custom request-level HTTP headers
 
-	clusterManagerTimeout string //The amount of time to wait for a response from the cluster manager node. Default is 30 seconds.
-	timeout               string //The amount of time to wait for a response from the cluster. Default is 30 seconds.
+	clusterManagerTimeout string // The amount of time to wait for a response from the cluster manager node. Default is 30 seconds.
+	timeout               string // The amount of time to wait for a response from the cluster. Default is 30 seconds.
 	body                  any    // Settings to put
 }
 

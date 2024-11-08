@@ -155,5 +155,5 @@ type SecurityGetDistinguishedNameResponse map[string]SecurityDistinguishedName
 // SecurityDistinguishedName is the dn object.
 // Source code: https://github.com/opensearch-project/security/blob/main/src/main/java/org/opensearch/security/securityconf/impl/NodesDn.java
 type SecurityDistinguishedName struct {
-	NodesDN []string                    `json:"nodes_dn"`
+	NodesDN []string `json:"nodes_dn"`
 }

@@ -1,8 +1,6 @@
 package opensearch
 
-var (
-	_ IntervalQueryRule = (*IntervalQueryRuleMatch)(nil)
-)
+var _ IntervalQueryRule = (*IntervalQueryRuleMatch)(nil)
 
 // IntervalQueryRuleMatch is an implementation of IntervalQueryRule.
 //

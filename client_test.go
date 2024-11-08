@@ -114,7 +114,6 @@ func TestClientWithSingleURL(t *testing.T) {
 	if len(client.conns) == 0 {
 		t.Fatalf("expected at least 1 node in the cluster, got: %d (%v)", len(client.conns), client.conns)
 	}
-
 }
 
 func TestClientWithMultipleURLs(t *testing.T) {
@@ -270,7 +269,6 @@ func TestClientFromConfig(t *testing.T) {
 	if len(client.conns) == 0 {
 		t.Fatalf("expected at least 1 node in the cluster, got: %d (%v)", len(client.conns), client.conns)
 	}
-
 }
 
 func TestClientDialFromConfig(t *testing.T) {
@@ -295,7 +293,6 @@ func TestClientDialFromConfig(t *testing.T) {
 	if len(client.conns) == 0 {
 		t.Fatalf("expected at least 1 node in the cluster, got: %d (%v)", len(client.conns), client.conns)
 	}
-
 }
 
 func TestClientDialContext(t *testing.T) {
@@ -744,7 +741,6 @@ func TestSimpleClientDefaults(t *testing.T) {
 // -- Start and stop --
 
 func TestClientStartAndStop(t *testing.T) {
-
 	transport := &http.Transport{
 		TLSClientConfig: &tls.Config{
 			InsecureSkipVerify: true,
@@ -873,7 +869,6 @@ func TestClientSniffNode(t *testing.T) {
 }
 
 func TestClientSniffOnDefaultURL(t *testing.T) {
-
 	transport := &http.Transport{
 		TLSClientConfig: &tls.Config{
 			InsecureSkipVerify: true,
@@ -1691,7 +1686,6 @@ func TestPerformRequestWithCustomHTTPHeadersOnRequest(t *testing.T) {
 }
 
 func TestPerformRequestWithCustomHTTPHeadersOnClient(t *testing.T) {
-
 	transport := &http.Transport{
 		TLSClientConfig: &tls.Config{
 			InsecureSkipVerify: true,

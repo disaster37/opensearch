@@ -34,7 +34,5 @@ func TestClusterSetting(t *testing.T) {
 	settingCluster := settings["persistent"].(map[string]any)
 	delete(settingCluster, "plugins")
 
-	
 	assert.Equal(t, expectedSettings["persistent"], settingCluster)
-
 }

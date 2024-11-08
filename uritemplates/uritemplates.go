@@ -208,9 +208,9 @@ func (self *templatePart) expand(buf *bytes.Buffer, values map[string]interface{
 		buf.WriteString(self.raw)
 		return nil
 	}
-	var zeroLen = buf.Len()
+	zeroLen := buf.Len()
 	buf.WriteString(self.first)
-	var firstLen = buf.Len()
+	firstLen := buf.Len()
 	for _, term := range self.terms {
 		value, exists := values[term.name]
 		if !exists {
@@ -304,7 +304,7 @@ func (self *templatePart) expandMap(buf *bytes.Buffer, t templateTerm, m map[str
 	if !t.explode {
 		self.expandName(buf, t.name, len(m) == 0)
 	}
-	var firstLen = buf.Len()
+	firstLen := buf.Len()
 	for k, value := range m {
 		if firstLen != buf.Len() {
 			if t.explode {

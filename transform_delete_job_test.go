@@ -5,7 +5,6 @@ import (
 )
 
 func TestTransformDeleteJobBuildURL(t *testing.T) {
-
 	client := setupTestClient(t)
 
 	tests := []struct {

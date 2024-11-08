@@ -7,7 +7,6 @@ import (
 )
 
 func TestTransformPutJobBuildURL(t *testing.T) {
-
 	client := setupTestClient(t)
 
 	tests := []struct {

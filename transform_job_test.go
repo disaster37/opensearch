@@ -124,5 +124,4 @@ func TestTransformJob(t *testing.T) {
 		t.Fatal(err)
 	}
 	assert.NotNil(t, resPreview)
-
 }

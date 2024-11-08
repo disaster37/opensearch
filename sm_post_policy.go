@@ -87,7 +87,6 @@ func (s *SmPostPolicyService) Body(body interface{}) *SmPostPolicyService {
 
 // buildURL builds the URL for the operation.
 func (s *SmPostPolicyService) buildURL() (string, url.Values, error) {
-
 	path, err := uritemplates.Expand("/_plugins/_sm/policies/{name}", map[string]string{
 		"name": s.name,
 	})

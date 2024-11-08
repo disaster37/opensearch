@@ -27,7 +27,6 @@ func TestExtendedStatsBucketAggregationWithGapPolicy(t *testing.T) {
 }
 
 func TestExtendedStatsBucketAggregation(t *testing.T) {
-
 	agg := NewExtendedStatsBucketAggregation().BucketsPath("another_test")
 	src, err := agg.Source()
 	if err != nil {

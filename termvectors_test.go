@@ -107,11 +107,11 @@ func TestTermVectorsWithDoc(t *testing.T) {
 	}
 
 	// TermVectors by specifying Doc
-	var doc = map[string]interface{}{
+	doc := map[string]interface{}{
 		"fullname": "John Doe",
 		"text":     "twitter test test test",
 	}
-	var perFieldAnalyzer = map[string]string{
+	perFieldAnalyzer := map[string]string{
 		"fullname": "keyword",
 	}
 
@@ -141,11 +141,11 @@ func TestTermVectorsWithFilter(t *testing.T) {
 	}
 
 	// TermVectors by specifying Doc
-	var doc = map[string]interface{}{
+	doc := map[string]interface{}{
 		"fullname": "John Doe",
 		"text":     "twitter test test test",
 	}
-	var perFieldAnalyzer = map[string]string{
+	perFieldAnalyzer := map[string]string{
 		"fullname": "keyword",
 	}
 

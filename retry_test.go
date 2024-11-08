@@ -16,7 +16,7 @@ import (
 
 func TestRetry(t *testing.T) {
 	const successOn = 3
-	var i = 0
+	i := 0
 
 	// This function is successful on "successOn" calls.
 	f := func() error {

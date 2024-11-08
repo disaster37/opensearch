@@ -105,5 +105,4 @@ func TestSmPolicy(t *testing.T) {
 	assert.NotNil(t, resDelete)
 	_, err = client.SmGetPolicy("test").Do(context.Background())
 	assert.True(t, IsNotFound(err))
-
 }

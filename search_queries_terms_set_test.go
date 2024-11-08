@@ -48,7 +48,7 @@ func TestTermsSetQueryWithScript(t *testing.T) {
 }
 
 func TestSearchTermsSetQuery(t *testing.T) {
-	//client := setupTestClientAndCreateIndexAndAddDocs(t, SetTraceLog(log.New(os.Stdout, "", log.LstdFlags)))
+	// client := setupTestClientAndCreateIndexAndAddDocs(t, SetTraceLog(log.New(os.Stdout, "", log.LstdFlags)))
 	client := setupTestClientAndCreateIndexAndAddDocs(t)
 
 	// Match all should return all documents

@@ -56,5 +56,4 @@ func TestSecurityUser(t *testing.T) {
 	assert.NotNil(t, resDelete)
 	_, err = client.SecurityGetUser("test").Do(context.Background())
 	assert.True(t, IsNotFound(err))
-
 }

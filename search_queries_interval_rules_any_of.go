@@ -1,8 +1,6 @@
 package opensearch
 
-var (
-	_ IntervalQueryRule = (*IntervalQueryRuleAnyOf)(nil)
-)
+var _ IntervalQueryRule = (*IntervalQueryRuleAnyOf)(nil)
 
 // IntervalQueryRuleAnyOf is an implementation of IntervalQueryRule.
 //

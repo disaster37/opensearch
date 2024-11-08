@@ -5,7 +5,6 @@ import (
 )
 
 func TestSecurityDeleteTenantBuildURL(t *testing.T) {
-
 	client := setupTestClient(t)
 
 	tests := []struct {

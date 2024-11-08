@@ -23,8 +23,8 @@ type ClusterGetSettingService struct {
 
 	flatSettings          *bool  // Whether to return settings in the flat form, which can improve readability, especially for heavily nested settings. For example, the flat form of "cluster": { "max_shards_per_node": 500 } is "cluster.max_shards_per_node": "500".
 	includeDefaults       *bool  // 	Whether to include default settings as part of the response. This parameter is useful for identifying the names and current values of settings you want to update.
-	clusterManagerTimeout string //The amount of time to wait for a response from the cluster manager node. Default is 30 seconds.
-	timeout               string //The amount of time to wait for a response from the cluster. Default is 30 seconds.
+	clusterManagerTimeout string // The amount of time to wait for a response from the cluster manager node. Default is 30 seconds.
+	timeout               string // The amount of time to wait for a response from the cluster. Default is 30 seconds.
 }
 
 // NewClusterGetSettingService creates a new ClusterGetSettingService.

@@ -43,7 +43,7 @@ func TestIndicesSegments(t *testing.T) {
 
 func TestIndexSegments(t *testing.T) {
 	client := setupTestClientAndCreateIndexAndAddDocs(t)
-	//client := setupTestClientAndCreateIndexAndAddDocs(t, SetTraceLog(log.New(os.Stdout, "", 0)))
+	// client := setupTestClientAndCreateIndexAndAddDocs(t, SetTraceLog(log.New(os.Stdout, "", 0)))
 
 	segments, err := client.IndexSegments(testIndexName).Pretty(true).Human(true).Do(context.TODO())
 	if err != nil {

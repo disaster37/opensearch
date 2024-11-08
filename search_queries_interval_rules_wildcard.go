@@ -1,8 +1,6 @@
 package opensearch
 
-var (
-	_ IntervalQueryRule = (*IntervalQueryRuleWildcard)(nil)
-)
+var _ IntervalQueryRule = (*IntervalQueryRuleWildcard)(nil)
 
 // IntervalQueryRuleWildcard is an implementation of IntervalQueryRule.
 //

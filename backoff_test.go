@@ -37,7 +37,7 @@ func TestConstantBackoff(t *testing.T) {
 }
 
 func TestSimpleBackoff(t *testing.T) {
-	var tests = []struct {
+	tests := []struct {
 		Duration time.Duration
 		Continue bool
 	}{
@@ -82,7 +82,6 @@ func TestSimpleBackoff(t *testing.T) {
 }
 
 func TestExponentialBackoff(t *testing.T) {
-
 	min := time.Duration(8) * time.Millisecond
 	max := time.Duration(256) * time.Millisecond
 	b := NewExponentialBackoff(min, max)

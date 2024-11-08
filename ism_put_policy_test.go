@@ -7,7 +7,6 @@ import (
 )
 
 func TestIsmPutPolicyBuildURL(t *testing.T) {
-
 	client := setupTestClient(t)
 
 	tests := []struct {

@@ -1,8 +1,6 @@
 package opensearch
 
-var (
-	_ IntervalQueryRule = (*IntervalQueryFilter)(nil)
-)
+var _ IntervalQueryRule = (*IntervalQueryFilter)(nil)
 
 // IntervalQueryFilter specifies filters used in some
 // IntervalQueryRule implementations, e.g. IntervalQueryRuleAllOf.

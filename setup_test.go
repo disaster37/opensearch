@@ -358,7 +358,7 @@ func setupTestClient(t logger, options ...ClientOptionFunc) (client *Client) {
 	_, _ = client.DeleteIndex(testIndexNameEmpty).Do(context.TODO())
 	_, _ = client.DeleteIndex(testOrderIndex).Do(context.TODO())
 	_, _ = client.DeleteIndex(testNoSourceIndexName).Do(context.TODO())
-	//client.DeleteIndex(testDoctypeIndex).Do(context.TODO())
+	// client.DeleteIndex(testDoctypeIndex).Do(context.TODO())
 	_, _ = client.DeleteIndex(testQueryIndex).Do(context.TODO())
 	_, _ = client.DeleteIndex(testJoinIndex).Do(context.TODO())
 

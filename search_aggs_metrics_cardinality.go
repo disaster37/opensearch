@@ -45,6 +45,7 @@ func (a *CardinalityAggregation) Missing(missing interface{}) *CardinalityAggreg
 	a.missing = missing
 	return a
 }
+
 func (a *CardinalityAggregation) SubAggregation(name string, subAggregation Aggregation) *CardinalityAggregation {
 	a.subAggregations[name] = subAggregation
 	return a

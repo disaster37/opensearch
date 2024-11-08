@@ -32,7 +32,7 @@ func TestAggs(t *testing.T) {
 		Message:  "Another unrelated topic.",
 		Tags:     []string{"golang"},
 		Location: "48.1189,11.4289", // lat,lon
-		Created:  time.Date(2012, 10, 10, 8, 12, 03, 0, time.UTC),
+		Created:  time.Date(2012, 10, 10, 8, 12, 0o3, 0, time.UTC),
 	}
 	tweet3 := tweet{
 		User:     "sandrae",
@@ -1415,7 +1415,7 @@ func TestAggsCompositeIntegration(t *testing.T) {
 		Message:  "Another unrelated topic.",
 		Tags:     []string{"golang"},
 		Location: "48.1189,11.4289", // lat,lon
-		Created:  time.Date(2012, 10, 10, 8, 12, 03, 0, time.UTC),
+		Created:  time.Date(2012, 10, 10, 8, 12, 0o3, 0, time.UTC),
 	}
 	tweet3 := tweet{
 		User:     "sandrae",

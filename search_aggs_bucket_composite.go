@@ -256,7 +256,6 @@ func (a *CompositeAggregationTermsValuesSource) Source() (interface{}, error) {
 	}
 
 	return source, nil
-
 }
 
 // -- CompositeAggregationHistogramValuesSource --
@@ -392,7 +391,6 @@ func (a *CompositeAggregationHistogramValuesSource) Source() (interface{}, error
 	values["interval"] = a.interval
 
 	return source, nil
-
 }
 
 // -- CompositeAggregationDateHistogramValuesSource --

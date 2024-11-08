@@ -238,7 +238,7 @@ func (s *TermvectorsService) BodyString(body string) *TermvectorsService {
 
 // buildURL builds the URL for the operation.
 func (s *TermvectorsService) buildURL() (string, url.Values, error) {
-	var pathParam = map[string]string{
+	pathParam := map[string]string{
 		"index": s.index,
 	}
 	path := "/{index}"

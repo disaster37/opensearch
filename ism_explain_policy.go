@@ -173,7 +173,6 @@ func (h *IsmExplainPolicyResponse) UnmarshalJSON(data []byte) error {
 	}
 
 	return nil
-
 }
 
 type IsmExplainPolicyResponse struct {

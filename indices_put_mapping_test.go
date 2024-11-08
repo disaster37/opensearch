@@ -38,9 +38,8 @@ func TestPutMappingURL(t *testing.T) {
 }
 
 func TestMappingLifecycle(t *testing.T) {
-
 	client := setupTestClientAndCreateIndex(t)
-	//client := setupTestClientAndCreateIndexAndLog(t)
+	// client := setupTestClientAndCreateIndexAndLog(t)
 
 	// Create index
 	createIndex, err := client.CreateIndex(testIndexName3).Do(context.TODO())

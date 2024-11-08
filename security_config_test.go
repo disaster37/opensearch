@@ -31,5 +31,4 @@ func TestSecurityConfig(t *testing.T) {
 		t.Fatal(err)
 	}
 	assert.True(t, *currentConfig.Config.Dynamic.DoNotFailOnForbidden)
-
 }

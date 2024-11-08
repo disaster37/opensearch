@@ -8,7 +8,6 @@ import (
 )
 
 func TestSecurityAudit(t *testing.T) {
-
 	client := setupTestClient(t)
 	var err error
 
@@ -31,5 +30,4 @@ func TestSecurityAudit(t *testing.T) {
 		t.Fatal(err)
 	}
 	assert.Equal(t, []string{"test", "kibanaserver", "admin"}, currentAudit.Config.Audit.IgnoreUsers)
-
 }

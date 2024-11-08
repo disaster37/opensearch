@@ -164,7 +164,6 @@ func (s *BulkProcessorService) RetryItemStatusCodes(retryItemStatusCodes ...int)
 // Calling Do several times returns new BulkProcessors. You probably don't
 // want to do this. BulkProcessorService implements just a builder pattern.
 func (s *BulkProcessorService) Do(ctx context.Context) (*BulkProcessor, error) {
-
 	retryItemStatusCodes := make(map[int]struct{})
 	for _, code := range s.retryItemStatusCodes {
 		retryItemStatusCodes[code] = struct{}{}
@@ -292,7 +291,8 @@ func newBulkProcessor(
 	flushInterval time.Duration,
 	wantStats bool,
 	backoff Backoff,
-	retryItemStatusCodes map[int]struct{}) *BulkProcessor {
+	retryItemStatusCodes map[int]struct{},
+) *BulkProcessor {
 	return &BulkProcessor{
 		c:                    client,
 		beforeFn:             beforeFn,

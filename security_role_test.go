@@ -64,5 +64,4 @@ func TestSecurityRole(t *testing.T) {
 	assert.NotNil(t, resDelete)
 	_, err = client.SecurityGetRole("superuser").Do(context.Background())
 	assert.True(t, IsNotFound(err))
-
 }

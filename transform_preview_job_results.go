@@ -78,7 +78,6 @@ func (s *TransformPreviewJobResultsService) Body(body interface{}) *TransformPre
 
 // buildURL builds the URL for the operation.
 func (s *TransformPreviewJobResultsService) buildURL() (string, url.Values, error) {
-
 	path := "/_plugins/_transform/_preview"
 
 	// Add query string parameters

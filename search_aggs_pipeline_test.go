@@ -10,7 +10,7 @@ import (
 )
 
 func TestAggsIntegrationAvgBucket(t *testing.T) {
-	//client := setupTestClientAndCreateIndexAndAddDocs(t, SetTraceLog(log.New(os.Stdout, "", log.LstdFlags)))
+	// client := setupTestClientAndCreateIndexAndAddDocs(t, SetTraceLog(log.New(os.Stdout, "", log.LstdFlags)))
 	client := setupTestClientAndCreateIndexAndAddDocs(t)
 
 	// Match all should return all documents
@@ -52,7 +52,7 @@ func TestAggsIntegrationAvgBucket(t *testing.T) {
 }
 
 func TestAggsIntegrationDerivative(t *testing.T) {
-	//client := setupTestClientAndCreateIndexAndAddDocs(t, SetTraceLog(log.New(os.Stdout, "", log.LstdFlags)))
+	// client := setupTestClientAndCreateIndexAndAddDocs(t, SetTraceLog(log.New(os.Stdout, "", log.LstdFlags)))
 	client := setupTestClientAndCreateIndexAndAddDocs(t)
 
 	// Match all should return all documents
@@ -182,7 +182,7 @@ func TestAggsIntegrationDerivative(t *testing.T) {
 }
 
 func TestAggsIntegrationMaxBucket(t *testing.T) {
-	//client := setupTestClientAndCreateIndexAndAddDocs(t, SetTraceLog(log.New(os.Stdout, "", log.LstdFlags)))
+	// client := setupTestClientAndCreateIndexAndAddDocs(t, SetTraceLog(log.New(os.Stdout, "", log.LstdFlags)))
 	client := setupTestClientAndCreateIndexAndAddDocs(t)
 
 	// Match all should return all documents
@@ -230,7 +230,7 @@ func TestAggsIntegrationMaxBucket(t *testing.T) {
 }
 
 func TestAggsIntegrationMinBucket(t *testing.T) {
-	//client := setupTestClientAndCreateIndexAndAddDocs(t, SetTraceLog(log.New(os.Stdout, "", log.LstdFlags)))
+	// client := setupTestClientAndCreateIndexAndAddDocs(t, SetTraceLog(log.New(os.Stdout, "", log.LstdFlags)))
 	client := setupTestClientAndCreateIndexAndAddDocs(t)
 
 	// Match all should return all documents
@@ -278,7 +278,7 @@ func TestAggsIntegrationMinBucket(t *testing.T) {
 }
 
 func TestAggsIntegrationSumBucket(t *testing.T) {
-	//client := setupTestClientAndCreateIndexAndAddDocs(t, SetTraceLog(log.New(os.Stdout, "", log.LstdFlags)))
+	// client := setupTestClientAndCreateIndexAndAddDocs(t, SetTraceLog(log.New(os.Stdout, "", log.LstdFlags)))
 	client := setupTestClientAndCreateIndexAndAddDocs(t)
 
 	// Match all should return all documents
@@ -320,7 +320,7 @@ func TestAggsIntegrationSumBucket(t *testing.T) {
 }
 
 func TestAggsIntegrationMovAvg(t *testing.T) {
-	//client := setupTestClientAndCreateIndexAndAddDocs(t, SetTraceLog(log.New(os.Stdout, "", log.LstdFlags)))
+	// client := setupTestClientAndCreateIndexAndAddDocs(t, SetTraceLog(log.New(os.Stdout, "", log.LstdFlags)))
 	client := setupTestClientAndCreateIndexAndAddDocs(t)
 
 	// Match all should return all documents
@@ -431,7 +431,7 @@ func TestAggsIntegrationMovAvg(t *testing.T) {
 }
 
 func TestAggsIntegrationCumulativeSum(t *testing.T) {
-	//client := setupTestClientAndCreateIndexAndAddDocs(t, SetTraceLog(log.New(os.Stdout, "", log.LstdFlags)))
+	// client := setupTestClientAndCreateIndexAndAddDocs(t, SetTraceLog(log.New(os.Stdout, "", log.LstdFlags)))
 	client := setupTestClientAndCreateIndexAndAddDocs(t)
 
 	// Match all should return all documents
@@ -720,7 +720,7 @@ func TestAggsIntegrationBucketScript(t *testing.T) {
 }
 
 func TestAggsIntegrationBucketSelector(t *testing.T) {
-	//client := setupTestClientAndCreateIndexAndAddDocs(t, SetTraceLog(log.New(os.Stdout, "", log.LstdFlags)))
+	// client := setupTestClientAndCreateIndexAndAddDocs(t, SetTraceLog(log.New(os.Stdout, "", log.LstdFlags)))
 	client := setupTestClientAndCreateIndexAndAddDocs(t)
 
 	// Match all should return all documents
@@ -769,7 +769,7 @@ func TestAggsIntegrationBucketSelector(t *testing.T) {
 }
 
 func TestAggsIntegrationSerialDiff(t *testing.T) {
-	//client := setupTestClientAndCreateIndexAndAddDocs(t, SetTraceLog(log.New(os.Stdout, "", log.LstdFlags)))
+	// client := setupTestClientAndCreateIndexAndAddDocs(t, SetTraceLog(log.New(os.Stdout, "", log.LstdFlags)))
 	client := setupTestClientAndCreateIndexAndAddDocs(t)
 
 	// Match all should return all documents

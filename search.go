@@ -49,7 +49,6 @@ type SearchService struct {
 	restTotalHitsAsInt         *bool // rest_total_hits_as_int
 
 	ccsMinimizeRoundtrips *bool // ccs_minimize_roundtrips
-
 }
 
 // NewSearchService creates a new service for searching in Opensearch.

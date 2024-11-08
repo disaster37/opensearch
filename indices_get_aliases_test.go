@@ -133,7 +133,7 @@ func TestAliases(t *testing.T) {
 				Index(testIndexName2).
 				IsWriteIndex(true),
 		).
-		//Pretty(true).
+		// Pretty(true).
 		Do(context.TODO())
 	if err != nil {
 		t.Fatal(err)
@@ -145,7 +145,7 @@ func TestAliases(t *testing.T) {
 	// Alias should now exist
 	aliasesResult2, err := client.Aliases().
 		Index(testIndexName, testIndexName2).
-		//Pretty(true).
+		// Pretty(true).
 		Do(context.TODO())
 	if err != nil {
 		t.Fatal(err)
@@ -206,7 +206,7 @@ func TestAliases(t *testing.T) {
 	// Remove first index should remove two tweets, so should only yield 1
 	aliasRemove1, err := client.Alias().
 		Remove(testIndexName, testAliasName).
-		//Pretty(true).
+		// Pretty(true).
 		Do(context.TODO())
 	if err != nil {
 		t.Fatal(err)

@@ -30,7 +30,6 @@ type Tweet struct {
 }
 
 func Example() {
-
 	log := logrus.New()
 	log.SetLevel(logrus.ErrorLevel)
 

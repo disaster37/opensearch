@@ -5,7 +5,6 @@ import (
 )
 
 func TestSmPostPolicyBuildURL(t *testing.T) {
-
 	client := setupTestClient(t)
 
 	tests := []struct {

@@ -55,6 +55,7 @@ func (a *MaxAggregation) Meta(metaData map[string]interface{}) *MaxAggregation {
 	a.meta = metaData
 	return a
 }
+
 func (a *MaxAggregation) Source() (interface{}, error) {
 	// Example:
 	//	{

@@ -40,6 +40,7 @@ func TestSearchSourceMarshalJSON(t *testing.T) {
 		t.Errorf("expected\n%s\n,got:\n%s", expected, got)
 	}
 }
+
 func TestSearchSourceNoStoredFields(t *testing.T) {
 	matchAllQ := NewMatchAllQuery()
 	builder := NewSearchSource().Query(matchAllQ).NoStoredFields()

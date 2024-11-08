@@ -204,7 +204,7 @@ func TestBulkWithIndexSetOnClient(t *testing.T) {
 
 func TestBulkIndexDeleteUpdate(t *testing.T) {
 	client := setupTestClientAndCreateIndex(t)
-	//client := setupTestClientAndCreateIndexAndLog(t)
+	// client := setupTestClientAndCreateIndexAndLog(t)
 
 	tweet1 := tweet{User: "olivere", Message: "Welcome to Golang and Opensearch."}
 	tweet2 := tweet{User: "sandrae", Message: "Dancing all night long. Yeah."}
@@ -391,7 +391,7 @@ func TestBulkIndexDeleteUpdate(t *testing.T) {
 
 func TestBulkOnReadOnlyIndex(t *testing.T) {
 	client := setupTestClientAndCreateIndex(t)
-	//client := setupTestClientAndCreateIndexAndLog(t)
+	// client := setupTestClientAndCreateIndexAndLog(t)
 
 	// Change index to read-only
 	{

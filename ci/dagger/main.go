@@ -16,8 +16,9 @@ package main
 
 import (
 	"context"
-	"dagger/opensearch/internal/dagger"
 	"fmt"
+
+	"dagger/opensearch/internal/dagger"
 
 	"emperror.dev/errors"
 	"github.com/disaster37/dagger-library-go/lib/helper"
@@ -52,7 +53,6 @@ func New(
 	// +required
 	src *dagger.Directory,
 ) (*Opensearch, error) {
-
 	// Compute image because of base is not optional
 	version, err := inspectModVersion(context.Background(), src)
 	if err != nil {
@@ -120,7 +120,6 @@ func (h *Opensearch) Ci(
 	}
 
 	return dir, nil
-
 }
 
 // Lint permit to lint code
@@ -140,12 +139,11 @@ func (h *Opensearch) Format(
 // Test permit to run tests
 func (h *Opensearch) Test(
 	ctx context.Context,
-	//run select tests only, defined using a regex
+	// run select tests only, defined using a regex
 
 	// +optional
 	run string,
 ) *dagger.File {
-
 	expectedRunTest := ""
 	if run != "" {
 		expectedRunTest = fmt.Sprintf("-run %s", run)
@@ -183,12 +181,11 @@ gotestsum --format testname -- -covermode=atomic -coverprofile coverage.out ./..
 // Test permit to run tests
 func (h *Opensearch) DebugTest(
 	ctx context.Context,
-	//run select tests only, defined using a regex
+	// run select tests only, defined using a regex
 
 	// +optional
 	run string,
 ) *dagger.Service {
-
 	expectedRunTest := ""
 	if run != "" {
 		expectedRunTest = fmt.Sprintf("-- -test.run %s", run)
@@ -256,7 +253,6 @@ func (h *Opensearch) CodeCov(
 	// +required
 	token *dagger.Secret,
 ) (stdout string, err error) {
-
 	if src == nil {
 		src = h.Src
 	}

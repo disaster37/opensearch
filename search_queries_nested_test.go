@@ -52,7 +52,7 @@ func TestNestedQueryWithInnerHit(t *testing.T) {
 }
 
 func TestNestedQueryWithIgnoreUnmapped(t *testing.T) {
-	var tests = []struct {
+	tests := []struct {
 		query    *BoolQuery
 		expected string
 	}{

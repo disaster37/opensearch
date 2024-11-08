@@ -204,6 +204,7 @@ func TestGeoDistanceSortOrderDesc(t *testing.T) {
 		t.Errorf("expected\n%s\n,got:\n%s", expected, got)
 	}
 }
+
 func TestScriptSort(t *testing.T) {
 	builder := NewScriptSort(NewScript("doc['field_name'].value * factor").Param("factor", 1.1), "number").Order(true)
 	src, err := builder.Source()

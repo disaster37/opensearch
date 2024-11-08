@@ -16,5 +16,4 @@ func TestSecurityCache(t *testing.T) {
 		t.Fatal(err)
 	}
 	assert.NotNil(t, res)
-
 }

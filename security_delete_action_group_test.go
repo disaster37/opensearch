@@ -5,7 +5,6 @@ import (
 )
 
 func TestSecurityDeleteActionGroupBuildURL(t *testing.T) {
-
 	client := setupTestClient(t)
 
 	tests := []struct {

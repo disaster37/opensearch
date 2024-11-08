@@ -379,7 +379,6 @@ func (s *CountService) Do(ctx context.Context) (int64, error) {
 	}
 
 	return ret.Count, nil
-
 }
 
 // CountResponse is the response of using the Count API.

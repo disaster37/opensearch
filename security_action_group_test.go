@@ -53,5 +53,4 @@ func TestSecurityActionGroup(t *testing.T) {
 	assert.NotNil(t, resDelete)
 	_, err = client.SecurityGetActionGroup("test").Do(context.Background())
 	assert.True(t, IsNotFound(err))
-
 }

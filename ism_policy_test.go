@@ -107,5 +107,4 @@ func TestIsmPolicy(t *testing.T) {
 	assert.NotNil(t, resDelete)
 	_, err = client.IsmGetPolicy("test").Do(context.Background())
 	assert.True(t, IsNotFound(err))
-
 }

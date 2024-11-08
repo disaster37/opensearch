@@ -52,7 +52,7 @@ func TestAliasLifecycle(t *testing.T) {
 	aliasCreate, err := client.Alias().
 		Add(testIndexName, testAliasName).
 		Action(NewAliasAddAction(testAliasName).Index(testIndexName2)).
-		//Pretty(true).
+		// Pretty(true).
 		Do(context.TODO())
 	if err != nil {
 		t.Fatal(err)
@@ -77,7 +77,7 @@ func TestAliasLifecycle(t *testing.T) {
 	// Remove first index should remove two tweets, so should only yield 1
 	aliasRemove1, err := client.Alias().
 		Remove(testIndexName, testAliasName).
-		//Pretty(true).
+		// Pretty(true).
 		Do(context.TODO())
 	if err != nil {
 		t.Fatal(err)
@@ -146,7 +146,7 @@ func TestAliasLifecycle(t *testing.T) {
 }
 
 func TestAliasAddAction(t *testing.T) {
-	var tests = []struct {
+	tests := []struct {
 		Action   *AliasAddAction
 		Expected string
 		Invalid  bool
@@ -216,7 +216,7 @@ func TestAliasAddAction(t *testing.T) {
 }
 
 func TestAliasRemoveAction(t *testing.T) {
-	var tests = []struct {
+	tests := []struct {
 		Action   *AliasRemoveAction
 		Expected string
 		Invalid  bool
@@ -266,7 +266,7 @@ func TestAliasRemoveAction(t *testing.T) {
 }
 
 func TestAliasRemoveIndexAction(t *testing.T) {
-	var tests = []struct {
+	tests := []struct {
 		Action   *AliasRemoveIndexAction
 		Expected string
 		Invalid  bool

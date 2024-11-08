@@ -98,5 +98,4 @@ func TestAggsBucketTermsIntegration(t *testing.T) {
 	if want, have := int64(1), agg.Buckets[2].DocCount; want != have {
 		t.Errorf("Buckets[2].DocCount: want %d, have %d", want, have)
 	}
-
 }

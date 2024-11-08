@@ -109,7 +109,6 @@ func (a *GeoTileGridAggregation) Source() (interface{}, error) {
 	}
 
 	return source, nil
-
 }
 
 // BoundingBox bounding box

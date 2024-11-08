@@ -197,5 +197,5 @@ type SmExplainPolicyRetry struct {
 
 type SmExplainPolicyInfo struct {
 	Message string `json:"message,omitempty"`
-	Cause   string  `json:"cause,omitempty"`
+	Cause   string `json:"cause,omitempty"`
 }

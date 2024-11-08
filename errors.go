@@ -59,7 +59,6 @@ func createResponseError(res *http.Response) error {
 		errReply.Status = res.StatusCode
 	}
 	return errReply
-
 }
 
 // Error encapsulates error details as returned from Opensearch.

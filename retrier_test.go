@@ -45,7 +45,7 @@ func TestRetrier(t *testing.T) {
 	var numFailedReqs int
 	fail := func(r *http.Request) (*http.Response, error) {
 		numFailedReqs += 1
-		//return &http.Response{Request: r, StatusCode: 400}, nil
+		// return &http.Response{Request: r, StatusCode: 400}, nil
 		return nil, errors.New("request failed")
 	}
 
@@ -90,7 +90,7 @@ func TestRetrierWithError(t *testing.T) {
 	var numFailedReqs int
 	fail := func(r *http.Request) (*http.Response, error) {
 		numFailedReqs += 1
-		//return &http.Response{Request: r, StatusCode: 400}, nil
+		// return &http.Response{Request: r, StatusCode: 400}, nil
 		return nil, errors.New("request failed")
 	}
 
@@ -136,7 +136,7 @@ func TestRetrierOnPerformRequest(t *testing.T) {
 	var numFailedReqs int
 	fail := func(r *http.Request) (*http.Response, error) {
 		numFailedReqs += 1
-		//return &http.Response{Request: r, StatusCode: 400}, nil
+		// return &http.Response{Request: r, StatusCode: 400}, nil
 		return nil, errors.New("request failed")
 	}
 

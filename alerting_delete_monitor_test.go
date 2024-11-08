@@ -5,7 +5,6 @@ import (
 )
 
 func TestAlertingDeleteMonitorBuildURL(t *testing.T) {
-
 	client := setupTestClient(t)
 
 	tests := []struct {
