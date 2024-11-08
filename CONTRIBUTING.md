@@ -42,6 +42,12 @@ following things in mind before submitting your pull request:
 
 ## Develop
 
+### Run all CI workflow
+
+```bash
+dagger call --src . ci
+```
+
 ### Lint code
 
 ```bash

@@ -28,6 +28,9 @@ const (
 	username          string = "admin"
 	password          string = "vLPeJYa8.3RqtZCcAK6jNz"
 	mockgenVersion           = "v0.3.0"
+	gitUsername       string = "ci"
+	gitEmail          string = "ci@localhost"
+	defaultGitBranch  string = "release-branch.v2"
 )
 
 type Opensearch struct {
@@ -108,6 +111,10 @@ func (h *Opensearch) Ci(
 		stdout, err = h.CodeCov(ctx, dir, codeCoveToken)
 		if err != nil {
 			return nil, errors.Wrapf(err, "Error when upload report on CodeCov: %s", stdout)
+		}
+
+		if _, err = dag.Git().SetConfig(gitUsername, gitEmail, dagger.GitSetConfigOpts{BaseRepoURL: "github.com", Token: gitToken}).SetRepo(dir, dagger.GitSetRepoOpts{Branch: defaultGitBranch}).CommitAndPush(ctx, "Commit from CI. skip ci"); err != nil {
+			return nil, errors.Wrap(err, "Error when commit and push files change")
 		}
 	}
 

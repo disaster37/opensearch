@@ -9,6 +9,11 @@
       "pin": "9c07696ffaaecf5cb951dd846c492afdeae34456"
     },
     {
+      "name": "git",
+      "source": "github.com/disaster37/dagger-library-go/git",
+      "pin": "31870bb97107ed25e1352015686926ecf5a5594e"
+    },
+    {
       "name": "golang",
       "source": "github.com/purpleclay/daggerverse/golang@golang/v0.5.0",
       "pin": "9f87a8c41f0edc2766602b75a5c52a681001d5b5"
