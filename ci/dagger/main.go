@@ -117,6 +117,8 @@ func (h *Opensearch) Ci(
 		if _, err = dag.Git().SetConfig(gitUsername, gitEmail, dagger.GitSetConfigOpts{BaseRepoURL: "github.com", Token: gitToken}).SetRepo(dir, dagger.GitSetRepoOpts{Branch: defaultGitBranch}).CommitAndPush(ctx, "Commit from CI. skip ci"); err != nil {
 			return nil, errors.Wrap(err, "Error when commit and push files change")
 		}
+
+		return nil, nil
 	}
 
 	return dir, nil
