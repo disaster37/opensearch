@@ -4,14 +4,14 @@
   "sdk": "go",
   "dependencies": [
     {
+      "name": "git",
+      "source": "github.com/disaster37/dagger-library-go/git",
+      "pin": "3f0a9830e609652ac980ab5152ce1305343f4746"
+    },
+    {
       "name": "codecov",
       "source": "github.com/kpenfound/dagger-modules/codecov@codecov/v0.1.1",
       "pin": "9c07696ffaaecf5cb951dd846c492afdeae34456"
-    },
-    {
-      "name": "git",
-      "source": "github.com/disaster37/dagger-library-go/git",
-      "pin": "31870bb97107ed25e1352015686926ecf5a5594e"
     },
     {
       "name": "golang",
