@@ -117,8 +117,6 @@ func (h *Opensearch) Ci(
 		if _, err = dag.Git().SetConfig(gitUsername, gitEmail, dagger.GitSetConfigOpts{BaseRepoURL: "github.com", Token: gitToken}).SetRepo(dir, dagger.GitSetRepoOpts{Branch: defaultGitBranch}).CommitAndPush(ctx, "Commit from CI. skip ci"); err != nil {
 			return nil, errors.Wrap(err, "Error when commit and push files change")
 		}
-
-		return nil, nil
 	}
 
 	return dir, nil
@@ -167,6 +165,7 @@ func (h *Opensearch) Test(
 		WithEnvVariable("path.repo", "/usr/share/opensearch/backup").
 		WithExposedPort(9200).
 		AsService()
+	defer opensearchService.Stop(ctx)
 
 	return h.BaseImage.
 		WithServiceBinding("opensearch.svc", opensearchService).
@@ -209,6 +208,7 @@ func (h *Opensearch) DebugTest(
 		WithEnvVariable("path.repo", "/usr/share/opensearch/backup").
 		WithExposedPort(9200).
 		AsService()
+	defer opensearchService.Stop(ctx)
 
 	return h.BaseImage.
 		WithServiceBinding("opensearch.svc", opensearchService).
