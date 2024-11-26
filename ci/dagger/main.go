@@ -39,10 +39,6 @@ type Opensearch struct {
 	// +private
 	Src *dagger.Directory
 
-	// The golang base image
-	// +private
-	BaseImage *dagger.Container
-
 	// +private
 	GolangModule *dagger.Golang
 }
@@ -53,22 +49,10 @@ func New(
 	// +required
 	src *dagger.Directory,
 ) (*Opensearch, error) {
-	// Compute image because of base is not optional
-	version, err := inspectModVersion(context.Background(), src)
-	if err != nil {
-		return nil, err
-	}
-	base := defaultImage(version)
-	base = mountCaches(ctx, base).
-		WithDirectory(goWorkDir, src).
-		WithWorkdir(goWorkDir).
-		WithExec(helper.ForgeCommand("go mod tidy")).
-		WithoutEntrypoint()
 
 	return &Opensearch{
 		Src:          src,
-		GolangModule: dag.Golang(base, src),
-		BaseImage:    base,
+		GolangModule: dag.Golang(src),
 	}, nil
 }
 
@@ -165,11 +149,9 @@ func (h *Opensearch) Test(
 		WithEnvVariable("path.repo", "/usr/share/opensearch/backup").
 		WithExposedPort(9200).
 		AsService()
-	defer opensearchService.Stop(ctx)
 
-	return h.BaseImage.
+	return h.GolangModule.Container().
 		WithServiceBinding("opensearch.svc", opensearchService).
-		WithExposedPort(4000).
 		WithExec(helper.ForgeScript(`
 curl --fail -XGET -k -u admin:vLPeJYa8.3RqtZCcAK6jNz "https://opensearch.svc:9200/_cluster/health?wait_for_status=yellow&timeout=500s"
 curl --fail -XPUT -k -u admin:vLPeJYa8.3RqtZCcAK6jNz -H 'Content-Type: application/json' "https://opensearch.svc:9200/_index_template/socle" -d '{"index_patterns":["*"],"priority":500,"template":{"settings":{"number_of_shards":1,"number_of_replicas":0}}}'
@@ -210,7 +192,7 @@ func (h *Opensearch) DebugTest(
 		AsService()
 	defer opensearchService.Stop(ctx)
 
-	return h.BaseImage.
+	return h.GolangModule.Container().
 		WithServiceBinding("opensearch.svc", opensearchService).
 		WithExposedPort(4000).
 		WithExec(helper.ForgeScript(`
