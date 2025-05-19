@@ -52,7 +52,7 @@ func New(
 
 	return &Opensearch{
 		Src:          src,
-		GolangModule: dag.Golang(src),
+		GolangModule: dag.Golang(src.WithoutDirectory("ci")),
 	}, nil
 }
 
@@ -109,7 +109,7 @@ func (h *Opensearch) Ci(
 			return nil, errors.Wrapf(err, "Error when upload report on CodeCov: %s", stdout)
 		}
 
-		git := dag.GitModule(dir, dagger.GitModuleOpts{Ci: "github"}).
+		git := dag.GitModule(dir.WithDirectory("ci", h.Src.Directory("ci")), dagger.GitModuleOpts{Ci: "github"}).
 			SetConfig(dagger.GitModuleSetConfigOpts{
 				Username: gitUsername,
 				Email:    gitEmail,
