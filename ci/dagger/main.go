@@ -84,6 +84,8 @@ func (h *Opensearch) Ci(
 ) (dir *dagger.Directory, err error) {
 	var stdout string
 
+	h.GolangModule.Container().WithExec([]string{"go", "mod", "tidy"}).Stdout(ctx)
+
 	// Build
 	if _, err = h.Build(ctx).Sync(ctx); err != nil {
 		return nil, errors.Wrap(err, "Error when build project")
