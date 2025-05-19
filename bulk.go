@@ -445,7 +445,7 @@ func (r *BulkResponse) Failed() []*BulkResponseItem {
 	var errors []*BulkResponseItem
 	for _, item := range r.Items {
 		for _, result := range item {
-			if !(result.Status >= 200 && result.Status <= 299) {
+			if result.Status < 200 || result.Status > 299 {
 				errors = append(errors, result)
 			}
 		}

@@ -29,7 +29,7 @@ func TestTransport(t *testing.T) {
 		switch r.URL.Path {
 		case "/":
 			w.WriteHeader(http.StatusOK)
-			fmt.Fprintln(w, `{
+			_, _ = fmt.Fprintln(w, `{
 				"name" : "Qg28M36",
 				"cluster_name" : "docker-cluster",
 				"cluster_uuid" : "rwHa7BBnRC2h8KoDfCbmuQ",

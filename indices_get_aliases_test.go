@@ -224,15 +224,16 @@ func TestAliases(t *testing.T) {
 		t.Errorf("expected len(AliasesResult.Indices) = %d; got %d", 2, len(aliasesResult3.Indices))
 	}
 	for indexName, indexDetails := range aliasesResult3.Indices {
-		if indexName == testIndexName {
+		switch indexName {
+		case testIndexName:
 			if len(indexDetails.Aliases) != 0 {
 				t.Errorf("expected len(AliasesResult.Indices[%s].Aliases) = %d; got %d", indexName, 0, len(indexDetails.Aliases))
 			}
-		} else if indexName == testIndexName2 {
+		case testIndexName2:
 			if len(indexDetails.Aliases) != 1 {
 				t.Errorf("expected len(AliasesResult.Indices[%s].Aliases) = %d; got %d", indexName, 1, len(indexDetails.Aliases))
 			}
-		} else {
+		default:
 			t.Errorf("got index %s", indexName)
 		}
 	}

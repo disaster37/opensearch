@@ -186,8 +186,7 @@ func (s *PingService) Do(ctx context.Context) (*PingResult, int, error) {
 	if err != nil {
 		return nil, 0, err
 	}
-	defer res.Body.Close()
-
+	defer func() { _ = res.Body.Close() }()
 	var ret *PingResult
 	if !s.httpHeadOnly {
 		ret = new(PingResult)

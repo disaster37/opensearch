@@ -546,7 +546,7 @@ func TestBulkContentType(t *testing.T) {
 	var header http.Header
 	ts := httptest.NewTLSServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		header = r.Header
-		fmt.Fprintln(w, `{}`)
+		_, _ = fmt.Fprintln(w, `{}`)
 	}))
 	defer ts.Close()
 

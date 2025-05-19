@@ -976,7 +976,7 @@ func (c *Client) sniffNode(ctx context.Context, url string) []*conn {
 	if err != nil {
 		return nodes
 	}
-	defer res.Body.Close()
+	defer func() { _ = res.Body.Close() }()
 
 	var info NodesInfoResponse
 	if err := json.NewDecoder(res.Body).Decode(&info); err == nil {
@@ -1122,7 +1122,7 @@ func (c *Client) healthcheck(parentCtx context.Context, timeout time.Duration, f
 			if res != nil {
 				status = res.StatusCode
 				if res.Body != nil {
-					res.Body.Close()
+					_ = res.Body.Close()
 				}
 			}
 			errc <- err
@@ -1447,7 +1447,7 @@ func (c *Client) PerformRequest(ctx context.Context, opt PerformRequestOptions) 
 		}
 
 		if !opt.Stream {
-			defer res.Body.Close()
+			defer func() { _ = res.Body.Close() }()
 		}
 
 		// Tracing

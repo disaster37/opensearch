@@ -612,7 +612,7 @@ func TestClientSniffUpdatingNodeURL(t *testing.T) {
 			w.WriteHeader(http.StatusInternalServerError)
 			return
 		}
-		fmt.Fprintf(w, `{
+		_, _ = fmt.Fprintf(w, `{
 			"cluster_name": "opensearchsearch",
 			"nodes": {
 				%q: {
@@ -623,7 +623,7 @@ func TestClientSniffUpdatingNodeURL(t *testing.T) {
 				}
 			}
 		}`, nodeID, u.Host)
-		fmt.Fprintln(w)
+		_, _ = fmt.Fprintln(w)
 	})
 	ts := httptest.NewTLSServer(h)
 	defer ts.Close()

@@ -428,7 +428,7 @@ func (p *BulkProcessor) flusher(interval time.Duration) {
 	for {
 		select {
 		case <-ticker.C: // Periodic flush
-			p.Flush() // TODO swallow errors here?
+			_ = p.Flush() // TODO swallow errors here?
 
 		case <-p.flusherStopC:
 			p.flusherStopC <- struct{}{}
