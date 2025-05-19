@@ -85,7 +85,9 @@ func (h *Opensearch) Ci(
 	var stdout string
 
 	// Build
-	h.Build(ctx)
+	if _, err = h.Build(ctx).Sync(ctx); err != nil {
+		return nil, errors.Wrap(err, "Error when build project")
+	}
 
 	// Lint code
 	stdout, err = h.Lint(ctx)
