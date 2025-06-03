@@ -22,5 +22,5 @@ func (u *UnixMilliTime) UnmarshalJSON(b []byte) error {
 }
 
 func (u UnixMilliTime) MarshalJSON() ([]byte, error) {
-	return []byte(fmt.Sprintf("%d", (u.Time.UnixMilli()))), nil
+	return []byte(fmt.Sprintf("%d", (u.UnixMilli()))), nil
 }
