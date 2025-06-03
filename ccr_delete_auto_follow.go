@@ -7,13 +7,11 @@ import (
 	"net/http"
 	"net/url"
 	"strings"
-
-	"github.com/disaster37/opensearch/v2/uritemplates"
 )
 
-// CcrStatusRuleService get a CCR rule by its name.
+// CcrDeleteAutoFollowService start a CCR rule by its name.
 // See https://docs.opensearch.org/docs/latest/tuning-your-cluster/replication-plugin/api/
-type CcrStatusRuleService struct {
+type CcrDeleteAutoFollowService struct {
 	client *Client
 
 	pretty     *bool       // pretty format the returned JSON response
@@ -22,43 +20,44 @@ type CcrStatusRuleService struct {
 	filterPath []string    // list of filters used to reduce the response
 	headers    http.Header // custom request-level HTTP headers
 
-	name string
+	leaderAlias string
+	name        string
 }
 
-// NewCcrStatusRuleService creates a new CcrStatusRuleService.
-func NewCcrStatusRuleService(client *Client) *CcrStatusRuleService {
-	return &CcrStatusRuleService{
+// NewCcrDeleteAutoFollowService creates a new CcrDeleteAutoFollowService.
+func NewCcrDeleteAutoFollowService(client *Client) *CcrDeleteAutoFollowService {
+	return &CcrDeleteAutoFollowService{
 		client: client,
 	}
 }
 
 // Pretty tells Opensearch whether to return a formatted JSON response.
-func (s *CcrStatusRuleService) Pretty(pretty bool) *CcrStatusRuleService {
+func (s *CcrDeleteAutoFollowService) Pretty(pretty bool) *CcrDeleteAutoFollowService {
 	s.pretty = &pretty
 	return s
 }
 
 // Human specifies whether human readable values should be returned in
 // the JSON response, e.g. "7.5mb".
-func (s *CcrStatusRuleService) Human(human bool) *CcrStatusRuleService {
+func (s *CcrDeleteAutoFollowService) Human(human bool) *CcrDeleteAutoFollowService {
 	s.human = &human
 	return s
 }
 
 // ErrorTrace specifies whether to include the stack trace of returned errors.
-func (s *CcrStatusRuleService) ErrorTrace(errorTrace bool) *CcrStatusRuleService {
+func (s *CcrDeleteAutoFollowService) ErrorTrace(errorTrace bool) *CcrDeleteAutoFollowService {
 	s.errorTrace = &errorTrace
 	return s
 }
 
 // FilterPath specifies a list of filters used to reduce the response.
-func (s *CcrStatusRuleService) FilterPath(filterPath ...string) *CcrStatusRuleService {
+func (s *CcrDeleteAutoFollowService) FilterPath(filterPath ...string) *CcrDeleteAutoFollowService {
 	s.filterPath = filterPath
 	return s
 }
 
 // Header adds a header to the request.
-func (s *CcrStatusRuleService) Header(name string, value string) *CcrStatusRuleService {
+func (s *CcrDeleteAutoFollowService) Header(name string, value string) *CcrDeleteAutoFollowService {
 	if s.headers == nil {
 		s.headers = http.Header{}
 	}
@@ -67,26 +66,27 @@ func (s *CcrStatusRuleService) Header(name string, value string) *CcrStatusRuleS
 }
 
 // Headers specifies the headers of the request.
-func (s *CcrStatusRuleService) Headers(headers http.Header) *CcrStatusRuleService {
+func (s *CcrDeleteAutoFollowService) Headers(headers http.Header) *CcrDeleteAutoFollowService {
 	s.headers = headers
 	return s
 }
 
 // Name is name of the rule to get.
-func (s *CcrStatusRuleService) Name(name string) *CcrStatusRuleService {
+func (s *CcrDeleteAutoFollowService) Name(name string) *CcrDeleteAutoFollowService {
 	s.name = name
 	return s
 }
 
+// Body specifies the policy. Use a string or a type that will get serialized as JSON.
+func (s *CcrDeleteAutoFollowService) LeaderAlias(name string) *CcrDeleteAutoFollowService {
+	s.leaderAlias = name
+	return s
+}
+
 // buildURL builds the URL for the operation.
-func (s *CcrStatusRuleService) buildURL() (string, url.Values, error) {
+func (s *CcrDeleteAutoFollowService) buildURL() (string, url.Values, error) {
 	// Build URL
-	path, err := uritemplates.Expand("/_plugins/_replication/{name}/_status", map[string]string{
-		"name": s.name,
-	})
-	if err != nil {
-		return "", url.Values{}, err
-	}
+	path := "/_plugins/_replication/_autofollow"
 
 	// Add query string parameters
 	params := url.Values{}
@@ -106,10 +106,13 @@ func (s *CcrStatusRuleService) buildURL() (string, url.Values, error) {
 }
 
 // Validate checks if the operation is valid.
-func (s *CcrStatusRuleService) Validate() error {
+func (s *CcrDeleteAutoFollowService) Validate() error {
 	var invalid []string
 	if s.name == "" {
 		invalid = append(invalid, "Name")
+	}
+	if s.leaderAlias == "" {
+		invalid = append(invalid, "LeaderAlias")
 	}
 	if len(invalid) > 0 {
 		return fmt.Errorf("missing required fields: %v", invalid)
@@ -118,7 +121,7 @@ func (s *CcrStatusRuleService) Validate() error {
 }
 
 // Do executes the operation.
-func (s *CcrStatusRuleService) Do(ctx context.Context) (*CcrStatusRuleResponse, error) {
+func (s *CcrDeleteAutoFollowService) Do(ctx context.Context) (*CcrDeleteAutoFollowResponse, error) {
 	// Check pre-conditions
 	if err := s.Validate(); err != nil {
 		return nil, err
@@ -132,9 +135,13 @@ func (s *CcrStatusRuleService) Do(ctx context.Context) (*CcrStatusRuleResponse, 
 
 	// Get HTTP response
 	res, err := s.client.PerformRequest(ctx, PerformRequestOptions{
-		Method:  "GET",
-		Path:    path,
-		Params:  params,
+		Method: "DELETE",
+		Path:   path,
+		Params: params,
+		Body: &CcrDeleteAutoFollowRequest{
+			LeaderAlias: s.leaderAlias,
+			Name:        s.name,
+		},
 		Headers: s.headers,
 	})
 	if err != nil {
@@ -142,38 +149,19 @@ func (s *CcrStatusRuleService) Do(ctx context.Context) (*CcrStatusRuleResponse, 
 	}
 
 	// Return operation response
-	ret := new(CcrStatusRuleResponse)
+	ret := new(CcrDeleteAutoFollowResponse)
 	if err := json.Unmarshal(res.Body, ret); err != nil {
 		return nil, err
 	}
 	return ret, nil
 }
 
-// CcrStatusRuleResponse is the get index state management response object
-// https://opensearch.org/docs/latest/im-plugin/ism/api/#get-policy
-type CcrStatusRuleResponse struct {
-	CcrRule
-	Status         string                `json:"status"`
-	Reason         string                `json:"reason"`
-	LeaderAlias    string                `json:"leader_alias"`
-	LeaderIndex    string                `json:"leader_index"`
-	FollowerIndex  string                `json:"follower_index"`
-	SyncingDetails CcrRuleSyncingDetails `json:"syncing_details"`
+type CcrDeleteAutoFollowRequest struct {
+	LeaderAlias string `json:"leader_alias"`
+	Name        string `json:"name"`
 }
 
-type CcrRuleSyncingDetails struct {
-	LeaderCheckpoint   int64 `json:"leader_checkpoint"`
-	FollowerCheckpoint int64 `json:"follower_checkpoint"`
-	SeqNumber          int64 `json:"seq_no"`
+// CcrDeleteAutoFollowResponse is the response when start CCR
+type CcrDeleteAutoFollowResponse struct {
+	Acknowledged bool `json:"acknowledged"`
 }
-
-
-// CcrStatus is the status of the CCR rule
-type CcrStatus string
-
-const(
-	CcrStatusSyncing CcrStatus = "SYNCING"
-	CcrStatusBootstraping CcrStatus = "BOOTSTRAPING"
-	CcrStatusPaused CcrStatus = "PAUSED"
-	CcrStausReplicationNotInProgress CcrStatus = "REPLICATION NOT IN PROGRESS"
-)

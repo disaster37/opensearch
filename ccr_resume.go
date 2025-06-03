@@ -133,6 +133,7 @@ func (s *CcrResumeRuleService) Do(ctx context.Context) (*CcrResumeRuleResponse, 
 	// Get HTTP response
 	res, err := s.client.PerformRequest(ctx, PerformRequestOptions{
 		Method:  "POST",
+		Body:    `{}`,
 		Path:    path,
 		Params:  params,
 		Headers: s.headers,

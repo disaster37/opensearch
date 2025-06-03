@@ -9,9 +9,9 @@ import (
 	"strings"
 )
 
-// CcrLeaderStatusRuleService get CCR leader stats.
+// CcrPostAutoFollowService start a CCR rule by its name.
 // See https://docs.opensearch.org/docs/latest/tuning-your-cluster/replication-plugin/api/
-type CcrLeaderStatusRuleService struct {
+type CcrPostAutoFollowService struct {
 	client *Client
 
 	pretty     *bool       // pretty format the returned JSON response
@@ -19,42 +19,44 @@ type CcrLeaderStatusRuleService struct {
 	errorTrace *bool       // include the stack trace of returned errors
 	filterPath []string    // list of filters used to reduce the response
 	headers    http.Header // custom request-level HTTP headers
+
+	body any
 }
 
-// NewCcrLeaderStatusRuleService creates a new CcrLeaderStatusRuleService.
-func NewCcrLeaderStatusRuleService(client *Client) *CcrLeaderStatusRuleService {
-	return &CcrLeaderStatusRuleService{
+// NewCcrPostAutoFollowService creates a new CcrPostAutoFollowService.
+func NewCcrPostAutoFollowService(client *Client) *CcrPostAutoFollowService {
+	return &CcrPostAutoFollowService{
 		client: client,
 	}
 }
 
 // Pretty tells Opensearch whether to return a formatted JSON response.
-func (s *CcrLeaderStatusRuleService) Pretty(pretty bool) *CcrLeaderStatusRuleService {
+func (s *CcrPostAutoFollowService) Pretty(pretty bool) *CcrPostAutoFollowService {
 	s.pretty = &pretty
 	return s
 }
 
 // Human specifies whether human readable values should be returned in
 // the JSON response, e.g. "7.5mb".
-func (s *CcrLeaderStatusRuleService) Human(human bool) *CcrLeaderStatusRuleService {
+func (s *CcrPostAutoFollowService) Human(human bool) *CcrPostAutoFollowService {
 	s.human = &human
 	return s
 }
 
 // ErrorTrace specifies whether to include the stack trace of returned errors.
-func (s *CcrLeaderStatusRuleService) ErrorTrace(errorTrace bool) *CcrLeaderStatusRuleService {
+func (s *CcrPostAutoFollowService) ErrorTrace(errorTrace bool) *CcrPostAutoFollowService {
 	s.errorTrace = &errorTrace
 	return s
 }
 
 // FilterPath specifies a list of filters used to reduce the response.
-func (s *CcrLeaderStatusRuleService) FilterPath(filterPath ...string) *CcrLeaderStatusRuleService {
+func (s *CcrPostAutoFollowService) FilterPath(filterPath ...string) *CcrPostAutoFollowService {
 	s.filterPath = filterPath
 	return s
 }
 
 // Header adds a header to the request.
-func (s *CcrLeaderStatusRuleService) Header(name string, value string) *CcrLeaderStatusRuleService {
+func (s *CcrPostAutoFollowService) Header(name string, value string) *CcrPostAutoFollowService {
 	if s.headers == nil {
 		s.headers = http.Header{}
 	}
@@ -63,15 +65,21 @@ func (s *CcrLeaderStatusRuleService) Header(name string, value string) *CcrLeade
 }
 
 // Headers specifies the headers of the request.
-func (s *CcrLeaderStatusRuleService) Headers(headers http.Header) *CcrLeaderStatusRuleService {
+func (s *CcrPostAutoFollowService) Headers(headers http.Header) *CcrPostAutoFollowService {
 	s.headers = headers
 	return s
 }
 
+// Body specifies the policy. Use a string or a type that will get serialized as JSON.
+func (s *CcrPostAutoFollowService) Body(body interface{}) *CcrPostAutoFollowService {
+	s.body = body
+	return s
+}
+
 // buildURL builds the URL for the operation.
-func (s *CcrLeaderStatusRuleService) buildURL() (string, url.Values, error) {
+func (s *CcrPostAutoFollowService) buildURL() (string, url.Values, error) {
 	// Build URL
-	path := "/_plugins/_replication/leader_stats"
+	path := "/_plugins/_replication/_autofollow"
 
 	// Add query string parameters
 	params := url.Values{}
@@ -91,13 +99,19 @@ func (s *CcrLeaderStatusRuleService) buildURL() (string, url.Values, error) {
 }
 
 // Validate checks if the operation is valid.
-func (s *CcrLeaderStatusRuleService) Validate() error {
-
+func (s *CcrPostAutoFollowService) Validate() error {
+	var invalid []string
+	if s.body == nil {
+		invalid = append(invalid, "Body")
+	}
+	if len(invalid) > 0 {
+		return fmt.Errorf("missing required fields: %v", invalid)
+	}
 	return nil
 }
 
 // Do executes the operation.
-func (s *CcrLeaderStatusRuleService) Do(ctx context.Context) (*CcrLeaderStatusRuleResponse, error) {
+func (s *CcrPostAutoFollowService) Do(ctx context.Context) (*CcrPostAutoFollowResponse, error) {
 	// Check pre-conditions
 	if err := s.Validate(); err != nil {
 		return nil, err
@@ -111,9 +125,10 @@ func (s *CcrLeaderStatusRuleService) Do(ctx context.Context) (*CcrLeaderStatusRu
 
 	// Get HTTP response
 	res, err := s.client.PerformRequest(ctx, PerformRequestOptions{
-		Method:  "GET",
+		Method:  "POST",
 		Path:    path,
 		Params:  params,
+		Body:    s.body,
 		Headers: s.headers,
 	})
 	if err != nil {
@@ -121,27 +136,22 @@ func (s *CcrLeaderStatusRuleService) Do(ctx context.Context) (*CcrLeaderStatusRu
 	}
 
 	// Return operation response
-	ret := new(CcrLeaderStatusRuleResponse)
+	ret := new(CcrPostAutoFollowResponse)
 	if err := json.Unmarshal(res.Body, ret); err != nil {
 		return nil, err
 	}
 	return ret, nil
 }
 
-// CcrLeaderStatusRuleResponse get status of leader
-// https://opensearch.org/docs/latest/im-plugin/ism/api/#get-policy
-type CcrLeaderStatusRuleResponse struct {
-	CcrStatusLeaderState
-	NumReplicatedIndices int64               `json:"num_replicated_indices"`
-	IndexStats           map[string]CcrStatusLeaderState `json:"index_stats"`
+// CcrPostAutoFollowResponse is the response when start CCR
+type CcrPostAutoFollowResponse struct {
+	Acknowledged bool `json:"acknowledged"`
 }
 
-type CcrStatusLeaderState struct {
-	OperationsRead              int64 `json:"operations_read"`
-	TranslogSizeBytes           int64 `json:"translog_size_bytes"`
-	OperationsReadLucene        int64 `json:"operations_read_lucene"`
-	OperationsReadTranslog      int64 `json:"operations_read_translog"`
-	TotalReadTimeLuceneMillis   int64 `json:"total_read_time_lucene_millis"`
-	TotalReadTimeTranslogMillis int64 `json:"total_read_time_translog_millis"`
-	BytesRead                   int64 `json:"bytes_read"`
+// CcrPostAutoFollow is a follow CCR rule
+type CcrAutoFollowRule struct {
+	LeaderAlias string         `json:"leader_alias"`
+	Name        string         `json:"name"`
+	Pattern     string         `json:"pattern"`
+	UseRoles     CcrRuleUseRoles `json:"use_roles"`
 }

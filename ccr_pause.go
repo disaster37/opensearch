@@ -133,6 +133,7 @@ func (s *CcrPauseRuleService) Do(ctx context.Context) (*CcrPauseRuleResponse, er
 	// Get HTTP response
 	res, err := s.client.PerformRequest(ctx, PerformRequestOptions{
 		Method:  "POST",
+		Body:    `{}`,
 		Path:    path,
 		Params:  params,
 		Headers: s.headers,

@@ -9,9 +9,9 @@ import (
 	"strings"
 )
 
-// CcrFollowStatusRuleService get a CCR rule by its name.
+// CcrAutoFollowStatusService get a CCR rule by its name.
 // See https://docs.opensearch.org/docs/latest/tuning-your-cluster/replication-plugin/api/
-type CcrFollowStatusRuleService struct {
+type CcrAutoFollowStatusService struct {
 	client *Client
 
 	pretty     *bool       // pretty format the returned JSON response
@@ -21,40 +21,40 @@ type CcrFollowStatusRuleService struct {
 	headers    http.Header // custom request-level HTTP headers
 }
 
-// NewCcrFollowStatusRuleService creates a new CcrFollowStatusRuleService.
-func NewCcrFollowStatusRuleService(client *Client) *CcrFollowStatusRuleService {
-	return &CcrFollowStatusRuleService{
+// NewCcrAutoFollowStatusService creates a new CcrAutoFollowStatusService.
+func NewCcrAutoFollowStatusService(client *Client) *CcrAutoFollowStatusService {
+	return &CcrAutoFollowStatusService{
 		client: client,
 	}
 }
 
 // Pretty tells Opensearch whether to return a formatted JSON response.
-func (s *CcrFollowStatusRuleService) Pretty(pretty bool) *CcrFollowStatusRuleService {
+func (s *CcrAutoFollowStatusService) Pretty(pretty bool) *CcrAutoFollowStatusService {
 	s.pretty = &pretty
 	return s
 }
 
 // Human specifies whether human readable values should be returned in
 // the JSON response, e.g. "7.5mb".
-func (s *CcrFollowStatusRuleService) Human(human bool) *CcrFollowStatusRuleService {
+func (s *CcrAutoFollowStatusService) Human(human bool) *CcrAutoFollowStatusService {
 	s.human = &human
 	return s
 }
 
 // ErrorTrace specifies whether to include the stack trace of returned errors.
-func (s *CcrFollowStatusRuleService) ErrorTrace(errorTrace bool) *CcrFollowStatusRuleService {
+func (s *CcrAutoFollowStatusService) ErrorTrace(errorTrace bool) *CcrAutoFollowStatusService {
 	s.errorTrace = &errorTrace
 	return s
 }
 
 // FilterPath specifies a list of filters used to reduce the response.
-func (s *CcrFollowStatusRuleService) FilterPath(filterPath ...string) *CcrFollowStatusRuleService {
+func (s *CcrAutoFollowStatusService) FilterPath(filterPath ...string) *CcrAutoFollowStatusService {
 	s.filterPath = filterPath
 	return s
 }
 
 // Header adds a header to the request.
-func (s *CcrFollowStatusRuleService) Header(name string, value string) *CcrFollowStatusRuleService {
+func (s *CcrAutoFollowStatusService) Header(name string, value string) *CcrAutoFollowStatusService {
 	if s.headers == nil {
 		s.headers = http.Header{}
 	}
@@ -63,15 +63,15 @@ func (s *CcrFollowStatusRuleService) Header(name string, value string) *CcrFollo
 }
 
 // Headers specifies the headers of the request.
-func (s *CcrFollowStatusRuleService) Headers(headers http.Header) *CcrFollowStatusRuleService {
+func (s *CcrAutoFollowStatusService) Headers(headers http.Header) *CcrAutoFollowStatusService {
 	s.headers = headers
 	return s
 }
 
 // buildURL builds the URL for the operation.
-func (s *CcrFollowStatusRuleService) buildURL() (string, url.Values, error) {
+func (s *CcrAutoFollowStatusService) buildURL() (string, url.Values, error) {
 	// Build URL
-	path := "_plugins/_replication/autofollow_stats"
+	path := "/_plugins/_replication/autofollow_stats"
 
 	// Add query string parameters
 	params := url.Values{}
@@ -91,13 +91,13 @@ func (s *CcrFollowStatusRuleService) buildURL() (string, url.Values, error) {
 }
 
 // Validate checks if the operation is valid.
-func (s *CcrFollowStatusRuleService) Validate() error {
+func (s *CcrAutoFollowStatusService) Validate() error {
 
 	return nil
 }
 
 // Do executes the operation.
-func (s *CcrFollowStatusRuleService) Do(ctx context.Context) (*CcrFollowStatusRuleResponse, error) {
+func (s *CcrAutoFollowStatusService) Do(ctx context.Context) (*CcrAutoFollowStatusResponse, error) {
 	// Check pre-conditions
 	if err := s.Validate(); err != nil {
 		return nil, err
@@ -121,16 +121,16 @@ func (s *CcrFollowStatusRuleService) Do(ctx context.Context) (*CcrFollowStatusRu
 	}
 
 	// Return operation response
-	ret := new(CcrFollowStatusRuleResponse)
+	ret := new(CcrAutoFollowStatusResponse)
 	if err := json.Unmarshal(res.Body, ret); err != nil {
 		return nil, err
 	}
 	return ret, nil
 }
 
-// CcrFollowStatusRuleResponse is the get index state management response object
+// CcrAutoFollowStatusResponse is the get index state management response object
 // https://opensearch.org/docs/latest/im-plugin/ism/api/#get-policy
-type CcrFollowStatusRuleResponse struct {
+type CcrAutoFollowStatusResponse struct {
 	NumSuccessStartReplications int64                  `json:"num_success_start_replications"`
 	NumFailedStartReplications  int64                  `json:"num_failed_start_replications"`
 	NumFailedLeaderCalls        int64                  `json:"num_failed_leader_calls"`

@@ -167,13 +167,13 @@ type CcrStartRuleResponse struct {
 
 // CcrRule is a CCR rule
 type CcrRule struct {
-	LeaderAlias string         `json:"leader_alias"`
-	LeaderIndex string         `json:"leader_index"`
-	UseRole     CcrRuleUseRole `json:"use_role"`
+	LeaderAlias string          `json:"leader_alias"`
+	LeaderIndex string          `json:"leader_index"`
+	UseRoles    CcrRuleUseRoles `json:"use_roles"`
 }
 
 // CcrRuleUseRole is a user role for rule
-type CcrRuleUseRole struct {
+type CcrRuleUseRoles struct {
 	LeaderClusterRole   string `json:"leader_cluster_role"`
 	FollowerClusterRole string `json:"follower_cluster_role"`
 }

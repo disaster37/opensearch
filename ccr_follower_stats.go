@@ -9,9 +9,9 @@ import (
 	"strings"
 )
 
-// CcrFollowerStatusRuleService get CCR follower stats.
+// CcrFollowerStatsService get CCR follower stats.
 // See https://docs.opensearch.org/docs/latest/tuning-your-cluster/replication-plugin/api/
-type CcrFollowerStatusRuleService struct {
+type CcrFollowerStatsService struct {
 	client *Client
 
 	pretty     *bool       // pretty format the returned JSON response
@@ -21,40 +21,40 @@ type CcrFollowerStatusRuleService struct {
 	headers    http.Header // custom request-level HTTP headers
 }
 
-// NewCcrFollowerStatusRuleService creates a new CcrFollowerStatusRuleService.
-func NewCcrFollowerStatusRuleService(client *Client) *CcrFollowerStatusRuleService {
-	return &CcrFollowerStatusRuleService{
+// NewCcrFollowerStatsService creates a new CcrFollowerStatsService.
+func NewCcrFollowerStatsService(client *Client) *CcrFollowerStatsService {
+	return &CcrFollowerStatsService{
 		client: client,
 	}
 }
 
 // Pretty tells Opensearch whether to return a formatted JSON response.
-func (s *CcrFollowerStatusRuleService) Pretty(pretty bool) *CcrFollowerStatusRuleService {
+func (s *CcrFollowerStatsService) Pretty(pretty bool) *CcrFollowerStatsService {
 	s.pretty = &pretty
 	return s
 }
 
 // Human specifies whether human readable values should be returned in
 // the JSON response, e.g. "7.5mb".
-func (s *CcrFollowerStatusRuleService) Human(human bool) *CcrFollowerStatusRuleService {
+func (s *CcrFollowerStatsService) Human(human bool) *CcrFollowerStatsService {
 	s.human = &human
 	return s
 }
 
 // ErrorTrace specifies whether to include the stack trace of returned errors.
-func (s *CcrFollowerStatusRuleService) ErrorTrace(errorTrace bool) *CcrFollowerStatusRuleService {
+func (s *CcrFollowerStatsService) ErrorTrace(errorTrace bool) *CcrFollowerStatsService {
 	s.errorTrace = &errorTrace
 	return s
 }
 
 // FilterPath specifies a list of filters used to reduce the response.
-func (s *CcrFollowerStatusRuleService) FilterPath(filterPath ...string) *CcrFollowerStatusRuleService {
+func (s *CcrFollowerStatsService) FilterPath(filterPath ...string) *CcrFollowerStatsService {
 	s.filterPath = filterPath
 	return s
 }
 
 // Header adds a header to the request.
-func (s *CcrFollowerStatusRuleService) Header(name string, value string) *CcrFollowerStatusRuleService {
+func (s *CcrFollowerStatsService) Header(name string, value string) *CcrFollowerStatsService {
 	if s.headers == nil {
 		s.headers = http.Header{}
 	}
@@ -63,13 +63,13 @@ func (s *CcrFollowerStatusRuleService) Header(name string, value string) *CcrFol
 }
 
 // Headers specifies the headers of the request.
-func (s *CcrFollowerStatusRuleService) Headers(headers http.Header) *CcrFollowerStatusRuleService {
+func (s *CcrFollowerStatsService) Headers(headers http.Header) *CcrFollowerStatsService {
 	s.headers = headers
 	return s
 }
 
 // buildURL builds the URL for the operation.
-func (s *CcrFollowerStatusRuleService) buildURL() (string, url.Values, error) {
+func (s *CcrFollowerStatsService) buildURL() (string, url.Values, error) {
 	// Build URL
 	path := "/_plugins/_replication/follower_stats"
 
@@ -91,13 +91,13 @@ func (s *CcrFollowerStatusRuleService) buildURL() (string, url.Values, error) {
 }
 
 // Validate checks if the operation is valid.
-func (s *CcrFollowerStatusRuleService) Validate() error {
+func (s *CcrFollowerStatsService) Validate() error {
 
 	return nil
 }
 
 // Do executes the operation.
-func (s *CcrFollowerStatusRuleService) Do(ctx context.Context) (*CcrFollowerStatusRuleResponse, error) {
+func (s *CcrFollowerStatsService) Do(ctx context.Context) (*CcrFollowerStatsResponse, error) {
 	// Check pre-conditions
 	if err := s.Validate(); err != nil {
 		return nil, err
@@ -121,16 +121,16 @@ func (s *CcrFollowerStatusRuleService) Do(ctx context.Context) (*CcrFollowerStat
 	}
 
 	// Return operation response
-	ret := new(CcrFollowerStatusRuleResponse)
+	ret := new(CcrFollowerStatsResponse)
 	if err := json.Unmarshal(res.Body, ret); err != nil {
 		return nil, err
 	}
 	return ret, nil
 }
 
-// CcrFollowerStatusRuleResponse get status of follower
+// CcrFollowerStatsResponse get status of follower
 // https://opensearch.org/docs/latest/im-plugin/ism/api/#get-policy
-type CcrFollowerStatusRuleResponse struct {
+type CcrFollowerStatsResponse struct {
 	CcrStatusFollowerState
 	NumSyncingIndices       int64                             `json:"num_syncing_indices"`
 	NumBootstrappingIndices int64                             `json:"num_bootstrapping_indices"`
