@@ -150,8 +150,8 @@ type CcrPostAutoFollowResponse struct {
 
 // CcrPostAutoFollow is a follow CCR rule
 type CcrAutoFollowRule struct {
-	LeaderAlias string         `json:"leader_alias"`
-	Name        string         `json:"name"`
-	Pattern     string         `json:"pattern"`
-	UseRoles     CcrRuleUseRoles `json:"use_roles"`
+	LeaderAlias string          `json:"leader_alias"`
+	Name        string          `json:"name"`
+	Pattern     string          `json:"pattern"`
+	UseRoles    CcrRuleUseRoles `json:"use_roles"`
 }

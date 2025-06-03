@@ -167,13 +167,12 @@ type CcrRuleSyncingDetails struct {
 	SeqNumber          int64 `json:"seq_no"`
 }
 
-
 // CcrStatus is the status of the CCR rule
 type CcrStatus string
 
-const(
-	CcrStatusSyncing CcrStatus = "SYNCING"
-	CcrStatusBootstraping CcrStatus = "BOOTSTRAPING"
-	CcrStatusPaused CcrStatus = "PAUSED"
+const (
+	CcrStatusSyncing                 CcrStatus = "SYNCING"
+	CcrStatusBootstraping            CcrStatus = "BOOTSTRAPING"
+	CcrStatusPaused                  CcrStatus = "PAUSED"
 	CcrStausReplicationNotInProgress CcrStatus = "REPLICATION NOT IN PROGRESS"
 )

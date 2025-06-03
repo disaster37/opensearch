@@ -92,7 +92,6 @@ func (s *CcrAutoFollowStatusService) buildURL() (string, url.Values, error) {
 
 // Validate checks if the operation is valid.
 func (s *CcrAutoFollowStatusService) Validate() error {
-
 	return nil
 }
 

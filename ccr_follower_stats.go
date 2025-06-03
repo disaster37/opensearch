@@ -92,7 +92,6 @@ func (s *CcrFollowerStatsService) buildURL() (string, url.Values, error) {
 
 // Validate checks if the operation is valid.
 func (s *CcrFollowerStatsService) Validate() error {
-
 	return nil
 }
 

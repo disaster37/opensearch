@@ -92,7 +92,6 @@ func (s *CcrLeaderStatsService) buildURL() (string, url.Values, error) {
 
 // Validate checks if the operation is valid.
 func (s *CcrLeaderStatsService) Validate() error {
-
 	return nil
 }
 
@@ -132,7 +131,7 @@ func (s *CcrLeaderStatsService) Do(ctx context.Context) (*CcrLeaderStatsResponse
 // https://opensearch.org/docs/latest/im-plugin/ism/api/#get-policy
 type CcrLeaderStatsResponse struct {
 	CcrStatusLeaderState
-	NumReplicatedIndices int64               `json:"num_replicated_indices"`
+	NumReplicatedIndices int64                           `json:"num_replicated_indices"`
 	IndexStats           map[string]CcrStatusLeaderState `json:"index_stats"`
 }
 
