@@ -2375,3 +2375,54 @@ func (c *Client) TransformStartJob(jobName string) *TransformStartJobService {
 func (c *Client) TransformStopJob(jobName string) *TransformStopJobService {
 	return NewTransformStopJobService(c).Name(jobName)
 }
+
+// -- Cross Cluster Replication plugin --
+
+// CcrAutoFollowStatus gets information about auto-follow activity and any replication rules configured on the specified cluster.
+func (c *Client) CcrAutoFollowStatus() *CcrAutoFollowStatusService {
+	return NewCcrAutoFollowStatusService(c)
+}
+
+// CcrPostAutoFollow creates a new replication rule based on pattern
+func (c *Client) CcrPostAutoFollow() *CcrPostAutoFollowService {
+	return NewCcrPostAutoFollowService(c)
+}
+
+func (c *Client) CcrDeleteAutoFollow(leaderAlias, name string) *CcrDeleteAutoFollowService {
+	return NewCcrDeleteAutoFollowService(c).Name(name).LeaderAlias(leaderAlias)
+}
+
+// CcrStartRule create and start a replication rule
+func (c *Client) CcrStartRule(name string) *CcrStartRuleService {
+	return NewCcrStartRuleService(c).Name(name)
+}
+
+// CcrStopRule stop a replication rule
+func (c *Client) CcrStopRule(name string) *CcrStopRuleService {
+	return NewCcrStopRuleService(c).Name(name)
+}
+
+// CcrPauseRule pause a replication rule
+func (c *Client) CcrPauseRule(name string) *CcrPauseRuleService {
+	return NewCcrPauseRuleService(c).Name(name)
+}
+
+// CcrResumeRule resume a replication rule
+func (c *Client) CcrResumeRule(name string) *CcrResumeRuleService {
+	return NewCcrResumeRuleService(c).Name(name)
+}
+
+// CcrStatusRule gets information about a replication rule
+func (c *Client) CcrStatusRule(name string) *CcrStatusRuleService {
+	return NewCcrStatusRuleService(c).Name(name)
+}
+
+// CcrFollowerStats gets information about follower (syncing) indexes on a specified cluster.
+func (c *Client) CcrFollowerStats() *CcrFollowerStatsService {
+	return NewCcrFollowerStatsService(c)
+}
+
+// CcrLeaderStats gets information about replicated leader indexes on a specified cluster.
+func (c *Client) CcrLeaderStats() *CcrLeaderStatsService {
+	return NewCcrLeaderStatsService(c)
+}

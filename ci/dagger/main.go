@@ -17,6 +17,7 @@ package main
 import (
 	"context"
 	"fmt"
+	"time"
 
 	"dagger/opensearch/internal/dagger"
 
@@ -154,6 +155,82 @@ func (h *Opensearch) Format(
 	return h.GolangModule.Format()
 }
 
+func (h *Opensearch) Opensearch(ctx context.Context) *dagger.Service {
+
+	opensearchLeaderService := dag.Container().
+		From(fmt.Sprintf("opensearchproject/opensearch:%s", OpensearchVersion)).
+		WithEnvVariable("cluster.name", "leader").
+		WithEnvVariable("node.name", "opensearch-leader-node1").
+		WithEnvVariable("node.roles", "remote_cluster_client, ingest, data, cluster_manager").
+		WithEnvVariable("bootstrap.memory_lock", "true").
+		WithEnvVariable("discovery.type", "single-node").
+		WithEnvVariable("network.publish_host", "0.0.0.0").
+		WithEnvVariable("logger.org.opensearchsearch", "warn").
+		WithEnvVariable("OPENSEARCH_JAVA_OPTS", "-Xms512M -Xmx512M").
+		WithEnvVariable("plugins.security.nodes_dn_dynamic_config_enabled", "true").
+		WithEnvVariable("plugins.security.unsupported.restapi.allow_securityconfig_modification", "true").
+		WithEnvVariable("OPENSEARCH_INITIAL_ADMIN_PASSWORD", password).
+		WithEnvVariable("path.repo", "/usr/share/opensearch/backup").
+		WithEnvVariable("CLEAN_CACHE", time.Now().String()).
+		WithExposedPort(9200).
+		WithExposedPort(9300).
+		AsService()
+
+	stdout, err := dag.Container().
+		From("alpine/curl").
+		WithEntrypoint([]string{"sh", "-c"}).
+		WithServiceBinding("opensearch-leader.svc", opensearchLeaderService).
+		WithEnvVariable("CLEAN_CACHE", time.Now().String()).
+		WithExec(helper.ForgeScript(`
+sleep 10
+curl --fail -XGET -k -u admin:vLPeJYa8.3RqtZCcAK6jNz https://opensearch-leader.svc:9200/_cluster/health?wait_for_status=yellow&timeout=60s
+curl --fail -XPUT -k -u admin:vLPeJYa8.3RqtZCcAK6jNz -H 'Content-Type: application/json' https://opensearch-leader.svc:9200/leader-01 -d '{"settings": {"index": {"number_of_shards": 1, "number_of_replicas": 0}}}'
+curl --fail -XGET -k -u admin:vLPeJYa8.3RqtZCcAK6jNz -H 'Content-Type: application/json' https://opensearch-leader.svc:9200/leader-01
+	`)).
+		WithExec([]string{"sh", "-c", "echo done"}).
+		Stdout(ctx)
+
+	if err != nil {
+		panic(err)
+	}
+
+	opensearchFollowerService := dag.Container().
+		From(fmt.Sprintf("opensearchproject/opensearch:%s", OpensearchVersion)).
+		WithEnvVariable("cluster.name", "test").
+		WithEnvVariable("node.roles", "remote_cluster_client, ingest, data, cluster_manager").
+		WithEnvVariable("node.name", "opensearch-node1").
+		WithEnvVariable("bootstrap.memory_lock", "true").
+		WithEnvVariable("discovery.type", "single-node").
+		WithEnvVariable("network.publish_host", "0.0.0.0").
+		WithEnvVariable("logger.org.opensearchsearch", "warn").
+		WithEnvVariable("OPENSEARCH_JAVA_OPTS", "-Xms1g -Xmx1g").
+		WithEnvVariable("plugins.security.nodes_dn_dynamic_config_enabled", "true").
+		WithEnvVariable("plugins.security.unsupported.restapi.allow_securityconfig_modification", "true").
+		WithEnvVariable("OPENSEARCH_INITIAL_ADMIN_PASSWORD", password).
+		WithEnvVariable("path.repo", "/usr/share/opensearch/backup").
+		WithEnvVariable("CLEAN_CACHE", time.Now().String()).
+		WithEnvVariable("FORCE_WAIT", stdout).
+		WithExposedPort(9200).
+		WithServiceBinding("opensearch-leader.svc", opensearchLeaderService).
+		AsService()
+
+	if _, err := dag.Container().
+		From("alpine/curl").
+		WithEntrypoint([]string{"sh", "-c"}).
+		WithServiceBinding("opensearch.svc", opensearchFollowerService).
+		WithEnvVariable("CLEAN_CACHE", time.Now().String()).
+		WithExec(helper.ForgeScript(`
+sleep 10
+curl --fail -XGET -k -u admin:vLPeJYa8.3RqtZCcAK6jNz https://opensearch.svc:9200/_cluster/health?wait_for_status=yellow&timeout=60s
+curl -XPUT -k -H 'Content-Type: application/json' -u admin:vLPeJYa8.3RqtZCcAK6jNz 'https://opensearch.svc:9200/_cluster/settings?pretty' -d '{"persistent":{"cluster":{"remote":{"test":{"seeds":["opensearch-leader.svc:9300"]}}}}}'
+	`)).
+		Stdout(ctx); err != nil {
+		panic(err)
+	}
+
+	return opensearchFollowerService
+}
+
 // Test permit to run tests
 func (h *Opensearch) Test(
 	ctx context.Context,
@@ -168,21 +245,7 @@ func (h *Opensearch) Test(
 	}
 
 	// Run Opensearch
-	opensearchService := dag.Container().
-		From(fmt.Sprintf("opensearchproject/opensearch:%s", OpensearchVersion)).
-		WithEnvVariable("cluster.name", "test").
-		WithEnvVariable("node.name", "opensearch-node1").
-		WithEnvVariable("bootstrap.memory_lock", "true").
-		WithEnvVariable("discovery.type", "single-node").
-		WithEnvVariable("network.publish_host", "0.0.0.0").
-		WithEnvVariable("logger.org.opensearchsearch", "warn").
-		WithEnvVariable("OPENSEARCH_JAVA_OPTS", "-Xms1g -Xmx1g").
-		WithEnvVariable("plugins.security.nodes_dn_dynamic_config_enabled", "true").
-		WithEnvVariable("plugins.security.unsupported.restapi.allow_securityconfig_modification", "true").
-		WithEnvVariable("OPENSEARCH_INITIAL_ADMIN_PASSWORD", password).
-		WithEnvVariable("path.repo", "/usr/share/opensearch/backup").
-		WithExposedPort(9200).
-		AsService()
+	opensearchService := h.Opensearch(ctx)
 
 	return h.GolangModule.Container().
 		WithServiceBinding("opensearch.svc", opensearchService).
@@ -209,21 +272,7 @@ func (h *Opensearch) DebugTest(
 	}
 
 	// Run Opensearch
-	opensearchService := dag.Container().
-		From(fmt.Sprintf("opensearchproject/opensearch:%s", OpensearchVersion)).
-		WithEnvVariable("cluster.name", "test").
-		WithEnvVariable("node.name", "opensearch-node1").
-		WithEnvVariable("bootstrap.memory_lock", "true").
-		WithEnvVariable("discovery.type", "single-node").
-		WithEnvVariable("network.publish_host", "0.0.0.0").
-		WithEnvVariable("logger.org.opensearchsearch", "warn").
-		WithEnvVariable("OPENSEARCH_JAVA_OPTS", "-Xms1g -Xmx1g").
-		WithEnvVariable("plugins.security.nodes_dn_dynamic_config_enabled", "true").
-		WithEnvVariable("plugins.security.unsupported.restapi.allow_securityconfig_modification", "true").
-		WithEnvVariable("OPENSEARCH_INITIAL_ADMIN_PASSWORD", password).
-		WithEnvVariable("path.repo", "/usr/share/opensearch/backup").
-		WithExposedPort(9200).
-		AsService()
+	opensearchService := h.Opensearch(ctx)
 	defer opensearchService.Stop(ctx)
 
 	return h.GolangModule.Container().

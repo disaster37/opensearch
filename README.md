@@ -22,7 +22,7 @@ Here's the version matrix:
 
 Opensearch version | Opensearch version  | Package URL | Remarks |
 ----------------------|------------------|-------------|---------|
-2.x                   | 2.18.0              | [`gopkg.in/disaster37/opensearch.v2`](https://gopkg.in/disaster37/opensearch.v2) ([source](https://github.com/disaster37/opensearch/tree/release-branch.v2) [doc](http://godoc.org/gopkg.in/disaster37/opensearch.v2)) | Last version
+2.x                   | 2.19.2              | [`gopkg.in/disaster37/opensearch.v2`](https://gopkg.in/disaster37/opensearch.v2) ([source](https://github.com/disaster37/opensearch/tree/release-branch.v2) [doc](http://godoc.org/gopkg.in/disaster37/opensearch.v2)) | Last version
 
 **Example:**
 
@@ -240,12 +240,6 @@ Here's a [link to a complete working example for v2](@todo).
 - [ ] Nodes hot_threads
 - [ ] Cluster Allocation Explain API
 
-### Rollup APIs (XPack)
-- [x] Create Job
-- [x] Delete Job
-- [x] Get Job
-- [x] Start Job
-- [x] Stop Job
 
 ### Query DSL
 
@@ -363,6 +357,10 @@ Here's a [link to a complete working example for v2](@todo).
 - Transform plugin
   - [x] Transform job
 
+### Cross Cluster Replication (CCR)
+- Cross Cluster Replication plugin
+  - [x] Manage CCR rule
+  - [x] Manage auto follow rule
 
 ### Scrolling
 

@@ -31,8 +31,11 @@ func TestClusterSetting(t *testing.T) {
 	}
 
 	// clean noise
-	settingCluster := settings["persistent"].(map[string]any)
-	delete(settingCluster, "plugins")
+	settingPersistent := settings["persistent"].(map[string]any)
+	delete(settingPersistent, "plugins")
+	settingCluster := settingPersistent["cluster"].(map[string]any)
+	delete(settingCluster, "remote")
+	settingPersistent["cluster"] = settingCluster
 
-	assert.Equal(t, expectedSettings["persistent"], settingCluster)
+	assert.Equal(t, expectedSettings["persistent"], settingPersistent)
 }
