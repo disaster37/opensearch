@@ -152,7 +152,6 @@ func (s *CcrStatusRuleService) Do(ctx context.Context) (*CcrStatusRuleResponse, 
 // CcrStatusRuleResponse is the get index state management response object
 // https://opensearch.org/docs/latest/im-plugin/ism/api/#get-policy
 type CcrStatusRuleResponse struct {
-	CcrRule
 	Status         string                `json:"status"`
 	Reason         string                `json:"reason"`
 	LeaderAlias    string                `json:"leader_alias"`
