@@ -130,10 +130,10 @@ func (s *CcrAutoFollowStatusService) Do(ctx context.Context) (*CcrAutoFollowStat
 // CcrAutoFollowStatusResponse is the get index state management response object
 // https://opensearch.org/docs/latest/im-plugin/ism/api/#get-policy
 type CcrAutoFollowStatusResponse struct {
-	NumSuccessStartReplications int64                  `json:"num_success_start_replications"`
-	NumFailedStartReplications  int64                  `json:"num_failed_start_replications"`
-	NumFailedLeaderCalls        int64                  `json:"num_failed_leader_calls"`
-	FailedIndices               []string               `json:"failed_indices"`
+	NumSuccessStartReplications int64                 `json:"num_success_start_replications"`
+	NumFailedStartReplications  int64                 `json:"num_failed_start_replications"`
+	NumFailedLeaderCalls        int64                 `json:"num_failed_leader_calls"`
+	FailedIndices               []string              `json:"failed_indices"`
 	AutofollowStats             []CcrAutoFollowStatus `json:"autofollow_stats"`
 }
 
