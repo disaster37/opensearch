@@ -31,7 +31,7 @@ const (
 	password          string = "vLPeJYa8.3RqtZCcAK6jNz"
 	gitUsername       string = "ci"
 	gitEmail          string = "ci@localhost"
-	defaultGitBranch  string = "release-branch.v2"
+	defaultGitBranch  string = "release-branch.v3"
 )
 
 type Opensearch struct {
