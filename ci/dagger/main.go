@@ -167,6 +167,7 @@ func (h *Opensearch) Opensearch(ctx context.Context) *dagger.Service {
 		WithEnvVariable("logger.org.opensearchsearch", "warn").
 		WithEnvVariable("OPENSEARCH_JAVA_OPTS", "-Xms512M -Xmx512M").
 		WithEnvVariable("plugins.security.nodes_dn_dynamic_config_enabled", "true").
+		WithEnvVariable("plugins.security.unsupported.restapi.allow_securityconfig_modification", "true").
 		WithEnvVariable("OPENSEARCH_INITIAL_ADMIN_PASSWORD", password).
 		WithEnvVariable("path.repo", "/usr/share/opensearch/backup").
 		WithEnvVariable("CLEAN_CACHE", time.Now().String()).
@@ -203,6 +204,7 @@ curl --fail -XGET -k -u admin:vLPeJYa8.3RqtZCcAK6jNz -H 'Content-Type: applicati
 		WithEnvVariable("logger.org.opensearchsearch", "warn").
 		WithEnvVariable("OPENSEARCH_JAVA_OPTS", "-Xms1g -Xmx1g").
 		WithEnvVariable("plugins.security.nodes_dn_dynamic_config_enabled", "true").
+		WithEnvVariable("plugins.security.unsupported.restapi.allow_securityconfig_modification", "true").
 		WithEnvVariable("OPENSEARCH_INITIAL_ADMIN_PASSWORD", password).
 		WithEnvVariable("path.repo", "/usr/share/opensearch/backup").
 		WithEnvVariable("CLEAN_CACHE", time.Now().String()).
