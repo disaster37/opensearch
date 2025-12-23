@@ -13,7 +13,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/disaster37/opensearch/v2/uritemplates"
+	"github.com/disaster37/opensearch/v3/uritemplates"
 )
 
 // SnapshotStatusService returns information about the status of a snapshot.

@@ -24,7 +24,7 @@ import (
 	"github.com/fortytw2/leaktest"
 	"github.com/sirupsen/logrus"
 
-	"github.com/disaster37/opensearch/v2/config"
+	"github.com/disaster37/opensearch/v3/config"
 )
 
 func findConn(s string, slice ...*conn) (int, bool) {

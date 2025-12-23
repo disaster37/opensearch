@@ -34,7 +34,7 @@ import (
 	tracesdk "go.opentelemetry.io/otel/sdk/trace"
 	semconv "go.opentelemetry.io/otel/semconv/v1.7.0"
 
-	"github.com/disaster37/opensearch/v2/trace/opentelemetry"
+	"github.com/disaster37/opensearch/v3/trace/opentelemetry"
 	"github.com/olivere/opensearch"
 )
 

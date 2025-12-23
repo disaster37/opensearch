@@ -18,7 +18,7 @@ import (
 	"github.com/olivere/opensearch"
 	awsauth "github.com/smartystreets/go-aws-auth"
 
-	"github.com/disaster37/opensearch/v2/aws"
+	"github.com/disaster37/opensearch/v3/aws"
 )
 
 func main() {

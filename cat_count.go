@@ -11,7 +11,7 @@ import (
 	"net/url"
 	"strings"
 
-	"github.com/disaster37/opensearch/v2/uritemplates"
+	"github.com/disaster37/opensearch/v3/uritemplates"
 )
 
 // CatCountService provides quick access to the document count of the entire cluster,

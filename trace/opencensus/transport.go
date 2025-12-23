@@ -55,7 +55,7 @@ func (t *Transport) RoundTrip(req *http.Request) (*http.Response, error) {
 	_, span := trace.StartSpan(req.Context(), "opensearch:PerformRequest")
 	attrs := append([]trace.Attribute(nil), t.defaultAttributes...)
 	attrs = append(attrs,
-		trace.StringAttribute("Component", "github.com/disaster37/opensearch/v2"),
+		trace.StringAttribute("Component", "github.com/disaster37/opensearch/v3"),
 		trace.StringAttribute("Method", req.Method),
 		trace.StringAttribute("URL", req.URL.Redacted()),
 		trace.StringAttribute("Hostname", req.URL.Hostname()),

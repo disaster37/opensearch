@@ -8,7 +8,7 @@ import (
 	"net/url"
 	"strings"
 
-	"github.com/disaster37/opensearch/v2/uritemplates"
+	"github.com/disaster37/opensearch/v3/uritemplates"
 )
 
 // IsmGetPolicyService get a ISM policy by its name.

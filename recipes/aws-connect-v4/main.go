@@ -18,7 +18,7 @@ import (
 	"github.com/olivere/env"
 	"github.com/olivere/opensearch"
 
-	aws "github.com/disaster37/opensearch/v2/aws/v4"
+	aws "github.com/disaster37/opensearch/v3/aws/v4"
 )
 
 func main() {

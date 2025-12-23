@@ -1,4 +1,4 @@
-[![Go Report Card](https://goreportcard.com/badge/github.com/disaster37/opensearch/v2)](https://goreportcard.com/report/github.com/disaster37/opensearch/v2)
+[![Go Report Card](https://goreportcard.com/badge/github.com/disaster37/opensearch/v3)](https://goreportcard.com/report/github.com/disaster37/opensearch/v3)
 [![Build Status](https://github.com/disaster37/opensearch/workflows/Test/badge.svg)](https://github.com/disaster37/opensearch/actions)
 [![Godoc](http://img.shields.io/badge/godoc-reference-blue.svg?style=flat)](https://pkg.go.dev/github.com/disaster37/opensearch?tab=doc)
 [![license](http://img.shields.io/badge/license-MIT-red.svg?style=flat)](https://raw.githubusercontent.com/disaster37/opensearch/master/LICENSE)
@@ -14,7 +14,7 @@ Opensearch is an [Opensearch](http://www.opensearch.org/) client for the
 
 ## Releases
 
-**The release branches (e.g. [`release-branch.v2`](https://github.com/disaster37/opensearch/tree/release-branch.v2))
+**The release branches (e.g. [`release-branch.v3`](https://github.com/disaster37/opensearch/tree/release-branch.v3))
 are actively being worked on and can break at any time.
 If you want to use stable versions of Opensearch, please use Go modules.**
 
@@ -22,26 +22,27 @@ Here's the version matrix:
 
 Opensearch version | Opensearch version  | Package URL | Remarks |
 ----------------------|------------------|-------------|---------|
-2.x                   | 2.19.2              | [`gopkg.in/disaster37/opensearch.v2`](https://gopkg.in/disaster37/opensearch.v2) ([source](https://github.com/disaster37/opensearch/tree/release-branch.v2) [doc](http://godoc.org/gopkg.in/disaster37/opensearch.v2)) | Last version
+2.x                   | 2.19.2              | [`gopkg.in/disaster37/opensearch.v2`](https://gopkg.in/disaster37/opensearch.v2) ([source](https://github.com/disaster37/opensearch/tree/release-branch.v2) [doc](http://godoc.org/gopkg.in/disaster37/opensearch.v2)) | 
+3.x                   | 3.4.0              | [`gopkg.in/disaster37/opensearch.v3`](https://gopkg.in/disaster37/opensearch.v3) ([source](https://github.com/disaster37/opensearch/tree/release-branch.v3) [doc](http://godoc.org/gopkg.in/disaster37/opensearch.v3)) | Last version
 
 **Example:**
 
-You have installed Opensearchsearch 2.18.0 and want to use Opensearch.
-As listed above, you should use Opensearch v2 (code is in `release-branch.v2`).
+You have installed Opensearchsearch 3.4.0 and want to use Opensearch.
+As listed above, you should use Opensearch v3 (code is in `release-branch.v3`).
 
 To use the required version of Opensearch in your application, you
 should use [Go modules](https://github.com/golang/go/wiki/Modules)
-to manage dependencies. Make sure to use a version such as `2.0.0` or later.
+to manage dependencies. Make sure to use a version such as `3.4.0` or later.
 
 To use Opensearch, import:
 
 ```go
-import "github.com/disaster37/opensearch/v2"
+import "github.com/disaster37/opensearch/v3"
 ```
 
-### Opensearch 2.0
+### Opensearch 3.4.0
 
-Opensearch 2.0 targets Opensearch 2.x.
+Opensearch 3.4.0 targets Opensearch 3.x.
 
 
 ## Status
@@ -73,7 +74,7 @@ creating a client, creating an index, adding a document, executing a search etc.
 
 An example is available [here](https://disaster37.github.io/opensearch/).
 
-Here's a [link to a complete working example for v2](@todo).
+Here's a [link to a complete working example for v3](@todo).
 
 ## API Status
 

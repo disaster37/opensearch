@@ -11,7 +11,7 @@ import (
 	"net/http"
 	"net/url"
 
-	"github.com/disaster37/opensearch/v2/uritemplates"
+	"github.com/disaster37/opensearch/v3/uritemplates"
 )
 
 // SnapshotDeleteService deletes a snapshot from a snapshot repository.

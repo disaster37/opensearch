@@ -14,7 +14,7 @@ import (
 	"reflect"
 	"time"
 
-	opensearch "github.com/disaster37/opensearch/v2"
+	opensearch "github.com/disaster37/opensearch/v3"
 	"github.com/sirupsen/logrus"
 )
 

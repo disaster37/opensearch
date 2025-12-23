@@ -15,7 +15,7 @@ import (
 	"log"
 	"runtime"
 
-	"github.com/disaster37/opensearch/v2/config"
+	"github.com/disaster37/opensearch/v3/config"
 	"github.com/olivere/opensearch"
 )
 

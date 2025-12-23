@@ -7,7 +7,7 @@ package opensearch_test
 import (
 	"context"
 
-	opensearch "github.com/disaster37/opensearch/v2"
+	opensearch "github.com/disaster37/opensearch/v3"
 )
 
 func ExamplePrefixQuery() {

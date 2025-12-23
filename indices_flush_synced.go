@@ -12,7 +12,7 @@ import (
 	"net/url"
 	"strings"
 
-	"github.com/disaster37/opensearch/v2/uritemplates"
+	"github.com/disaster37/opensearch/v3/uritemplates"
 )
 
 // IndicesSyncedFlushService performs a normal flush, then adds a generated

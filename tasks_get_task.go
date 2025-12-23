@@ -7,7 +7,7 @@ import (
 	"net/url"
 	"strings"
 
-	"github.com/disaster37/opensearch/v2/uritemplates"
+	"github.com/disaster37/opensearch/v3/uritemplates"
 )
 
 // TasksGetTaskService retrieves the state of a task in the cluster. It is part of the Task Management API

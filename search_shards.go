@@ -12,7 +12,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/disaster37/opensearch/v2/uritemplates"
+	"github.com/disaster37/opensearch/v3/uritemplates"
 )
 
 // SearchShardsService returns the indices and shards that a search request would be executed against.

@@ -11,7 +11,7 @@ import (
 	"net/url"
 	"strings"
 
-	"github.com/disaster37/opensearch/v2/uritemplates"
+	"github.com/disaster37/opensearch/v3/uritemplates"
 )
 
 // UpdateByQueryService is documented at https://www.opensearch.co/guide/en/opensearchsearch/plugins/master/plugins-reindex.html.

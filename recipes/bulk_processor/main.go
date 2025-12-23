@@ -25,7 +25,7 @@ import (
 	"github.com/google/uuid"
 	"github.com/olivere/opensearch"
 
-	"github.com/disaster37/opensearch/v2/config"
+	"github.com/disaster37/opensearch/v3/config"
 )
 
 func main() {
