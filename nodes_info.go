@@ -206,10 +206,10 @@ type NodesInfoNode struct {
 
 	// TotalIndexingBuffer represents the total heap allowed to be used to
 	// hold recently indexed documents before they must be written to disk.
-	TotalIndexingBuffer int64 `json:"total_indexing_buffer"` // e.g. 16gb
+	TotalIndexingBuffer string `json:"total_indexing_buffer"` // e.g. 16gb
 	// TotalIndexingBufferInBytes is the same as TotalIndexingBuffer, but
 	// expressed in bytes.
-	TotalIndexingBufferInBytes string `json:"total_indexing_buffer_in_bytes"`
+	TotalIndexingBufferInBytes int64 `json:"total_indexing_buffer_in_bytes"`
 
 	// Roles of the node, e.g. [master, ingest, data]
 	Roles []string `json:"roles"`

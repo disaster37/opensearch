@@ -876,7 +876,7 @@ type SearchProfileShardResult struct {
 	ID           string                    `json:"id"`
 	Searches     []QueryProfileShardResult `json:"searches"`
 	Aggregations []ProfileResult           `json:"aggregations"`
-	Fetch        *ProfileResult            `json:"fetch"`
+	Fetch        []ProfileResult           `json:"fetch"`
 }
 
 // QueryProfileShardResult is a container class to hold the profile results

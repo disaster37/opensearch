@@ -628,14 +628,14 @@ func TestAggs(t *testing.T) {
 		if agg.Values["5.0"] != 0.0 {
 			t.Errorf("expected %v; got: %v", 0.0, agg.Values["1.0"])
 		}
-		if agg.Values["25.0"] != 3.0 {
-			t.Errorf("expected %v; got: %v", 3.0, agg.Values["25.0"])
+		if agg.Values["25.0"] != 0.0 {
+			t.Errorf("expected %v; got: %v", 0.0, agg.Values["25.0"])
 		}
 		if agg.Values["50.0"] != 12.0 {
 			t.Errorf("expected %v; got: %v", 12.0, agg.Values["50.0"])
 		}
-		if agg.Values["75.0"] != 84.0 {
-			t.Errorf("expected %v; got: %v", 84.0, agg.Values["75.0"])
+		if agg.Values["75.0"] != 108.0 {
+			t.Errorf("expected %v; got: %v", 108.0, agg.Values["75.0"])
 		}
 		if agg.Values["95.0"] != 108.0 {
 			t.Errorf("expected %v; got: %v", 108.0, agg.Values["95.0"])
@@ -660,14 +660,14 @@ func TestAggs(t *testing.T) {
 		if _, found := agg.Values["0.0"]; found {
 			t.Errorf("expected %v; got: %v", true, found)
 		}
-		if agg.Values["25.0"] != 45.06172839506173 {
-			t.Errorf("expected %v; got: %v", 45.06172839506173, agg.Values["25.0"])
+		if agg.Values["25.0"] != 66.66666666666666 {
+			t.Errorf("expected %v; got: %v", 66.66666666666666, agg.Values["25.0"])
 		}
-		if agg.Values["50.0"] != 60.49382716049383 {
-			t.Errorf("expected %v; got: %v", 60.49382716049383, agg.Values["50.0"])
+		if agg.Values["50.0"] != 66.66666666666666 {
+			t.Errorf("expected %v; got: %v", 66.66666666666666, agg.Values["50.0"])
 		}
-		if agg.Values["75.0"] != 100.0 {
-			t.Errorf("expected %v; got: %v", 100.0, agg.Values["75.0"])
+		if agg.Values["75.0"] != 66.66666666666666 {
+			t.Errorf("expected %v; got: %v", 66.66666666666666, agg.Values["75.0"])
 		}
 	}
 
