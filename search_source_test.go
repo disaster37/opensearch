@@ -137,6 +137,29 @@ func TestSearchSourceDocvalueFields(t *testing.T) {
 	}
 }
 
+func TestSearchSourceFieldFields(t *testing.T) {
+	matchAllQ := NewMatchAllQuery()
+	builder := NewSearchSource().Query(matchAllQ).
+		Fields("test1", "test2").
+		FieldsWithFormat(
+			FieldField{Field: "test3", Format: "date"},
+			FieldField{Field: "test4", Format: "epoch_millis"},
+		)
+	src, err := builder.Source()
+	if err != nil {
+		t.Fatal(err)
+	}
+	data, err := json.Marshal(src)
+	if err != nil {
+		t.Fatalf("marshaling to JSON failed: %v", err)
+	}
+	got := string(data)
+	expected := `{"fields":["test1","test2",{"field":"test3","format":"date"},{"field":"test4","format":"epoch_millis"}],"query":{"match_all":{}}}`
+	if got != expected {
+		t.Errorf("expected\n%s\n,got:\n%s", expected, got)
+	}
+}
+
 func TestSearchSourceScriptFields(t *testing.T) {
 	matchAllQ := NewMatchAllQuery()
 	sf1 := NewScriptField("test1", NewScript("doc['my_field_name'].value * 2"))
