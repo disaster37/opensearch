@@ -44,7 +44,7 @@ type SearchSource struct {
 	profile                  bool             // profile
 	// TODO extBuilders []SearchExtBuilder // ext
 	pointInTime *PointInTime // pit
-	fields      FieldFields  //fields
+	fields      FieldFields  // fields
 }
 
 // NewSearchSource initializes a new SearchSource.
