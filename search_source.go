@@ -44,6 +44,7 @@ type SearchSource struct {
 	profile                  bool             // profile
 	// TODO extBuilders []SearchExtBuilder // ext
 	pointInTime *PointInTime // pit
+	fields      FieldFields  //fields
 }
 
 // NewSearchSource initializes a new SearchSource.
@@ -326,6 +327,36 @@ func (s *SearchSource) DocvalueFieldsWithFormat(docvalueFields ...DocvalueField)
 	return s
 }
 
+// Field adds a single field to load from the field data cache
+// and return as part of the search request.
+func (s *SearchSource) Field(fieldDataField string) *SearchSource {
+	s.fields = append(s.fields, FieldField{Field: fieldDataField})
+	return s
+}
+
+// FieldWithFormat adds a single field to load from the field data cache
+// and return as part of the search request.
+func (s *SearchSource) FieldWithFormat(fieldDataFieldWithFormat FieldField) *SearchSource {
+	s.fields = append(s.fields, fieldDataFieldWithFormat)
+	return s
+}
+
+// Fields adds one or more fields to load from the field data cache
+// and return as part of the search request.
+func (s *SearchSource) Fields(fieldFields ...string) *SearchSource {
+	for _, f := range fieldFields {
+		s.fields = append(s.fields, FieldField{Field: f})
+	}
+	return s
+}
+
+// FieldsWithFormat adds one or more fields to load from the field data cache
+// and return as part of the search request.
+func (s *SearchSource) FieldsWithFormat(fields ...FieldField) *SearchSource {
+	s.fields = append(s.fields, fields...)
+	return s
+}
+
 // ScriptField adds a single script field with the provided script.
 func (s *SearchSource) ScriptField(scriptField *ScriptField) *SearchSource {
 	s.scriptFields = append(s.scriptFields, scriptField)
@@ -439,6 +470,13 @@ func (s *SearchSource) Source() (interface{}, error) {
 			return nil, err
 		}
 		source["docvalue_fields"] = src
+	}
+	if len(s.fields) > 0 {
+		src, err := s.fields.Source()
+		if err != nil {
+			return nil, err
+		}
+		source["fields"] = src
 	}
 	if len(s.scriptFields) > 0 {
 		sfmap := make(map[string]interface{})

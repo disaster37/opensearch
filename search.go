@@ -334,6 +334,34 @@ func (s *SearchService) DocvalueFieldsWithFormat(docvalueFields ...DocvalueField
 	return s
 }
 
+// Field adds a single field to load from the field data cache
+// and return as part of the search.
+func (s *SearchService) Field(field string) *SearchService {
+	s.searchSource = s.searchSource.Field(field)
+	return s
+}
+
+// FieldWithFormat adds a single field to load from the field data cache
+// and return as part of the search.
+func (s *SearchService) FieldWithFormat(field FieldField) *SearchService {
+	s.searchSource = s.searchSource.FieldWithFormat(field)
+	return s
+}
+
+// Fields adds one or more fields to load from the field data cache
+// and return as part of the search.
+func (s *SearchService) Fields(fields ...string) *SearchService {
+	s.searchSource = s.searchSource.Fields(fields...)
+	return s
+}
+
+// FieldsWithFormat adds one or more fields to load from the field data cache
+// and return as part of the search.
+func (s *SearchService) FieldsWithFormat(fields ...FieldField) *SearchService {
+	s.searchSource = s.searchSource.FieldsWithFormat(fields...)
+	return s
+}
+
 // NoStoredFields indicates that no stored fields should be loaded, resulting in only
 // id and type to be returned per field.
 func (s *SearchService) NoStoredFields() *SearchService {

@@ -473,7 +473,7 @@ func TestSearchSortingBySorters(t *testing.T) {
 	}
 }
 
-func TestSearchSpecificFields(t *testing.T) {
+func TestSearchSpecificDocFields(t *testing.T) {
 	// client := setupTestClientAndCreateIndexAndLog(t, SetTraceLog(log.New(os.Stdout, "", 0)))
 	client := setupTestClientAndCreateIndex(t)
 
@@ -584,6 +584,124 @@ func TestSearchSpecificFields(t *testing.T) {
 		}
 		if want, have := tweets[i].Retweets, int(retweets[0]); want != have {
 			t.Fatalf("expected retweets[%d]=%q; got %q", i, want, have)
+		}
+
+		// Field should not exist
+		numbers, ok := hit.Fields.Float64s("score")
+		if ok {
+			t.Fatalf("expected SearchResult.Hits.Hit.Fields[%s] to NOT be found", "numbers")
+		}
+		if numbers != nil {
+			t.Fatalf("expected no field %q; got %+v", "numbers", numbers)
+		}
+	}
+}
+
+func TestSearchSpecificFields(t *testing.T) {
+	// client := setupTestClientAndCreateIndexAndLog(t, SetTraceLog(log.New(os.Stdout, "", 0)))
+	client := setupTestClientAndCreateIndex(t)
+
+	tweet1 := tweet{User: "olivere", Retweets: 1, Message: "Welcome to Golang and Opensearch."}
+	tweet2 := tweet{User: "olivere", Retweets: 2, Message: "Another unrelated topic."}
+	tweet3 := tweet{User: "sandrae", Retweets: 3, Message: "Cycling is fun."}
+	tweets := []tweet{
+		tweet1,
+		tweet2,
+		tweet3,
+	}
+
+	// Add all documents
+	_, err := client.Index().Index(testIndexName).Id("1").BodyJson(&tweet1).Do(context.TODO())
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	_, err = client.Index().Index(testIndexName).Id("2").BodyJson(&tweet2).Do(context.TODO())
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	_, err = client.Index().Index(testIndexName).Id("3").BodyJson(&tweet3).Do(context.TODO())
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	_, err = client.Refresh().Index(testIndexName).Do(context.TODO())
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	// Match all should return all documents
+	all := NewMatchAllQuery()
+	searchResult, err := client.Search().
+		Index(testIndexName).
+		Query(all).
+		Fields("message").
+		FetchSource(false).
+		Sort("created", true).
+		Do(context.TODO())
+	if err != nil {
+		t.Fatal(err)
+	}
+	if searchResult.Hits == nil {
+		t.Errorf("expected SearchResult.Hits != nil; got nil")
+	}
+	if searchResult.TotalHits() != 3 {
+		t.Errorf("expected SearchResult.TotalHits() = %d; got %d", 3, searchResult.TotalHits())
+	}
+	if len(searchResult.Hits.Hits) != 3 {
+		t.Errorf("expected len(SearchResult.Hits.Hits) = %d; got %d", 3, len(searchResult.Hits.Hits))
+	}
+
+	// Manually inspect the fields
+	for _, hit := range searchResult.Hits.Hits {
+		if hit.Index != testIndexName {
+			t.Errorf("expected SearchResult.Hits.Hit.Index = %q; got %q", testIndexName, hit.Index)
+		}
+		if hit.Source != nil {
+			t.Fatalf("expected SearchResult.Hits.Hit.Source to be nil; got: %v", hit.Source)
+		}
+		if hit.Fields == nil {
+			t.Fatal("expected SearchResult.Hits.Hit.Fields to be != nil")
+		}
+		field, found := hit.Fields["message"]
+		if !found {
+			t.Errorf("expected SearchResult.Hits.Hit.Fields[%s] to be found", "message")
+		}
+		fields, ok := field.([]interface{})
+		if !ok {
+			t.Errorf("expected []interface{}; got: %v", reflect.TypeOf(fields))
+		}
+		if len(fields) != 1 {
+			t.Errorf("expected a field with 1 entry; got: %d", len(fields))
+		}
+		message, ok := fields[0].(string)
+		if !ok {
+			t.Errorf("expected a string; got: %v", reflect.TypeOf(fields[0]))
+		}
+		if message == "" {
+			t.Errorf("expected a message; got: %q", message)
+		}
+	}
+
+	// With the new helper method for fields
+	for i, hit := range searchResult.Hits.Hits {
+		// Field: message
+		items, ok := hit.Fields.Strings("message")
+		if !ok {
+			t.Fatalf("expected SearchResult.Hits.Hit.Fields[%s] to be found", "message")
+		}
+		if want, have := 1, len(items); want != have {
+			t.Fatalf("expected a field with %d entries; got %d", want, have)
+		}
+		if want, have := tweets[i].Message, items[0]; want != have {
+			t.Fatalf("expected message[%d]=%q; got %q", i, want, have)
+		}
+
+		// Field: retweets nil
+		_, ok = hit.Fields.Float64s("retweets")
+		if ok {
+			t.Fatalf("not expected SearchResult.Hits.Hit.Fields[%s] to be found", "retweets")
 		}
 
 		// Field should not exist
