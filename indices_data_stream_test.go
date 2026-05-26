@@ -15,9 +15,9 @@ func TestIndicesDatastream(t *testing.T) {
 	// Create template for datastream index
 	createTemplate, err := client.IndexPutIndexTemplate(testDatastreamIndexName).
 		BodyString(`{
-			"index_patterns": ["` + testDatastreamIndexName + `*"],
+			"index_patterns": ["` + testDatastreamIndexName + `"],
 			"data_stream": {},
-			"priority": 1,
+			"priority": 1
 		}`).Do(context.TODO())
 	if err != nil {
 		t.Fatal(err)
