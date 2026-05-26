@@ -21,13 +21,14 @@ import (
 )
 
 const (
-	testIndexName      = "opensearch-test"
-	testIndexName2     = "opensearch-test2"
-	testIndexName3     = "opensearch-test3"
-	testIndexName4     = "opensearch-test4"
-	testIndexName5     = "opensearch-test5"
-	testIndexNameEmpty = "opensearch-test-empty"
-	testMapping        = `
+	testIndexName           = "opensearch-test"
+	testIndexName2          = "opensearch-test2"
+	testIndexName3          = "opensearch-test3"
+	testIndexName4          = "opensearch-test4"
+	testIndexName5          = "opensearch-test5"
+	testIndexNameEmpty      = "opensearch-test-empty"
+	testDatastreamIndexName = "opensearch-datastream-test"
+	testMapping             = `
 {
 	"settings":{
 		"number_of_shards":1,
