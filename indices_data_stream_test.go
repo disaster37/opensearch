@@ -12,6 +12,19 @@ import (
 func TestIndicesDatastream(t *testing.T) {
 	client := setupTestClient(t)
 
+	// Create template for datastream index
+	createTemplate, err := client.IndexPutIndexTemplate(testDatastreamIndexName).
+		BodyString(`{
+			"index_patterns": ["` + testDatastreamIndexName + `"],
+			"data_stream": {}
+		}`).Do(context.TODO())
+	if err != nil {
+		t.Fatal(err)
+	}
+	if !createTemplate.Acknowledged {
+		t.Errorf("expected IndicesPutIndexTemplateResult.Acknowledged %v; got %v", true, createTemplate.Acknowledged)
+	}
+
 	// Create datastream index
 	createDS, err := client.CreateDataStreamIndex(testDatastreamIndexName).Do(context.TODO())
 	if err != nil {

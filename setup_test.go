@@ -362,6 +362,7 @@ func setupTestClient(t logger, options ...ClientOptionFunc) (client *Client) {
 	// client.DeleteIndex(testDoctypeIndex).Do(context.TODO())
 	_, _ = client.DeleteIndex(testQueryIndex).Do(context.TODO())
 	_, _ = client.DeleteIndex(testJoinIndex).Do(context.TODO())
+	_, _ = client.IndexDeleteIndexTemplate(testDatastreamIndexName).Do(context.TODO())
 
 	return client
 }
