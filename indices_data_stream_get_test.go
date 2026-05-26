@@ -13,7 +13,7 @@ func TestIndicesDataStreamGetValidate(t *testing.T) {
 	client := setupTestClient(t)
 
 	// No index name -> fail with error
-	res, err := NewIndicesDataStreamGetService(client).Datastream("").Do(context.TODO())
+	res, err := NewIndicesDataStreamGetService(client).Datastream().Do(context.TODO())
 	if err == nil {
 		t.Fatalf("expected IndicesDataStreamGet to fail without data stream index name")
 	}
