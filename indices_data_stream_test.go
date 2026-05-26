@@ -17,7 +17,7 @@ func TestIndicesDatastream(t *testing.T) {
 		BodyString(`{
 			"index_patterns": ["` + testDatastreamIndexName + `"],
 			"data_stream": {},
-			"priority": 1
+			"priority": 1000
 		}`).Do(context.TODO())
 	if err != nil {
 		t.Fatal(err)
