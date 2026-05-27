@@ -55,10 +55,7 @@ func TestIndicesDatastream(t *testing.T) {
 
 	// Check if datastream index exists
 	datastreamIndexes, err = client.GetDataStreamIndex(testDatastreamIndexName).Do(context.TODO())
-	if err != nil {
-		t.Fatal(err)
-	}
-	if len(datastreamIndexes.Datastreams) > 0 {
+	if err == nil {
 		t.Fatalf("datastream index %s should not exist, but does\n", testDatastreamIndexName)
 	}
 }
