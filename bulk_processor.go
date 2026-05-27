@@ -180,7 +180,8 @@ func (s *BulkProcessorService) Do(ctx context.Context) (*BulkProcessor, error) {
 		s.flushInterval,
 		s.wantStats,
 		s.backoff,
-		retryItemStatusCodes)
+		retryItemStatusCodes,
+	)
 
 	err := p.Start(ctx)
 	if err != nil {

@@ -100,9 +100,10 @@ func populate(client *opensearch.Client, indexName string) error {
 		doc := map[string]interface{}{
 			"name": fmt.Sprintf("Product %d", i+1),
 		}
-		bulk = bulk.Add(opensearch.NewBulkIndexRequest().
-			Id(fmt.Sprint(i)).
-			Doc(doc),
+		bulk = bulk.Add(
+			opensearch.NewBulkIndexRequest().
+				Id(fmt.Sprint(i)).
+				Doc(doc),
 		)
 		if bulk.NumberOfActions() >= 100 {
 			_, err := bulk.Do(context.Background())

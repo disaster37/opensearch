@@ -29,7 +29,7 @@ func NewRequest(method, url string) (*Request, error) {
 
 // SetBasicAuth wraps http.Request's SetBasicAuth.
 func (r *Request) SetBasicAuth(username, password string) {
-	((*http.Request)(r)).SetBasicAuth(username, password)
+	(*http.Request)(r).SetBasicAuth(username, password)
 }
 
 // SetBody encodes the body in the request. You may pass a flag to

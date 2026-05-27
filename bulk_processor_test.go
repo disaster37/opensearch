@@ -51,7 +51,8 @@ func TestBulkProcessorCommitOnBulkActions(t *testing.T) {
 	// client := setupTestClientAndCreateIndexAndLog(t, SetTraceLog(log.New(os.Stdout, "", 0)))
 	client := setupTestClientAndCreateIndex(t, SetHealthcheckTimeoutStartup(15*time.Second), SetSnifferTimeoutStartup(15*time.Second))
 
-	testBulkProcessor(t,
+	testBulkProcessor(
+		t,
 		10000,
 		client.BulkProcessor().
 			Name("Actions-1").
@@ -60,7 +61,8 @@ func TestBulkProcessorCommitOnBulkActions(t *testing.T) {
 			BulkSize(-1),
 	)
 
-	testBulkProcessor(t,
+	testBulkProcessor(
+		t,
 		10000,
 		client.BulkProcessor().
 			Name("Actions-2").
@@ -74,7 +76,8 @@ func TestBulkProcessorCommitOnBulkSize(t *testing.T) {
 	// client := setupTestClientAndCreateIndexAndLog(t, SetTraceLog(log.New(os.Stdout, "", 0)))
 	client := setupTestClientAndCreateIndex(t, SetHealthcheckTimeoutStartup(15*time.Second), SetSnifferTimeoutStartup(15*time.Second))
 
-	testBulkProcessor(t,
+	testBulkProcessor(
+		t,
 		10000,
 		client.BulkProcessor().
 			Name("Size-1").
@@ -83,7 +86,8 @@ func TestBulkProcessorCommitOnBulkSize(t *testing.T) {
 			BulkSize(64*1024),
 	)
 
-	testBulkProcessor(t,
+	testBulkProcessor(
+		t,
 		10000,
 		client.BulkProcessor().
 			Name("Size-2").

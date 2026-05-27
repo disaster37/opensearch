@@ -399,7 +399,8 @@ func TestClientSnifferCallback(t *testing.T) {
 		SetBasicAuth("admin", "vLPeJYa8.3RqtZCcAK6jNz"),
 		SetTransport(transport),
 		SetURL("https://opensearch.svc:19200", "https://opensearch.svc:9200"),
-		SetSnifferCallback(cb))
+		SetSnifferCallback(cb),
+	)
 	if err == nil {
 		t.Fatalf("expected cluster to fail with no nodes found")
 	}
@@ -569,7 +570,7 @@ func TestClientHealthcheckTimeoutLeak(t *testing.T) {
 	}
 
 	// pre-Go1.8 Server can't Shutdown
-	cl, isServerCloseable := (interface{}(srv)).(closer)
+	cl, isServerCloseable := interface{}(srv).(closer)
 
 	// Since Go1.7 can't Shutdown() - there will be leak from server
 	// Monitor leaks on Go 1.8+
@@ -956,7 +957,7 @@ func TestClientSniffTimeoutLeak(t *testing.T) {
 	}
 
 	// pre-Go1.8 Server can't Shutdown
-	cl, isServerCloseable := (interface{}(srv)).(closer)
+	cl, isServerCloseable := interface{}(srv).(closer)
 
 	// Since Go1.7 can't Shutdown() - there will be leak from server
 	// Monitor leaks on Go 1.8+
@@ -1027,7 +1028,8 @@ func TestClientSelectConnHealthy(t *testing.T) {
 	client, err := NewClient(
 		SetSniff(false),
 		SetHealthcheck(false),
-		SetURL("http://opensearch.svc:9200", "http://opensearch.svc:9201"))
+		SetURL("http://opensearch.svc:9200", "http://opensearch.svc:9201"),
+	)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -1066,7 +1068,8 @@ func TestClientSelectConnHealthyAndDead(t *testing.T) {
 	client, err := NewClient(
 		SetSniff(false),
 		SetHealthcheck(false),
-		SetURL("http://opensearch.svc:9200", "http://opensearch.svc:9201"))
+		SetURL("http://opensearch.svc:9200", "http://opensearch.svc:9201"),
+	)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -1105,7 +1108,8 @@ func TestClientSelectConnDeadAndHealthy(t *testing.T) {
 	client, err := NewClient(
 		SetSniff(false),
 		SetHealthcheck(false),
-		SetURL("http://opensearch.svc:9200", "http://opensearch.svc:9201"))
+		SetURL("http://opensearch.svc:9200", "http://opensearch.svc:9201"),
+	)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -1144,7 +1148,8 @@ func TestClientSelectConnAllDead(t *testing.T) {
 	client, err := NewClient(
 		SetSniff(false),
 		SetHealthcheck(false),
-		SetURL("http://opensearch.svc:9200", "http://opensearch.svc:9201"))
+		SetURL("http://opensearch.svc:9200", "http://opensearch.svc:9201"),
+	)
 	if err != nil {
 		t.Fatal(err)
 	}

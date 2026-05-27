@@ -292,7 +292,8 @@ func ExampleNewClient_manyOptions() {
 		opensearch.SetSniff(false),
 		opensearch.SetHealthcheckInterval(10*time.Second),
 		opensearch.SetMaxRetries(5),
-		opensearch.SetLogger(log))
+		opensearch.SetLogger(log),
+	)
 	if err != nil {
 		// Handle error
 		panic(err)

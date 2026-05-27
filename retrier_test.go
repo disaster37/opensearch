@@ -62,7 +62,8 @@ func TestRetrier(t *testing.T) {
 		SetHttpClient(httpClient),
 		SetMaxRetries(5),
 		SetHealthcheck(false),
-		SetRetrier(retrier))
+		SetRetrier(retrier),
+	)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -109,7 +110,8 @@ func TestRetrierWithError(t *testing.T) {
 		SetMaxRetries(5),
 		SetHealthcheck(false),
 		SetRetrier(retrier),
-		SetBasicAuth("admin", "vLPeJYa8.3RqtZCcAK6jNz"))
+		SetBasicAuth("admin", "vLPeJYa8.3RqtZCcAK6jNz"),
+	)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -155,7 +157,8 @@ func TestRetrierOnPerformRequest(t *testing.T) {
 		SetURL("https://opensearch.svc:9200"),
 		SetBasicAuth("admin", "vLPeJYa8.3RqtZCcAK6jNz"),
 		SetHealthcheck(false),
-		SetRetrier(defaultRetrier))
+		SetRetrier(defaultRetrier),
+	)
 	if err != nil {
 		t.Fatal(err)
 	}

@@ -1719,7 +1719,8 @@ func TestSearchResultWithFieldCollapsingAndInnerHits(t *testing.T) {
 				InnerHit(
 					NewInnerHit().Name("last_tweets").Size(5).Sort("created", true),
 				).
-				MaxConcurrentGroupRequests(4)).
+				MaxConcurrentGroupRequests(4),
+		).
 		Pretty(true).
 		Do(context.TODO())
 	if err != nil {

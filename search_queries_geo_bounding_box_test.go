@@ -109,7 +109,7 @@ func TestGeoBoundingBoxQueryWithParameters(t *testing.T) {
 	q = q.TopLeftFromGeoHash("dr5r9ydj2y73")
 	q = q.BottomRightFromGeoHash("drj7teegpus6")
 	q = q.ValidationMethod("IGNORE_MALFORMED")
-	q = q.IgnoreUnmapped((true))
+	q = q.IgnoreUnmapped(true)
 	src, err := q.Source()
 	if err != nil {
 		t.Fatal(err)

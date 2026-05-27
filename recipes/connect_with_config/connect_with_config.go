@@ -47,7 +47,8 @@ func main() {
 	}
 
 	// Just a status message
-	fmt.Printf("Connection succeeded with %v, Elastic %v and Opensearch %s\n",
+	fmt.Printf(
+		"Connection succeeded with %v, Elastic %v and Opensearch %s\n",
 		runtime.Version(),
 		opensearch.Version,
 		esversion,

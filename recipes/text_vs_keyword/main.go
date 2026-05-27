@@ -152,7 +152,8 @@ func main() {
 		if err = json.Unmarshal(src.Source, &doc); err != nil {
 			log.Fatal(err)
 		}
-		fmt.Printf("%s: %s\n",
+		fmt.Printf(
+			"%s: %s\n",
 			doc.User,
 			doc.Title,
 		)
@@ -176,7 +177,8 @@ func main() {
 		if err = json.Unmarshal(resp.Hits.Hits[0].Source, &doc); err != nil {
 			log.Fatal(err)
 		}
-		fmt.Printf("%s: %s\n",
+		fmt.Printf(
+			"%s: %s\n",
 			doc.User,
 			doc.Title,
 		)
@@ -201,7 +203,8 @@ func main() {
 		if err = json.Unmarshal(resp.Hits.Hits[0].Source, &doc); err != nil {
 			log.Fatal(err)
 		}
-		fmt.Printf("%s: %s\n",
+		fmt.Printf(
+			"%s: %s\n",
 			doc.User,
 			doc.Title,
 		)
@@ -245,7 +248,8 @@ func main() {
 		if err = json.Unmarshal(resp.Hits.Hits[0].Source, &doc); err != nil {
 			log.Fatal(err)
 		}
-		fmt.Printf("%s: %s\n",
+		fmt.Printf(
+			"%s: %s\n",
 			doc.User,
 			doc.Title,
 		)

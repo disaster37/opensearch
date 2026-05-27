@@ -108,7 +108,8 @@ func TestAggs(t *testing.T) {
 	dateHistoAgg := NewDateHistogramAggregation().Field("created").CalendarInterval("year")
 	dateHistoKeyedAgg := NewDateHistogramAggregation().Field("created").CalendarInterval("year").Keyed(true)
 	retweetsFilterAgg := NewFilterAggregation().Filter(
-		NewRangeQuery("created").Gte("2012-01-01").Lte("2012-12-31")).
+		NewRangeQuery("created").Gte("2012-01-01").Lte("2012-12-31"),
+	).
 		SubAggregation("avgRetweetsSub", NewAvgAggregation().Field("retweets"))
 	queryFilterAgg := NewFilterAggregation().Filter(NewTermQuery("tags", "golang"))
 	topTagsHitsAgg := NewTopHitsAggregation().Sort("created", false).Size(5).FetchSource(true)

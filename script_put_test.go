@@ -20,7 +20,8 @@ func TestPutScript(t *testing.T) {
 		PerformRequestOptions{
 			Method: "DELETE",
 			Path:   "/_scripts/" + scriptID,
-		})
+		},
+	)
 	if err != nil && !IsNotFound(err) {
 		t.Fatal(err)
 	}
@@ -52,7 +53,8 @@ func TestPutScript(t *testing.T) {
 		PerformRequestOptions{
 			Method: "GET",
 			Path:   "/_scripts/" + scriptID,
-		})
+		},
+	)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -62,7 +64,8 @@ func TestPutScript(t *testing.T) {
 		PerformRequestOptions{
 			Method: "DELETE",
 			Path:   "/_scripts/" + scriptID,
-		}); err != nil {
+		},
+	); err != nil {
 		t.Fatal(err)
 	}
 }

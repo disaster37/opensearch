@@ -239,10 +239,10 @@ type IndicesDataStreamGetDataStream struct {
 	TimestampField struct {
 		Name string `json:"name"`
 	} `json:"timestamp_field"`
-	Indices []*IndicesDataStreamGetDataStreamIndice `json:"indices"`
-	Generation int64 `json:"generation"`
-	Status     string `json:"status"`
-	Template   string `json:"template"`
+	Indices    []*IndicesDataStreamGetDataStreamIndice `json:"indices"`
+	Generation int64                                   `json:"generation"`
+	Status     string                                  `json:"status"`
+	Template   string                                  `json:"template"`
 }
 
 // IndicesDataStreamGetDataStreamIndice is part of the response of IndicesDataStreamGetService.Do.
