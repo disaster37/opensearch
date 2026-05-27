@@ -180,6 +180,9 @@ Here's a [link to a complete working example for v3](@todo).
 - [x] Create Index
 - [x] Delete Index
 - [x] Get Index
+- [x] Create Datastream Index
+- [x] Delete Datastream Index
+- [x] Get Datastream Index
 - [x] Indices Exists
 - [x] Open / Close Index
 - [x] Shrink Index

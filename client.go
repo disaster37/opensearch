@@ -2426,3 +2426,20 @@ func (c *Client) CcrFollowerStats() *CcrFollowerStatsService {
 func (c *Client) CcrLeaderStats() *CcrLeaderStatsService {
 	return NewCcrLeaderStatsService(c)
 }
+
+// -- Data Stream APIs --
+
+// CreateDataStreamIndex create new data stream index service
+func (c *Client) CreateDataStreamIndex(datastream string) *IndicesDataStreamCreateService {
+	return NewIndicesDataStreamCreateService(c).DataStream(datastream)
+}
+
+// GetDataStreamIndex gets data stream index information
+func (c *Client) GetDataStreamIndex(datastreams ...string) *IndicesDataStreamGetService {
+	return NewIndicesDataStreamGetService(c).Datastream(datastreams...)
+}
+
+// DeleteDataStreamIndex deletes a data stream index
+func (c *Client) DeleteDataStreamIndex(datastreams ...string) *IndicesDataStreamDeleteService {
+	return NewIndicesDataStreamDeleteService(c).Datastream(datastreams...)
+}

@@ -21,13 +21,14 @@ import (
 )
 
 const (
-	testIndexName      = "opensearch-test"
-	testIndexName2     = "opensearch-test2"
-	testIndexName3     = "opensearch-test3"
-	testIndexName4     = "opensearch-test4"
-	testIndexName5     = "opensearch-test5"
-	testIndexNameEmpty = "opensearch-test-empty"
-	testMapping        = `
+	testIndexName           = "opensearch-test"
+	testIndexName2          = "opensearch-test2"
+	testIndexName3          = "opensearch-test3"
+	testIndexName4          = "opensearch-test4"
+	testIndexName5          = "opensearch-test5"
+	testIndexNameEmpty      = "opensearch-test-empty"
+	testDatastreamIndexName = "opensearch-datastream-test"
+	testMapping             = `
 {
 	"settings":{
 		"number_of_shards":1,
@@ -361,6 +362,7 @@ func setupTestClient(t logger, options ...ClientOptionFunc) (client *Client) {
 	// client.DeleteIndex(testDoctypeIndex).Do(context.TODO())
 	_, _ = client.DeleteIndex(testQueryIndex).Do(context.TODO())
 	_, _ = client.DeleteIndex(testJoinIndex).Do(context.TODO())
+	_, _ = client.IndexDeleteIndexTemplate(testDatastreamIndexName).Do(context.TODO())
 
 	return client
 }
