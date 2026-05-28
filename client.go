@@ -2238,6 +2238,11 @@ func (c *Client) SecurityFlushCache() *SecurityFlushCacheService {
 	return NewSecurityFlushCacheService(c)
 }
 
+// SecurityAuthInfo retrieves authentication information for the currently authenticated user.
+func (c *Client) SecurityAuthInfo() *SecurityAuthInfoService {
+	return NewSecurityAuthInfoService(c)
+}
+
 // SecurityGetConfig gets a security config
 func (c *Client) SecurityGetConfig() *SecurityGetConfigService {
 	return NewSecurityGetConfigService(c)

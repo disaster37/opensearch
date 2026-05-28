@@ -343,6 +343,7 @@ Here's a [link to a complete working example for v3](@todo).
   - [x] Flush cache
   - [x] Security config
   - [x] Security audit
+  - [x] Auth info
 
 ### Index Management State
 - ISM plugin
