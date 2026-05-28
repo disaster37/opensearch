@@ -159,18 +159,18 @@ func (s *SecurityAuthInfoService) Do(ctx context.Context) (*SecurityAuthInfoResp
 
 // SecurityAuthInfoResponse is the response of SecurityAuthInfoService.Do.
 type SecurityAuthInfoResponse struct {
-	User                    string          `json:"user"`
-	UserName                string          `json:"user_name"`
-	BackendRoles            []string        `json:"backend_roles"`
-	CustomAttributeNames    []string        `json:"custom_attribute_names,omitempty"`
-	Roles                   []string        `json:"roles"`
-	Tenants                 map[string]bool `json:"tenants"`
-	Principal               *string         `json:"principal"`
-	PeerCertificates        string          `json:"peer_certificates"`
-	SSOLogoutURL            *string         `json:"sso_logout_url"`
-	RemoteAddress           string          `json:"remote_address"`
-	SizeOfUser              string          `json:"size_of_user,omitempty"`
-	SizeOfBackendRoles      string          `json:"size_of_backendroles,omitempty"`
-	SizeOfCustomAttributes  string          `json:"size_of_custom_attributes,omitempty"`
-	UserRequestedTenant     *string         `json:"user_requested_tenant,omitempty"`
+	User                   string          `json:"user"`
+	UserName               string          `json:"user_name"`
+	BackendRoles           []string        `json:"backend_roles"`
+	CustomAttributeNames   []string        `json:"custom_attribute_names,omitempty"`
+	Roles                  []string        `json:"roles"`
+	Tenants                map[string]bool `json:"tenants"`
+	Principal              *string         `json:"principal"`
+	PeerCertificates       string          `json:"peer_certificates"`
+	SSOLogoutURL           *string         `json:"sso_logout_url"`
+	RemoteAddress          string          `json:"remote_address"`
+	SizeOfUser             string          `json:"size_of_user,omitempty"`
+	SizeOfBackendRoles     string          `json:"size_of_backendroles,omitempty"`
+	SizeOfCustomAttributes string          `json:"size_of_custom_attributes,omitempty"`
+	UserRequestedTenant    *string         `json:"user_requested_tenant,omitempty"`
 }
