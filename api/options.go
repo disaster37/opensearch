@@ -248,6 +248,17 @@ func (r *AlertingIndexWorkflowRequest) Validate() error {
 	return validationError(validate.Struct(r))
 }
 
+// AdIndexDetectorRequest holds the parameters for creating or updating an anomaly detector.
+type AdIndexDetectorRequest struct {
+	DetectorId string
+	Body       any `validate:"required"`
+}
+
+// Validate validates the AdIndexDetectorRequest.
+func (r *AdIndexDetectorRequest) Validate() error {
+	return validationError(validate.Struct(r))
+}
+
 type TransformPutJobRequest struct {
 	JobName string            `validate:"required"`
 	Body    *TransformJobBase `validate:"required"`

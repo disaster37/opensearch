@@ -75,6 +75,13 @@ func TestNew(t *testing.T) {
 		assert.NotNil(t, dc.Transform())
 		assert.NotNil(t, dc.CCR())
 		assert.NotNil(t, dc.Info())
+		assert.NotNil(t, dc.Rollup())
+		assert.NotNil(t, dc.SQL())
+		assert.NotNil(t, dc.AD())
+		assert.NotNil(t, dc.ML())
+		assert.NotNil(t, dc.AsyncSearch())
+		assert.NotNil(t, dc.KNN())
+		assert.NotNil(t, dc.Neural())
 	})
 
 	t.Run("with minimal config", func(t *testing.T) {

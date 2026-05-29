@@ -45,6 +45,12 @@ type Client interface {
 	CCR() api.CcrService
 	Info() api.InfoService
 	Rollup() api.RollupService
+	ML() api.MlService
+	SQL() api.SqlService
+	AD() api.AdService
+	AsyncSearch() api.AsyncSearchService
+	KNN() api.KnnService
+	Neural() api.NeuralService
 }
 
 // Config holds configuration for the OpenSearch client.
@@ -92,13 +98,19 @@ type DefaultClient struct {
 	transform api.TransformService
 	ccr       api.CcrService
 	info      api.InfoService
-	rollup    api.RollupService
+	rollup      api.RollupService
+	ml          api.MlService
+	sql         api.SqlService
+	ad          api.AdService
+	asyncSearch api.AsyncSearchService
+	knn         api.KnnService
+	neural      api.NeuralService
 }
 
 // New creates a new [Client] connecting to an OpenSearch cluster.
 //
 // The returned client builds a resty HTTP client internally, applies TLS and
-// authentication from cfg, and instantiates all 17 service interfaces.
+// authentication from cfg, and instantiates all 18 service interfaces.
 //
 // Example:
 //
@@ -175,7 +187,13 @@ func New(cfg *Config, logger *logrus.Entry) (Client, error) {
 		transform: api.NewTransformService(c, logger),
 		ccr:       api.NewCcrService(c, logger),
 		info:      api.NewInfoService(c, logger),
-		rollup:    api.NewRollupService(c, logger),
+		rollup:      api.NewRollupService(c, logger),
+		ml:          api.NewMlService(c, logger),
+		sql:         api.NewSqlService(c, logger),
+		ad:          api.NewAdService(c, logger),
+		asyncSearch: api.NewAsyncSearchService(c, logger),
+		knn:         api.NewKnnService(c, logger),
+		neural:      api.NewNeuralService(c, logger),
 	}, nil
 }
 
@@ -198,3 +216,9 @@ func (c *DefaultClient) Transform() api.TransformService { return c.transform }
 func (c *DefaultClient) CCR() api.CcrService             { return c.ccr }
 func (c *DefaultClient) Info() api.InfoService            { return c.info }
 func (c *DefaultClient) Rollup() api.RollupService        { return c.rollup }
+func (c *DefaultClient) ML() api.MlService                { return c.ml }
+func (c *DefaultClient) SQL() api.SqlService                   { return c.sql }
+func (c *DefaultClient) AD() api.AdService                     { return c.ad }
+func (c *DefaultClient) AsyncSearch() api.AsyncSearchService   { return c.asyncSearch }
+func (c *DefaultClient) KNN() api.KnnService                   { return c.knn }
+func (c *DefaultClient) Neural() api.NeuralService             { return c.neural }

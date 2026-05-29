@@ -18,3 +18,9 @@ package opensearch
 //go:generate mockgen -source=api/transform_service.go -destination=mock/transform_service.go -package=mock
 //go:generate mockgen -source=api/ccr_service.go -destination=mock/ccr_service.go -package=mock
 //go:generate mockgen -source=api/rollup_service.go -destination=mock/rollup_service.go -package=mock
+//go:generate mockgen -source=api/ml_service.go -destination=mock/ml_service.go -package=mock
+//go:generate mockgen -source=api/async_search_service.go -destination=mock/async_search_service.go -package=mock
+//go:generate mockgen -source=api/knn_service.go -destination=mock/knn_service.go -package=mock
+//go:generate mockgen -source=api/neural_service.go -destination=mock/neural_service.go -package=mock
+//go:generate mockgen -source=api/sql_service.go -destination=mock/sql_service.go -package=mock
+//go:generate mockgen -source=api/ad_service.go -destination=mock/ad_service.go -package=mock
