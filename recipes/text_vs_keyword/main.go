@@ -1,7 +1,3 @@
-// Copyright 2012-present Oliver Eilhard. All rights reserved.
-// Use of this source code is governed by a MIT-license.
-// See http://olivere.mit-license.org/license.txt for details.
-
 // Connect illustrates exact matches vs fulltext queries with
 // "text" and "keyword" types and Get as well as Term- and Match Query.
 //
@@ -13,7 +9,7 @@ package main
 
 import (
 	"context"
-	"encoding/json"
+	json "github.com/goccy/go-json"
 	"flag"
 	"fmt"
 	"log"
