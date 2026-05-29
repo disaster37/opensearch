@@ -248,11 +248,14 @@ func (h *Opensearch) Test(
 
 	return h.GolangModule.Container().
 		WithServiceBinding("opensearch.svc", opensearchService).
+		WithEnvVariable("OPENSEARCH_URL", "https://opensearch.svc:9200").
+		WithEnvVariable("OPENSEARCH_USERNAME", username).
+		WithSecretVariable("OPENSEARCH_PASSWORD", dag.SetSecret("opensearch-password", password)).
 		WithExec(helper.ForgeScript(`
 curl --fail -XGET -k -u admin:vLPeJYa8.3RqtZCcAK6jNz "https://opensearch.svc:9200/_cluster/health?wait_for_status=yellow&timeout=500s"
 curl --fail -XPUT -k -u admin:vLPeJYa8.3RqtZCcAK6jNz -H 'Content-Type: application/json' "https://opensearch.svc:9200/_index_template/socle" -d '{"index_patterns":["*"],"priority":500,"template":{"settings":{"number_of_shards":1,"number_of_replicas":0}}}'
 go install gotest.tools/gotestsum@latest
-gotestsum --format testname -- -covermode=atomic -coverprofile coverage.out ./... %s
+gotestsum --format testname -- -tags integration -covermode=atomic -coverprofile coverage.out ./... %s
 		`, expectedRunTest)).
 		File("coverage.out")
 }

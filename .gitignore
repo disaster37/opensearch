@@ -26,7 +26,7 @@ _testmain.go
 /.vscode/
 /.idea/
 /data
-/debug.test
+*.test
 /generator
 /cluster-test/cluster-test
 /cluster-test/*.log

@@ -1,397 +1,232 @@
+# opensearch-go
+
+[![Go Reference](https://pkg.go.dev/badge/github.com/disaster37/opensearch/v3.svg)](https://pkg.go.dev/github.com/disaster37/opensearch/v3)
 [![Go Report Card](https://goreportcard.com/badge/github.com/disaster37/opensearch/v3)](https://goreportcard.com/report/github.com/disaster37/opensearch/v3)
-[![Build Status](https://github.com/disaster37/opensearch/workflows/Test/badge.svg)](https://github.com/disaster37/opensearch/actions)
-[![Godoc](http://img.shields.io/badge/godoc-reference-blue.svg?style=flat)](https://pkg.go.dev/github.com/disaster37/opensearch?tab=doc)
-[![license](http://img.shields.io/badge/license-MIT-red.svg?style=flat)](https://raw.githubusercontent.com/disaster37/opensearch/master/LICENSE)
-[![codecov](https://codecov.io/gh/disaster37/opensearch/graph/badge.svg?token=4MNPOU84EK)](https://codecov.io/gh/disaster37/opensearch)
+[![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
-# Opensearch
+Go client for [OpenSearch](https://opensearch.org/) and OpenSearch-compatible clusters.
 
-**This is a development branch that is actively being worked on. DO NOT USE IN PRODUCTION! If you want to use stable versions of Opensearch, please use Go modules for the 2.x release (or later) or a dependency manager like [dep](https://github.com/golang/dep) for earlier releases.**
+- Type-safe interfaces for all 16 OpenSearch API groups
+- Fluent query-builder DSL (`querydsl/`) — no raw JSON required
+- Struct-literal configuration (value semantics, no pointer surprise)
+- Built on [resty](https://github.com/go-resty/resty) — middleware, retries, timeouts
+- Structured logging via [logrus](https://github.com/sirupsen/logrus)
+- OpenTelemetry tracing middleware (`trace/opentelemetry/`)
 
-Opensearch is an [Opensearch](http://www.opensearch.org/) client for the
-[Go](http://www.golang.org/) programming language.
+## Install
 
-
-## Releases
-
-**The release branches (e.g. [`release-branch.v3`](https://github.com/disaster37/opensearch/tree/release-branch.v3))
-are actively being worked on and can break at any time.
-If you want to use stable versions of Opensearch, please use Go modules.**
-
-Here's the version matrix:
-
-Opensearch version | Opensearch version  | Package URL | Remarks |
-----------------------|------------------|-------------|---------|
-2.x                   | 2.19.2              | [`gopkg.in/disaster37/opensearch.v2`](https://gopkg.in/disaster37/opensearch.v2) ([source](https://github.com/disaster37/opensearch/tree/release-branch.v2) [doc](http://godoc.org/gopkg.in/disaster37/opensearch.v2)) | 
-3.x                   | 3.4.0              | [`gopkg.in/disaster37/opensearch.v3`](https://gopkg.in/disaster37/opensearch.v3) ([source](https://github.com/disaster37/opensearch/tree/release-branch.v3) [doc](http://godoc.org/gopkg.in/disaster37/opensearch.v3)) | Last version
-
-**Example:**
-
-You have installed Opensearchsearch 3.4.0 and want to use Opensearch.
-As listed above, you should use Opensearch v3 (code is in `release-branch.v3`).
-
-To use the required version of Opensearch in your application, you
-should use [Go modules](https://github.com/golang/go/wiki/Modules)
-to manage dependencies. Make sure to use a version such as `3.4.0` or later.
-
-To use Opensearch, import:
-
-```go
-import "github.com/disaster37/opensearch/v3"
+```bash
+go get github.com/disaster37/opensearch/v3
 ```
 
-### Opensearch 3.4.0
+Requires Go 1.18+ (uses generics in `api/` and `querydsl/`).
 
-Opensearch 3.4.0 targets Opensearch 3.x.
+## Quick Start
 
+```go
+package main
 
-## Status
+import (
+    "context"
+    "log"
 
-We use Opensearch in production since 2024. Opensearch is stable but the API changes
-now and then. We strive for API compatibility.
-However, Opensearchsearch sometimes introduces
-and we sometimes have to adapt.
+    os "github.com/disaster37/opensearch/v3"
+    "github.com/sirupsen/logrus"
+)
 
-Having said that, there have been no big API changes that required you
-to rewrite your application big time. More often than not it's renaming APIs
-and adding/removing features so that Opensearch is in sync with Opensearch cluster.
+func main() {
+    logger := logrus.NewEntry(logrus.StandardLogger())
 
+    client, err := os.New(&os.Config{
+        URL:      "https://localhost:9200",
+        Username: "admin",
+        Password: "admin",
+    }, logger)
+    if err != nil {
+        log.Fatal(err)
+    }
 
-Opensearch has quite a few features. Most of them are implemented
-by Opensearch. I add features and APIs as required. It's straightforward
-to implement missing pieces. I'm accepting pull requests :-)
+    ctx := context.Background()
 
-Having said that, I hope you find the project useful.
+    // Index a document
+    doc := map[string]any{
+        "name":  "OpenSearch",
+        "stars": 10000,
+    }
+    resp, err := client.Document().Index(ctx, "repos", nil, doc, nil)
+    if err != nil {
+        log.Fatal(err)
+    }
+    log.Printf("Indexed %s/%s\n", resp.Index, resp.ID)
+}
+```
 
+## Using the Query DSL
 
-## Getting Started
+Build type-safe queries without raw JSON maps:
 
-The first thing you do is to create a [Client](https://github.com/disaster37/opensearch/blob/master/client.go).
-The client connects to Opensearchsearch on `http://127.0.0.1:9200` by default.
+```go
+import "github.com/disaster37/opensearch/v3/querydsl"
 
-You typically create one client for your app. Here's a complete example of
-creating a client, creating an index, adding a document, executing a search etc.
-
-An example is available [here](https://disaster37.github.io/opensearch/).
-
-Here's a [link to a complete working example for v3](@todo).
-
-## API Status
-
-### Document APIs
-
-- [x] Index API
-- [x] Get API
-- [x] Delete API
-- [x] Delete By Query API
-- [x] Update API
-- [x] Update By Query API
-- [x] Multi Get API
-- [x] Bulk API
-- [x] Reindex API
-- [x] Term Vectors
-- [x] Multi termvectors API
-
-### Search APIs
-
-- [x] Search
-- [x] Search Template
-- [ ] Multi Search Template
-- [x] Search Shards API
-- [x] Suggesters
-  - [x] Term Suggester
-  - [x] Phrase Suggester
-  - [x] Completion Suggester
-  - [x] Context Suggester
-- [x] Multi Search API
-- [x] Count API
-- [x] Validate API
-- [x] Explain API
-- [x] Profile API
-- [x] Field Capabilities API
+// Bool query with must/should/filter clauses
+query := querydsl.Bool{
+    Must: []querydsl.Query{
+        querydsl.Match{"status": "published"},
+    },
+    Should: []querydsl.Query{
+        querydsl.Term{"Field": "featured", "Value": true, "Boost": ptr(1.5)},
+    },
+    Filter: []querydsl.Query{
+        querydsl.Range{
+            Field:     "date",
+            Gte:       "2024-01-01",
+            Format:    "yyyy-MM-dd",
+        },
+    },
+    MinimumShouldMatch: "1",
+}
+```
 
 ### Aggregations
 
-- Metrics Aggregations
-  - [x] Avg
-  - [x] Cardinality
-  - [x] Extended Stats
-  - [x] Geo Bounds
-  - [x] Geo Centroid
-  - [x] Matrix stats
-  - [x] Max
-  - [x] Median absolute deviation
-  - [x] Min
-  - [x] Percentile Ranks
-  - [x] Percentiles
-  - [ ] Scripted Metric
-  - [x] Stats
-  - [x] Sum
-  - [x] Top Hits
-  - [x] Value Count
-  - [x] Weighted avg
-- Bucket Aggregations
-  - [x] Adjacency Matrix
-  - [x] Auto-interval Date Histogram
-  - [x] Children
-  - [x] Composite
-  - [x] Date Histogram
-  - [x] Date Range
-  - [x] Diversified Sampler
-  - [x] Filter
-  - [x] Filters
-  - [x] Geo Distance
-  - [x] Geohash Grid
-  - [x] Geotile grid
-  - [x] Global
-  - [x] Histogram
-  - [x] IP Range
-  - [x] Missing
-  - [x] Nested
-  - [ ] Parent
-  - [x] Range
-  - [ ] Rare terms
-  - [x] Reverse Nested
-  - [x] Sampler
-  - [x] Significant Terms
-  - [x] Significant Text
-  - [x] Terms
-  - [ ] Variable width histogram
-- Pipeline Aggregations
-  - [x] Avg Bucket
-  - [x] Bucket Script
-  - [x] Bucket Selector
-  - [x] Bucket Sort
-  - [x] Cumulative Sum
-  - [x] Derivative
-  - [ ] Extended Stats Bucket
-  - [x] Max Bucket
-  - [x] Min Bucket
-  - [x] Moving Average
-  - [x] Moving function
-  - [x] Percentiles Bucket
-  - [x] Serial Differencing
-  - [x] Stats Bucket
-  - [x] Sum Bucket
-- [x] Aggregation Metadata
+```go
+// Terms aggregation with sub-aggregation
+agg := querydsl.TermsAggregation("genre").
+    Size(20).
+    SubAggregation("avg_rating", querydsl.AvgAggregation("rating"))
 
-### Indices APIs
+// Date histogram for time-series
+histogram := querydsl.DateHistogramAggregation("timestamp").
+    CalendarInterval("1d").
+    MinDocCount(0).
+    SubAggregation("total_sales", querydsl.SumAggregation("amount"))
+```
 
-- [x] Create Index
-- [x] Delete Index
-- [x] Get Index
-- [x] Create Datastream Index
-- [x] Delete Datastream Index
-- [x] Get Datastream Index
-- [x] Indices Exists
-- [x] Open / Close Index
-- [x] Shrink Index
-- [x] Rollover Index
-- [x] Put Mapping
-- [x] Get Mapping
-- [x] Get Field Mapping
-- [x] Types Exists
-- [x] Index Aliases
-- [x] Update Indices Settings
-- [x] Get Settings
-- [x] Analyze
-  - [x] Explain Analyze
-- [x] Index Templates
-- [x] Indices Stats
-- [x] Indices Segments
-- [ ] Indices Recovery
-- [ ] Indices Shard Stores
-- [x] Clear Cache
-- [x] Flush
-  - [x] Synced Flush
-- [x] Refresh
-- [x] Force Merge
+## Available Services
 
-### cat APIs
+All services are accessed through the `Client` interface:
 
-- [X] cat aliases
-- [X] cat allocation
-- [X] cat count
-- [X] cat fielddata
-- [X] cat health
-- [X] cat indices
-- [x] cat master
-- [ ] cat nodeattrs
-- [ ] cat nodes
-- [ ] cat pending tasks
-- [ ] cat plugins
-- [ ] cat recovery
-- [ ] cat repositories
-- [ ] cat thread pool
-- [ ] cat shards
-- [ ] cat segments
-- [X] cat snapshots
-- [ ] cat templates
+| Service | Accessor | Description |
+|---------|----------|-------------|
+| Document | `client.Document()` | Index, Get, Update, Delete, Bulk, Reindex |
+| Search | `client.Search()` | Search, Count, Scroll, MultiSearch, PIT |
+| Indices | `client.Indices()` | Create, Delete, Settings, Mappings, Templates |
+| Cluster | `client.Cluster()` | Health, State, Stats, Settings |
+| Nodes | `client.Nodes()` | Info, Stats |
+| Cat | `client.Cat()` | Human-readable cluster info |
+| Ingest | `client.Ingest()` | Pipeline management |
+| Snapshot | `client.Snapshot()` | Snapshots and repositories |
+| Tasks | `client.Tasks()` | Task management |
+| Script | `client.Script()` | Stored scripts |
+| Security | `client.Security()` | Users, roles, tenants (Security plugin) |
+| ISM | `client.ISM()` | Index State Management |
+| SM | `client.SM()` | Snapshot Management |
+| Alerting | `client.Alerting()` | Monitors and alerts |
+| Transform | `client.Transform()` | Transform jobs |
+| CCR | `client.CCR()` | Cross-Cluster Replication |
 
-### Cluster APIs
+## Error Handling
 
-- [x] Cluster Health
-- [x] Cluster State
-- [x] Cluster Stats
-- [ ] Pending Cluster Tasks
-- [x] Cluster Reroute
-- [x] Cluster Settings
-- [x] Nodes Stats
-- [x] Nodes Info
-- [ ] Nodes Feature Usage
-- [ ] Remote Cluster Info
-- [x] Task Management API
-- [ ] Nodes hot_threads
-- [ ] Cluster Allocation Explain API
+All API errors are returned as `*types.OpenSearchError`:
 
+```go
+result, err := client.Document().Get(ctx, "my-index", "doc-id", nil)
+if err != nil {
+    if os.IsNotFound(err) {
+        log.Println("Document not found")
+    } else if os.IsConflict(err) {
+        log.Println("Version conflict — retry or refresh")
+    } else {
+        var osErr *types.OpenSearchError
+        if errors.As(err, &osErr) {
+            log.Printf("OpenSearch error %d: %s\n",
+                osErr.Status, osErr.Details.Reason)
+        } else {
+            log.Fatal(err)
+        }
+    }
+}
+```
 
-### Query DSL
+## Optimistic Concurrency
 
-- [x] Match All Query
-- [x] Inner hits
-- Full text queries
-  - [x] Match Query
-  - [x] Match Boolean Prefix Query
-  - [x] Match Phrase Query
-  - [x] Match Phrase Prefix Query
-  - [x] Multi Match Query
-  - [x] Common Terms Query
-  - [x] Query String Query
-  - [x] Simple Query String Query
-  - [x] Combined Fields Query
-  - [x] Intervals Query
-- Term level queries
-  - [x] Term Query
-  - [x] Terms Query
-  - [x] Terms Set Query
-  - [x] Range Query
-  - [x] Exists Query
-  - [x] Prefix Query
-  - [x] Wildcard Query
-  - [x] Regexp Query
-  - [x] Fuzzy Query
-  - [x] Type Query
-  - [x] Ids Query
-- Compound queries
-  - [x] Constant Score Query
-  - [x] Bool Query
-  - [x] Dis Max Query
-  - [x] Function Score Query
-  - [x] Boosting Query
-- Joining queries
-  - [x] Nested Query
-  - [x] Has Child Query
-  - [x] Has Parent Query
-  - [x] Parent Id Query
-- Geo queries
-  - [ ] GeoShape Query
-  - [x] Geo Bounding Box Query
-  - [x] Geo Distance Query
-  - [x] Geo Polygon Query
-- Specialized queries
-  - [x] Distance Feature Query
-  - [x] More Like This Query
-  - [x] Script Query
-  - [x] Script Score Query
-  - [x] Percolate Query
-- Span queries
-  - [x] Span Term Query
-  - [ ] Span Multi Term Query
-  - [x] Span First Query
-  - [x] Span Near Query
-  - [ ] Span Or Query
-  - [ ] Span Not Query
-  - [ ] Span Containing Query
-  - [ ] Span Within Query
-  - [ ] Span Field Masking Query
-- [ ] Minimum Should Match
-- [ ] Multi Term Query Rewrite
+Use `DocumentVersion` to prevent overwrites:
 
-### Modules
+```go
+// First fetch
+doc, err := client.Document().Get(ctx, "my-index", "doc-id", nil)
 
-- Snapshot and Restore
-  - [x] Repositories
-  - [x] Snapshot get
-  - [x] Snapshot create
-  - [x] Snapshot delete
-  - [ ] Restore
-  - [ ] Snapshot status
-  - [ ] Monitoring snapshot/restore status
-  - [ ] Stopping currently running snapshot and restore
-- Scripting
-  - [x] GetScript
-  - [x] PutScript
-  - [x] DeleteScript
+// Update with version
+_, err = client.Document().Update(ctx, "my-index", "doc-id", newDoc,
+    &os.DocumentVersion{
+        SeqNo:       doc.SeqNo,
+        PrimaryTerm: doc.PrimaryTerm,
+    },
+    nil)
+```
 
-### Sorting
+## Configuration
 
-- [x] Sort by score
-- [x] Sort by field
-- [x] Sort by geo distance
-- [x] Sort by script
-- [x] Sort by doc
+```go
+import (
+    "time"
 
-### Security
+    os "github.com/disaster37/opensearch/v3"
+)
 
-- Security plugin
-  - [x] Internal user
-  - [x] Role
-  - [x] Role mapping
-  - [x] Action group
-  - [x] Tenant
-  - [x] Distinguished name (DN)
-  - [x] Flush cache
-  - [x] Security config
-  - [x] Security audit
-  - [x] Auth info
+client, err := os.New(&os.Config{
+    URL:           "https://localhost:9200",
+    Username:      "admin",
+    Password:      "admin",
+    TLSSkipVerify: false, // production: always false
+    CACert:        caCertPEM,
+    Timeout:       30 * time.Second,
+}, logger)
+```
 
-### Index Management State
-- ISM plugin
-  - [x] Index Management State
+## OpenTelemetry Tracing
 
-### Snapshot Management
-- SM plugin
-  - [x] Snapshot Management
+Wrap the client with the OTel trace middleware:
 
-### Alerting Management
-- Alerting plugin
-  - [x] Monitor
+```go
+import (
+    otel "github.com/disaster37/opensearch/v3/trace/opentelemetry"
+)
 
-### Transform
+client, _ := os.New(cfg, logger)
+otel.WrapClient(client.RestyClient(), otel.WithServiceName("my-service"))
+```
 
-- Transform plugin
-  - [x] Transform job
+## Testing
 
-### Cross Cluster Replication (CCR)
-- Cross Cluster Replication plugin
-  - [x] Manage CCR rule
-  - [x] Manage auto follow rule
+```bash
+go test ./...
+```
 
-### Scrolling
+## Contributing
 
-Scrolling is supported via a  `ScrollService`. It supports an iterator-like interface.
-The `ClearScroll` API is implemented as well.
+See [CONTRIBUTING.md](CONTRIBUTING.md).
 
-A pattern for [efficiently scrolling in parallel](https://github.com/disaster37/opensearch/wiki/ScrollParallel)
-is described in the [Wiki](https://github.com/disaster37/opensearch/wiki).
+## License
 
-## How to contribute
+MIT — see [LICENSE](LICENSE).
 
-Read [the contribution guidelines](https://github.com/disaster37/opensearch/blob/master/CONTRIBUTING.md).
+## Project Structure
 
-## Credits
-
-Thanks a lot for the great folks working hard on
-[Opensearch](https://www.opensearch.co/products/opensearch)
-and
-[Go](https://golang.org/).
-
-Opensearch uses portions of the
-[uritemplates](https://github.com/jtacoma/uritemplates) library
-by Joshua Tacoma,
-[backoff](https://github.com/cenkalti/backoff) by Cenk Altı and
-[leaktest](https://github.com/fortytw2/leaktest) by Ian Chiles.
-
-## LICENSE
-
-MIT-LICENSE.
+```
+opensearch-go/
+├── client.go          # Client interface + New()
+├── common.go          # Re-exported type aliases
+├── errors.go          # Error helpers
+├── types/             # Common types (ShardsInfo, OpenSearchError, etc.)
+├── api/               # 16 service interfaces + models
+│   ├── document_service.go
+│   ├── search_service.go
+│   ├── indices_service.go
+│   └── ...
+├── querydsl/          # Query and aggregation builder DSL
+│   ├── search_queries_*.go
+│   ├── search_aggs_*.go
+│   └── search_source.go
+└── trace/opentelemetry/
+```
