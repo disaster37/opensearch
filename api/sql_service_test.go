@@ -20,27 +20,27 @@ func newSQLTestServer() *httptest.Server {
 
 	mux.HandleFunc("/_plugins/_ppl", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
-		w.Write([]byte(`{"schema":[{"name":"host","type":"string"}],"datarows":[["host1"]],"total":1,"size":1,"status":200}`))
+		_, _ = w.Write([]byte(`{"schema":[{"name":"host","type":"string"}],"datarows":[["host1"]],"total":1,"size":1,"status":200}`))
 	})
 
 	mux.HandleFunc("/_plugins/_ppl/_explain", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
-		w.Write([]byte(`{"root":{"name":"ProjectOperator","description":["host"],"children":[{"name":"OpenSearchIndexScan","description":["host"]}]}}`))
+		_, _ = w.Write([]byte(`{"root":{"name":"ProjectOperator","description":["host"],"children":[{"name":"OpenSearchIndexScan","description":["host"]}]}}`))
 	})
 
 	mux.HandleFunc("/_plugins/_sql", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
-		w.Write([]byte(`{"schema":[{"name":"host","type":"string"}],"datarows":[["host1"]],"total":1,"size":1,"status":200,"cursor":"abc123"}`))
+		_, _ = w.Write([]byte(`{"schema":[{"name":"host","type":"string"}],"datarows":[["host1"]],"total":1,"size":1,"status":200,"cursor":"abc123"}`))
 	})
 
 	mux.HandleFunc("/_plugins/_sql/_explain", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
-		w.Write([]byte(`{"root":{"name":"ProjectOperator","description":["host"],"children":[{"name":"OpenSearchIndexScan","description":["host"]}]}}`))
+		_, _ = w.Write([]byte(`{"root":{"name":"ProjectOperator","description":["host"],"children":[{"name":"OpenSearchIndexScan","description":["host"]}]}}`))
 	})
 
 	mux.HandleFunc("/_plugins/_sql/close", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
-		w.Write([]byte(`{"success":true}`))
+		_, _ = w.Write([]byte(`{"success":true}`))
 	})
 
 	return httptest.NewServer(mux)

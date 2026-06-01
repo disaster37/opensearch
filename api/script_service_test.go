@@ -15,7 +15,7 @@ func TestUnitScriptService_Get(t *testing.T) {
 		assert.Equal(t, "GET", r.Method)
 		assert.Equal(t, "/_scripts/my-script", r.URL.Path)
 		w.Header().Set("Content-Type", "application/json")
-		w.Write([]byte(`{"_id":"my-script","found":true,"script":{"lang":"painless","source":"return 1;"}}`))
+		_, _ = w.Write([]byte(`{"_id":"my-script","found":true,"script":{"lang":"painless","source":"return 1;"}}`))
 	}))
 	defer ts.Close()
 
@@ -35,7 +35,7 @@ func TestUnitScriptService_Put(t *testing.T) {
 		assert.Equal(t, "PUT", r.Method)
 		assert.Equal(t, "/_scripts/my-script", r.URL.Path)
 		w.Header().Set("Content-Type", "application/json")
-		w.Write([]byte(`{"acknowledged":true}`))
+		_, _ = w.Write([]byte(`{"acknowledged":true}`))
 	}))
 	defer ts.Close()
 
@@ -61,7 +61,7 @@ func TestUnitScriptService_Delete(t *testing.T) {
 		assert.Equal(t, "DELETE", r.Method)
 		assert.Equal(t, "/_scripts/my-script", r.URL.Path)
 		w.Header().Set("Content-Type", "application/json")
-		w.Write([]byte(`{"acknowledged":true}`))
+		_, _ = w.Write([]byte(`{"acknowledged":true}`))
 	}))
 	defer ts.Close()
 
@@ -79,7 +79,7 @@ func TestUnitScriptService_PainlessExecute(t *testing.T) {
 		assert.Equal(t, "POST", r.Method)
 		assert.Equal(t, "/_scripts/painless/_execute", r.URL.Path)
 		w.Header().Set("Content-Type", "application/json")
-		w.Write([]byte(`{"result":3}`))
+		_, _ = w.Write([]byte(`{"result":3}`))
 	}))
 	defer ts.Close()
 
@@ -130,7 +130,7 @@ func TestUnitScriptService_GetContext(t *testing.T) {
 		assert.Equal(t, "GET", r.Method)
 		assert.Equal(t, "/_script_context", r.URL.Path)
 		w.Header().Set("Content-Type", "application/json")
-		w.Write([]byte(`{"contexts":[{"name":"ingest"},{"name":"score"}]}`))
+		_, _ = w.Write([]byte(`{"contexts":[{"name":"ingest"},{"name":"score"}]}`))
 	}))
 	defer ts.Close()
 
@@ -176,7 +176,7 @@ func TestUnitScriptService_GetLanguages(t *testing.T) {
 		assert.Equal(t, "GET", r.Method)
 		assert.Equal(t, "/_script_language", r.URL.Path)
 		w.Header().Set("Content-Type", "application/json")
-		w.Write([]byte(`{"language_contexts":[{"language":"painless","contexts":["ingest","score"]}]}`))
+		_, _ = w.Write([]byte(`{"language_contexts":[{"language":"painless","contexts":["ingest","score"]}]}`))
 	}))
 	defer ts.Close()
 

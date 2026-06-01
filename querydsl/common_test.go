@@ -1888,8 +1888,7 @@ func TestPercolatorQuery_Source(t *testing.T) {
 }
 
 func TestPinnedQuery_Source(t *testing.T) {
-	q := NewPinnedQuery()
-	q = PinnedQuery{IDs: []string{"1", "2"}, Organic: NewMatchAllQuery()}
+	q := PinnedQuery{IDs: []string{"1", "2"}, Organic: NewMatchAllQuery()}
 	src, err := q.Source()
 	require.NoError(t, err)
 	m := src.(map[string]any)

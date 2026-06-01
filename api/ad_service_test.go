@@ -21,7 +21,7 @@ func newAdTestServer() *httptest.Server {
 	mux.HandleFunc("/_plugins/_anomaly_detection/detectors", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
 		if r.Method == http.MethodPost {
-			w.Write([]byte(`{"_id":"new_detector","_version":1,"_seq_no":0,"_primary_term":1,"anomaly_detector":{"name":"test-detector"}}`))
+			_, _ = w.Write([]byte(`{"_id":"new_detector","_version":1,"_seq_no":0,"_primary_term":1,"anomaly_detector":{"name":"test-detector"}}`))
 		}
 	})
 
@@ -29,62 +29,62 @@ func newAdTestServer() *httptest.Server {
 		w.Header().Set("Content-Type", "application/json")
 		switch r.Method {
 		case http.MethodGet:
-			w.Write([]byte(`{"_id":"test_detector","_version":1,"_seq_no":0,"_primary_term":1,"anomaly_detector":{"name":"test-detector"}}`))
+			_, _ = w.Write([]byte(`{"_id":"test_detector","_version":1,"_seq_no":0,"_primary_term":1,"anomaly_detector":{"name":"test-detector"}}`))
 		case http.MethodPut:
-			w.Write([]byte(`{"_id":"test_detector","_version":2,"_seq_no":1,"_primary_term":1,"anomaly_detector":{"name":"test-detector-updated"}}`))
+			_, _ = w.Write([]byte(`{"_id":"test_detector","_version":2,"_seq_no":1,"_primary_term":1,"anomaly_detector":{"name":"test-detector-updated"}}`))
 		case http.MethodDelete:
-			w.Write([]byte(`{"_index":".opendistro-anomaly-results","_id":"test_detector","_version":2,"result":"deleted"}`))
+			_, _ = w.Write([]byte(`{"_index":".opendistro-anomaly-results","_id":"test_detector","_version":2,"result":"deleted"}`))
 		}
 	})
 
 	mux.HandleFunc("/_plugins/_anomaly_detection/detectors/test_detector/_run", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
-		w.Write([]byte(`{"anomaly_grade":0.5,"confidence":0.9,"data_start_time":"2024-01-01","data_end_time":"2024-01-02","features":[{"feature_name":"f1"}]}`))
+		_, _ = w.Write([]byte(`{"anomaly_grade":0.5,"confidence":0.9,"data_start_time":"2024-01-01","data_end_time":"2024-01-02","features":[{"feature_name":"f1"}]}`))
 	})
 
 	mux.HandleFunc("/_plugins/_anomaly_detection/detectors/_preview", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
 		if r.Method == http.MethodPost {
-			w.Write([]byte(`{"anomaly_result":[{"anomaly_grade":0.5,"confidence":0.9}]}`))
+			_, _ = w.Write([]byte(`{"anomaly_result":[{"anomaly_grade":0.5,"confidence":0.9}]}`))
 		}
 	})
 
 	mux.HandleFunc("/_plugins/_anomaly_detection/detectors/test_detector/_preview", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
 		if r.Method == http.MethodPost {
-			w.Write([]byte(`{"anomaly_result":[{"anomaly_grade":0.7,"confidence":0.8}]}`))
+			_, _ = w.Write([]byte(`{"anomaly_result":[{"anomaly_grade":0.7,"confidence":0.8}]}`))
 		}
 	})
 
 	mux.HandleFunc("/_plugins/_anomaly_detection/detectors/_search", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
-		w.Write([]byte(`{"total_anomaly_detectors":1,"anomaly_detectors":[{"_id":"test_detector","detector":{"name":"test-detector"}}]}`))
+		_, _ = w.Write([]byte(`{"total_anomaly_detectors":1,"anomaly_detectors":[{"_id":"test_detector","detector":{"name":"test-detector"}}]}`))
 	})
 
 	mux.HandleFunc("/_plugins/_anomaly_detection/detectors/results/_search", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
-		w.Write([]byte(`{"total_results":1,"results":[{"anomaly_grade":0.5}]}`))
+		_, _ = w.Write([]byte(`{"total_results":1,"results":[{"anomaly_grade":0.5}]}`))
 	})
 
 	mux.HandleFunc("/_plugins/_anomaly_detection/detectors/test_detector/results/_topAnomalies", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
-		w.Write([]byte(`{"total_results":1,"results":[{"anomaly_grade":0.9}]}`))
+		_, _ = w.Write([]byte(`{"total_results":1,"results":[{"anomaly_grade":0.9}]}`))
 	})
 
 	mux.HandleFunc("/_plugins/_anomaly_detection/stats", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
-		w.Write([]byte(`{"detector_count":5,"anomaly_detectors_index_status":"green"}`))
+		_, _ = w.Write([]byte(`{"detector_count":5,"anomaly_detectors_index_status":"green"}`))
 	})
 
 	mux.HandleFunc("/_plugins/_anomaly_detection/stats/detector_count", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
-		w.Write([]byte(`{"detector_count":5}`))
+		_, _ = w.Write([]byte(`{"detector_count":5}`))
 	})
 
 	mux.HandleFunc("/_plugins/_anomaly_detection/detectors/_validate", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
 		if r.Method == http.MethodPost {
-			w.Write([]byte(`{"message":"Valid detector configuration"}`))
+			_, _ = w.Write([]byte(`{"message":"Valid detector configuration"}`))
 		}
 	})
 

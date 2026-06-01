@@ -135,7 +135,9 @@ func (a SignificantTermsAggregation) Source() (any, error) {
 	}
 
 	if ie := a.IncludeExclude; ie != nil {
-		ie.MergeInto(body)
+		if err := ie.MergeInto(body); err != nil {
+			return nil, err
+		}
 	}
 
 	return sourceAgg("significant_terms", body, a.SubAggs, a.Meta, nil)

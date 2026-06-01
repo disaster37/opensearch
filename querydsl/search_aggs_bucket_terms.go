@@ -254,7 +254,9 @@ func (a TermsAggregation) Source() (any, error) {
 	}
 
 	if ie := a.IncludeExclude; ie != nil {
-		ie.MergeInto(body)
+		if err := ie.MergeInto(body); err != nil {
+			return nil, err
+		}
 	}
 
 	if a.ExecutionHint != "" {

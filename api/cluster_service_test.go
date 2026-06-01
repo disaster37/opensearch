@@ -18,7 +18,7 @@ func TestUnitClusterServiceHealth(t *testing.T) {
 	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		if r.Method == http.MethodGet && strings.HasPrefix(r.URL.Path, "/_cluster/health") {
 			w.WriteHeader(200)
-			fmt.Fprint(w, respJSON)
+			_, _ = fmt.Fprint(w, respJSON)
 			return
 		}
 		w.WriteHeader(404)
@@ -54,7 +54,7 @@ func TestUnitClusterServiceState(t *testing.T) {
 	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		if r.Method == http.MethodGet && strings.HasPrefix(r.URL.Path, "/_cluster/state") {
 			w.WriteHeader(200)
-			fmt.Fprint(w, respJSON)
+			_, _ = fmt.Fprint(w, respJSON)
 			return
 		}
 		w.WriteHeader(404)
@@ -95,7 +95,7 @@ func TestUnitClusterServiceStats(t *testing.T) {
 	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		if r.Method == http.MethodGet && strings.HasPrefix(r.URL.Path, "/_cluster/stats") {
 			w.WriteHeader(200)
-			fmt.Fprint(w, respJSON)
+			_, _ = fmt.Fprint(w, respJSON)
 			return
 		}
 		w.WriteHeader(404)
@@ -130,7 +130,7 @@ func TestUnitClusterServiceReroute(t *testing.T) {
 	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		if r.Method == http.MethodPost && r.URL.Path == "/_cluster/reroute" {
 			w.WriteHeader(200)
-			fmt.Fprint(w, respJSON)
+			_, _ = fmt.Fprint(w, respJSON)
 			return
 		}
 		w.WriteHeader(404)
@@ -161,7 +161,7 @@ func TestUnitClusterServiceGetSettings(t *testing.T) {
 	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		if r.Method == http.MethodGet && r.URL.Path == "/_cluster/settings" {
 			w.WriteHeader(200)
-			fmt.Fprint(w, respJSON)
+			_, _ = fmt.Fprint(w, respJSON)
 			return
 		}
 		w.WriteHeader(404)
@@ -184,7 +184,7 @@ func TestUnitClusterServicePutSettings(t *testing.T) {
 	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		if r.Method == http.MethodPut && r.URL.Path == "/_cluster/settings" {
 			w.WriteHeader(200)
-			fmt.Fprint(w, respJSON)
+			_, _ = fmt.Fprint(w, respJSON)
 			return
 		}
 		w.WriteHeader(404)
@@ -620,7 +620,7 @@ func TestUnitClusterServiceAllocationExplain(t *testing.T) {
 	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		if strings.HasPrefix(r.URL.Path, "/_cluster/allocation/explain") {
 			w.WriteHeader(200)
-			fmt.Fprint(w, respJSON)
+			_, _ = fmt.Fprint(w, respJSON)
 			return
 		}
 		w.WriteHeader(404)
@@ -651,7 +651,7 @@ func TestUnitClusterServicePendingTasks(t *testing.T) {
 	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		if r.Method == http.MethodGet && r.URL.Path == "/_cluster/pending_tasks" {
 			w.WriteHeader(200)
-			fmt.Fprint(w, respJSON)
+			_, _ = fmt.Fprint(w, respJSON)
 			return
 		}
 		w.WriteHeader(404)
@@ -675,7 +675,7 @@ func TestUnitClusterServiceRemoteInfo(t *testing.T) {
 	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		if r.Method == http.MethodGet && r.URL.Path == "/_remote/info" {
 			w.WriteHeader(200)
-			fmt.Fprint(w, respJSON)
+			_, _ = fmt.Fprint(w, respJSON)
 			return
 		}
 		w.WriteHeader(404)
@@ -748,11 +748,11 @@ func TestUnitClusterServiceDecommissionAwareness(t *testing.T) {
 		if strings.HasPrefix(r.URL.Path, "/_cluster/decommission/awareness") {
 			if r.Method == http.MethodGet && strings.HasSuffix(r.URL.Path, "_status") {
 				w.WriteHeader(200)
-				fmt.Fprint(w, decomJSON)
+				_, _ = fmt.Fprint(w, decomJSON)
 				return
 			}
 			w.WriteHeader(200)
-			fmt.Fprint(w, ackJSON)
+			_, _ = fmt.Fprint(w, ackJSON)
 			return
 		}
 		w.WriteHeader(404)
@@ -811,11 +811,11 @@ func TestUnitClusterServiceWeightedRouting(t *testing.T) {
 		if strings.HasPrefix(r.URL.Path, "/_cluster/routing/awareness") {
 			if r.Method == http.MethodGet && strings.HasSuffix(r.URL.Path, "/weights") {
 				w.WriteHeader(200)
-				fmt.Fprint(w, weightsJSON)
+				_, _ = fmt.Fprint(w, weightsJSON)
 				return
 			}
 			w.WriteHeader(200)
-			fmt.Fprint(w, ackJSON)
+			_, _ = fmt.Fprint(w, ackJSON)
 			return
 		}
 		w.WriteHeader(404)
@@ -865,7 +865,7 @@ func TestUnitClusterServiceVotingConfigExclusions(t *testing.T) {
 	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		if r.URL.Path == "/_cluster/voting_config_exclusions" {
 			w.WriteHeader(200)
-			fmt.Fprint(w, ackJSON)
+			_, _ = fmt.Fprint(w, ackJSON)
 			return
 		}
 		w.WriteHeader(404)

@@ -59,7 +59,7 @@ type GetResult struct {
 	// Fields contains stored fields returned when requested via the stored_fields parameter.
 	Fields map[string]any `json:"fields,omitempty"`
 	// Error contains error details if the document retrieval failed.
-	Error *types.ErrorDetails `json:"error,omitempty"`
+	Error *types.OpenSearchErrorDetails `json:"error,omitempty"`
 }
 
 // DeleteResponse represents the result of a delete document operation.
@@ -146,7 +146,7 @@ type BulkResponseItem struct {
 	// ForcedRefresh indicates whether a refresh was forced for this operation.
 	ForcedRefresh bool `json:"forced_refresh,omitempty"`
 	// Error contains error details if this particular operation failed.
-	Error *types.ErrorDetails `json:"error,omitempty"`
+	Error *types.OpenSearchErrorDetails `json:"error,omitempty"`
 	// GetResult contains the updated source when requested for an update operation.
 	GetResult *GetResult `json:"get,omitempty"`
 }

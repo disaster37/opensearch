@@ -20,14 +20,14 @@ func longBodyServer() *httptest.Server {
 	body := strings.Repeat("x", 600)
 	return httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(200)
-		fmt.Fprint(w, body)
+		_, _ = fmt.Fprint(w, body)
 	}))
 }
 
 func zeroStatusServer() *httptest.Server {
 	return httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(500)
-		fmt.Fprint(w, `{"error":{"type":"test","reason":"fail"},"status":0}`)
+		_, _ = fmt.Fprint(w, `{"error":{"type":"test","reason":"fail"},"status":0}`)
 	}))
 }
 

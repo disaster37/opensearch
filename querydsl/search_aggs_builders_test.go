@@ -224,7 +224,7 @@ func TestCovTopHitsAggregation_Source(t *testing.T) {
 	require.NoError(t, err)
 	assert.NotNil(t, src2)
 
-	NewTopHitsAggregation().
+	_, _ = NewTopHitsAggregation().
 		Explain(true).
 		Version(true).
 		NoStoredFields().

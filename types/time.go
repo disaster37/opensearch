@@ -38,5 +38,5 @@ func (t UnixMilliTime) MarshalJSON() ([]byte, error) {
 	if t.IsZero() {
 		return []byte("0"), nil
 	}
-	return json.Marshal(t.Time.UnixMilli())
+	return json.Marshal(t.UnixMilli())
 }

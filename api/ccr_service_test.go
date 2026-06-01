@@ -15,57 +15,57 @@ func newCcrTestServer() *httptest.Server {
 
 	mux.HandleFunc("/_plugins/_replication/autofollow_stats", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
-		w.Write([]byte(`{"num_success_start_replications":0,"num_failed_start_replications":0,"num_failed_leader_calls":0,"failed_indices":[],"autofollow_stats":[]}`))
+		_, _ = w.Write([]byte(`{"num_success_start_replications":0,"num_failed_start_replications":0,"num_failed_leader_calls":0,"failed_indices":[],"autofollow_stats":[]}`))
 	})
 
 	mux.HandleFunc("/_plugins/_replication/_autofollow", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
 		switch r.Method {
 		case http.MethodPost:
-			w.Write([]byte(`{"acknowledged":true}`))
+			_, _ = w.Write([]byte(`{"acknowledged":true}`))
 		case http.MethodDelete:
-			w.Write([]byte(`{"acknowledged":true}`))
+			_, _ = w.Write([]byte(`{"acknowledged":true}`))
 		}
 	})
 
 	mux.HandleFunc("/_plugins/_replication/test_rule/_start", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
-		w.Write([]byte(`{"acknowledged":true}`))
+		_, _ = w.Write([]byte(`{"acknowledged":true}`))
 	})
 
 	mux.HandleFunc("/_plugins/_replication/test_rule/_stop", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
-		w.Write([]byte(`{"acknowledged":true}`))
+		_, _ = w.Write([]byte(`{"acknowledged":true}`))
 	})
 
 	mux.HandleFunc("/_plugins/_replication/test_rule/_pause", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
-		w.Write([]byte(`{"acknowledged":true}`))
+		_, _ = w.Write([]byte(`{"acknowledged":true}`))
 	})
 
 	mux.HandleFunc("/_plugins/_replication/test_rule/_resume", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
-		w.Write([]byte(`{"acknowledged":true}`))
+		_, _ = w.Write([]byte(`{"acknowledged":true}`))
 	})
 
 	mux.HandleFunc("/_plugins/_replication/test_rule/_status", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
-		w.Write([]byte(`{"status":"SYNCING","reason":"","leader_alias":"leader1","leader_index":"leader-index","follower_index":"follower-index","syncing_details":{"leader_checkpoint":100,"follower_checkpoint":95,"seq_no":100}}`))
+		_, _ = w.Write([]byte(`{"status":"SYNCING","reason":"","leader_alias":"leader1","leader_index":"leader-index","follower_index":"follower-index","syncing_details":{"leader_checkpoint":100,"follower_checkpoint":95,"seq_no":100}}`))
 	})
 
 	mux.HandleFunc("/_plugins/_replication/test_rule/_update", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
-		w.Write([]byte(`{"acknowledged":true,"status":"UPDATED"}`))
+		_, _ = w.Write([]byte(`{"acknowledged":true,"status":"UPDATED"}`))
 	})
 
 	mux.HandleFunc("/_plugins/_replication/follower_stats", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
-		w.Write([]byte(`{"operations_written":100,"operations_read":100,"failed_read_requests":0,"throttled_read_requests":0,"failed_write_requests":0,"throttled_write_requests":0,"follower_checkpoint":95,"leader_checkpoint":100,"total_write_time_millis":500,"num_syncing_indices":1,"num_bootstrapping_indices":0,"num_paused_indices":0,"num_failed_indices":0,"num_shard_tasks":1,"num_index_tasks":0,"index_stats":{}}`))
+		_, _ = w.Write([]byte(`{"operations_written":100,"operations_read":100,"failed_read_requests":0,"throttled_read_requests":0,"failed_write_requests":0,"throttled_write_requests":0,"follower_checkpoint":95,"leader_checkpoint":100,"total_write_time_millis":500,"num_syncing_indices":1,"num_bootstrapping_indices":0,"num_paused_indices":0,"num_failed_indices":0,"num_shard_tasks":1,"num_index_tasks":0,"index_stats":{}}`))
 	})
 
 	mux.HandleFunc("/_plugins/_replication/leader_stats", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
-		w.Write([]byte(`{"operations_read":200,"translog_size_bytes":1024,"operations_read_lucene":150,"operations_read_translog":50,"total_read_time_lucene_millis":300,"total_read_time_translog_millis":100,"bytes_read":2048,"num_replicated_indices":1,"index_stats":{}}`))
+		_, _ = w.Write([]byte(`{"operations_read":200,"translog_size_bytes":1024,"operations_read_lucene":150,"operations_read_translog":50,"total_read_time_lucene_millis":300,"total_read_time_translog_millis":100,"bytes_read":2048,"num_replicated_indices":1,"index_stats":{}}`))
 	})
 
 	return httptest.NewServer(mux)

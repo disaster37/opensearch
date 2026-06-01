@@ -39,7 +39,7 @@ type OpenSearchErrorDetails = types.OpenSearchErrorDetails
 type ScriptErrorPosition = types.ScriptErrorPosition
 
 // ErrorDetails is an alias for [OpenSearchErrorDetails] for backward compatibility.
-type ErrorDetails = types.ErrorDetails
+type ErrorDetails = types.OpenSearchErrorDetails
 
 // DocumentVersion carries the seq_no and primary_term used for optimistic
 // concurrency control in document write operations.

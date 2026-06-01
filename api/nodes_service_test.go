@@ -14,11 +14,11 @@ func TestUnitNodesService_Info(t *testing.T) {
 	mux := http.NewServeMux()
 	mux.HandleFunc("/_nodes/_all/_all", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
-		w.Write([]byte(`{"cluster_name":"test-cluster","nodes":{}}`))
+		_, _ = w.Write([]byte(`{"cluster_name":"test-cluster","nodes":{}}`))
 	})
 	mux.HandleFunc("/_nodes/node1/os", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
-		w.Write([]byte(`{"cluster_name":"test-cluster","nodes":{"n1":{"name":"node1","roles":["cluster_manager"]}}}`))
+		_, _ = w.Write([]byte(`{"cluster_name":"test-cluster","nodes":{"n1":{"name":"node1","roles":["cluster_manager"]}}}`))
 	})
 
 	ts := httptest.NewServer(mux)
@@ -48,15 +48,15 @@ func TestUnitNodesService_Stats(t *testing.T) {
 	mux := http.NewServeMux()
 	mux.HandleFunc("/_nodes/stats", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
-		w.Write([]byte(`{"cluster_name":"test-cluster","nodes":{}}`))
+		_, _ = w.Write([]byte(`{"cluster_name":"test-cluster","nodes":{}}`))
 	})
 	mux.HandleFunc("/_nodes/node1/stats", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
-		w.Write([]byte(`{"cluster_name":"test-cluster","nodes":{"n1":{"name":"node1","roles":["data"]}}}`))
+		_, _ = w.Write([]byte(`{"cluster_name":"test-cluster","nodes":{"n1":{"name":"node1","roles":["data"]}}}`))
 	})
 	mux.HandleFunc("/_nodes/stats/os", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
-		w.Write([]byte(`{"cluster_name":"test-cluster","nodes":{}}`))
+		_, _ = w.Write([]byte(`{"cluster_name":"test-cluster","nodes":{}}`))
 	})
 
 	ts := httptest.NewServer(mux)
@@ -89,10 +89,10 @@ func TestUnitNodesService_HotThreads(t *testing.T) {
 
 	mux := http.NewServeMux()
 	mux.HandleFunc("/_nodes/hot_threads", func(w http.ResponseWriter, r *http.Request) {
-		w.Write([]byte(threadDump))
+		_, _ = w.Write([]byte(threadDump))
 	})
 	mux.HandleFunc("/_nodes/node1/hot_threads", func(w http.ResponseWriter, r *http.Request) {
-		w.Write([]byte(threadDump))
+		_, _ = w.Write([]byte(threadDump))
 	})
 
 	ts := httptest.NewServer(mux)
@@ -120,7 +120,7 @@ func TestUnitNodesService_ReloadSecureSettings(t *testing.T) {
 	mux := http.NewServeMux()
 	mux.HandleFunc("/_nodes/reload_secure_settings", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
-		w.Write([]byte(respJSON))
+		_, _ = w.Write([]byte(respJSON))
 	})
 
 	ts := httptest.NewServer(mux)
@@ -152,15 +152,15 @@ func TestUnitNodesService_Usage(t *testing.T) {
 	mux := http.NewServeMux()
 	mux.HandleFunc("/_nodes/usage", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
-		w.Write([]byte(respJSON))
+		_, _ = w.Write([]byte(respJSON))
 	})
 	mux.HandleFunc("/_nodes/node1/usage", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
-		w.Write([]byte(respJSON))
+		_, _ = w.Write([]byte(respJSON))
 	})
 	mux.HandleFunc("/_nodes/node1/usage/rest_actions", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
-		w.Write([]byte(respJSON))
+		_, _ = w.Write([]byte(respJSON))
 	})
 
 	ts := httptest.NewServer(mux)

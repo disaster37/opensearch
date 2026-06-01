@@ -17,27 +17,27 @@ func newRollupTestServer() *httptest.Server {
 		w.Header().Set("Content-Type", "application/json")
 		switch r.Method {
 		case http.MethodGet:
-			w.Write([]byte(`{"_id":"test","_version":1,"_seq_no":0,"_primary_term":1,"rollup":{"rollup_id":"test_rollup","source_index":"src","target_index":"tgt"}}`))
+			_, _ = w.Write([]byte(`{"_id":"test","_version":1,"_seq_no":0,"_primary_term":1,"rollup":{"rollup_id":"test_rollup","source_index":"src","target_index":"tgt"}}`))
 		case http.MethodPut:
-			w.Write([]byte(`{"_id":"test","_version":2,"_seq_no":1,"_primary_term":1,"rollup":{"rollup_id":"test_rollup","source_index":"src","target_index":"tgt"}}`))
+			_, _ = w.Write([]byte(`{"_id":"test","_version":2,"_seq_no":1,"_primary_term":1,"rollup":{"rollup_id":"test_rollup","source_index":"src","target_index":"tgt"}}`))
 		case http.MethodDelete:
-			w.Write([]byte(`{"acknowledged":true}`))
+			_, _ = w.Write([]byte(`{"acknowledged":true}`))
 		}
 	})
 
 	mux.HandleFunc("/_plugins/_rollup/jobs/test_rollup/_start", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
-		w.Write([]byte(`{"acknowledged":true}`))
+		_, _ = w.Write([]byte(`{"acknowledged":true}`))
 	})
 
 	mux.HandleFunc("/_plugins/_rollup/jobs/test_rollup/_stop", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
-		w.Write([]byte(`{"acknowledged":true}`))
+		_, _ = w.Write([]byte(`{"acknowledged":true}`))
 	})
 
 	mux.HandleFunc("/_plugins/_rollup/jobs/test_rollup/_explain", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
-		w.Write([]byte(`{"test_rollup":{"metadata":{"status":"RUNNING"}}}`))
+		_, _ = w.Write([]byte(`{"test_rollup":{"metadata":{"status":"RUNNING"}}}`))
 	})
 
 	return httptest.NewServer(mux)

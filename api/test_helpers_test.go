@@ -31,20 +31,20 @@ func deadClient() *resty.Client {
 func jsonResponse(w http.ResponseWriter, statusCode int, body string) {
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(statusCode)
-	fmt.Fprint(w, body)
+	_, _ = fmt.Fprint(w, body)
 }
 
 func errServer(status int) *httptest.Server {
 	errJSON := `{"error":{"type":"test_error","reason":"test error"},"status":` + fmt.Sprint(status) + `}`
 	return httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(status)
-		fmt.Fprint(w, errJSON)
+		_, _ = fmt.Fprint(w, errJSON)
 	}))
 }
 
 func badJSONServer() *httptest.Server {
 	return httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(200)
-		fmt.Fprint(w, `not json at all`)
+		_, _ = fmt.Fprint(w, `not json at all`)
 	}))
 }

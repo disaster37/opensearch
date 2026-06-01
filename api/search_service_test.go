@@ -18,7 +18,7 @@ func TestUnitSearchServiceSearch(t *testing.T) {
 	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		if r.Method == http.MethodPost && strings.HasSuffix(r.URL.Path, "/_search") {
 			w.WriteHeader(200)
-			fmt.Fprint(w, respJSON)
+			_, _ = fmt.Fprint(w, respJSON)
 			return
 		}
 		w.WriteHeader(404)
@@ -59,7 +59,7 @@ func TestUnitSearchServiceMultiSearch(t *testing.T) {
 	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		if r.Method == http.MethodGet && r.URL.Path == "/_msearch" {
 			w.WriteHeader(200)
-			fmt.Fprint(w, respJSON)
+			_, _ = fmt.Fprint(w, respJSON)
 			return
 		}
 		w.WriteHeader(404)
@@ -86,7 +86,7 @@ func TestUnitSearchServiceCount(t *testing.T) {
 	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		if r.Method == http.MethodPost && strings.HasSuffix(r.URL.Path, "/_count") {
 			w.WriteHeader(200)
-			fmt.Fprint(w, respJSON)
+			_, _ = fmt.Fprint(w, respJSON)
 			return
 		}
 		w.WriteHeader(404)
@@ -127,7 +127,7 @@ func TestUnitSearchServiceScroll(t *testing.T) {
 	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		if r.Method == http.MethodPost && r.URL.Path == "/_search/scroll" {
 			w.WriteHeader(200)
-			fmt.Fprint(w, respJSON)
+			_, _ = fmt.Fprint(w, respJSON)
 			return
 		}
 		w.WriteHeader(404)
@@ -163,7 +163,7 @@ func TestUnitSearchServiceClearScroll(t *testing.T) {
 	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		if r.Method == http.MethodDelete && r.URL.Path == "/_search/scroll" {
 			w.WriteHeader(200)
-			fmt.Fprint(w, respJSON)
+			_, _ = fmt.Fprint(w, respJSON)
 			return
 		}
 		w.WriteHeader(404)
@@ -200,7 +200,7 @@ func TestUnitSearchServiceValidate(t *testing.T) {
 	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		if (r.Method == http.MethodGet || r.Method == http.MethodPost) && strings.HasSuffix(r.URL.Path, "/_validate/query") {
 			w.WriteHeader(200)
-			fmt.Fprint(w, respJSON)
+			_, _ = fmt.Fprint(w, respJSON)
 			return
 		}
 		w.WriteHeader(404)
@@ -241,7 +241,7 @@ func TestUnitSearchServiceSearchShards(t *testing.T) {
 	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		if r.Method == http.MethodGet && strings.HasSuffix(r.URL.Path, "/_search_shards") {
 			w.WriteHeader(200)
-			fmt.Fprint(w, respJSON)
+			_, _ = fmt.Fprint(w, respJSON)
 			return
 		}
 		w.WriteHeader(404)
@@ -278,11 +278,11 @@ func TestUnitSearchServiceFieldCaps(t *testing.T) {
 		if r.Method == http.MethodGet && strings.HasSuffix(r.URL.Path, "/_field_caps") {
 			if strings.Contains(r.URL.Path, "notexist") {
 				w.WriteHeader(404)
-				fmt.Fprint(w, `{"error":"not found"}`)
+				_, _ = fmt.Fprint(w, `{"error":"not found"}`)
 				return
 			}
 			w.WriteHeader(200)
-			fmt.Fprint(w, respJSON)
+			_, _ = fmt.Fprint(w, respJSON)
 			return
 		}
 		w.WriteHeader(404)
@@ -684,7 +684,7 @@ func TestUnitSearchServiceSearchTemplate(t *testing.T) {
 	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		if r.Method == http.MethodPost && strings.HasSuffix(r.URL.Path, "/_search/template") {
 			w.WriteHeader(200)
-			fmt.Fprint(w, respJSON)
+			_, _ = fmt.Fprint(w, respJSON)
 			return
 		}
 		w.WriteHeader(404)
@@ -726,7 +726,7 @@ func TestUnitSearchServiceMultiSearchTemplate(t *testing.T) {
 	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		if r.Method == http.MethodPost && strings.HasSuffix(r.URL.Path, "/_msearch/template") {
 			w.WriteHeader(200)
-			fmt.Fprint(w, respJSON)
+			_, _ = fmt.Fprint(w, respJSON)
 			return
 		}
 		w.WriteHeader(404)
@@ -768,7 +768,7 @@ func TestUnitSearchServiceRenderSearchTemplate(t *testing.T) {
 	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		if r.Method == http.MethodPost && strings.HasPrefix(r.URL.Path, "/_render/template") {
 			w.WriteHeader(200)
-			fmt.Fprint(w, respJSON)
+			_, _ = fmt.Fprint(w, respJSON)
 			return
 		}
 		w.WriteHeader(404)
@@ -803,7 +803,7 @@ func TestUnitSearchServiceRankEval(t *testing.T) {
 	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		if r.Method == http.MethodPost && strings.HasSuffix(r.URL.Path, "/_rank_eval") {
 			w.WriteHeader(200)
-			fmt.Fprint(w, respJSON)
+			_, _ = fmt.Fprint(w, respJSON)
 			return
 		}
 		w.WriteHeader(404)
@@ -848,22 +848,22 @@ func TestUnitSearchServicePIT(t *testing.T) {
 	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		if r.Method == http.MethodPost && strings.HasSuffix(r.URL.Path, "/_search/point_in_time") {
 			w.WriteHeader(200)
-			fmt.Fprint(w, createRespJSON)
+			_, _ = fmt.Fprint(w, createRespJSON)
 			return
 		}
 		if r.Method == http.MethodGet && r.URL.Path == "/_search/point_in_time/_all" {
 			w.WriteHeader(200)
-			fmt.Fprint(w, listRespJSON)
+			_, _ = fmt.Fprint(w, listRespJSON)
 			return
 		}
 		if r.Method == http.MethodDelete && r.URL.Path == "/_search/point_in_time" {
 			w.WriteHeader(200)
-			fmt.Fprint(w, deleteRespJSON)
+			_, _ = fmt.Fprint(w, deleteRespJSON)
 			return
 		}
 		if r.Method == http.MethodDelete && r.URL.Path == "/_search/point_in_time/_all" {
 			w.WriteHeader(200)
-			fmt.Fprint(w, deleteRespJSON)
+			_, _ = fmt.Fprint(w, deleteRespJSON)
 			return
 		}
 		w.WriteHeader(404)

@@ -15,7 +15,7 @@ func TestUnitIngestService_PutPipeline(t *testing.T) {
 		assert.Equal(t, "PUT", r.Method)
 		assert.Equal(t, "/_ingest/pipeline/my-pipeline", r.URL.Path)
 		w.Header().Set("Content-Type", "application/json")
-		w.Write([]byte(`{"acknowledged":true}`))
+		_, _ = w.Write([]byte(`{"acknowledged":true}`))
 	}))
 	defer ts.Close()
 
@@ -38,11 +38,11 @@ func TestUnitIngestService_GetPipeline(t *testing.T) {
 	mux := http.NewServeMux()
 	mux.HandleFunc("/_ingest/pipeline/my-pipeline", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
-		w.Write([]byte(`{"my-pipeline":{"description":"test","processors":[{"set":{"field":"foo","value":"bar"}}]}}`))
+		_, _ = w.Write([]byte(`{"my-pipeline":{"description":"test","processors":[{"set":{"field":"foo","value":"bar"}}]}}`))
 	})
 	mux.HandleFunc("/_ingest/pipeline", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
-		w.Write([]byte(`{"my-pipeline":{"description":"test","processors":[{"set":{"field":"foo","value":"bar"}}]},"other":{"description":"other","processors":[]}}`))
+		_, _ = w.Write([]byte(`{"my-pipeline":{"description":"test","processors":[{"set":{"field":"foo","value":"bar"}}]},"other":{"description":"other","processors":[]}}`))
 	})
 
 	ts := httptest.NewServer(mux)
@@ -70,7 +70,7 @@ func TestUnitIngestService_DeletePipeline(t *testing.T) {
 		assert.Equal(t, "DELETE", r.Method)
 		assert.Equal(t, "/_ingest/pipeline/my-pipeline", r.URL.Path)
 		w.Header().Set("Content-Type", "application/json")
-		w.Write([]byte(`{"acknowledged":true}`))
+		_, _ = w.Write([]byte(`{"acknowledged":true}`))
 	}))
 	defer ts.Close()
 
@@ -88,12 +88,12 @@ func TestUnitIngestService_SimulatePipeline(t *testing.T) {
 	mux.HandleFunc("/_ingest/pipeline/my-pipeline/_simulate", func(w http.ResponseWriter, r *http.Request) {
 		assert.Equal(t, "POST", r.Method)
 		w.Header().Set("Content-Type", "application/json")
-		w.Write([]byte(`{"docs":[{"doc":{"_index":"test","_id":"1","_source":{"foo":"bar"}},"processor_results":[{"tag":"set-foo","doc":{"_index":"test","_id":"1","_source":{"foo":"bar"}}}]}]}`))
+		_, _ = w.Write([]byte(`{"docs":[{"doc":{"_index":"test","_id":"1","_source":{"foo":"bar"}},"processor_results":[{"tag":"set-foo","doc":{"_index":"test","_id":"1","_source":{"foo":"bar"}}}]}]}`))
 	})
 	mux.HandleFunc("/_ingest/pipeline/_simulate", func(w http.ResponseWriter, r *http.Request) {
 		assert.Equal(t, "POST", r.Method)
 		w.Header().Set("Content-Type", "application/json")
-		w.Write([]byte(`{"docs":[{"doc":{"_index":"test","_id":"1","_source":{"foo":"bar"}},"processor_results":[]}]}`))
+		_, _ = w.Write([]byte(`{"docs":[{"doc":{"_index":"test","_id":"1","_source":{"foo":"bar"}},"processor_results":[]}]}`))
 	})
 
 	ts := httptest.NewServer(mux)
@@ -138,7 +138,7 @@ func TestUnitIngestService_ProcessorGrok(t *testing.T) {
 		assert.Equal(t, "GET", r.Method)
 		assert.Equal(t, "/_ingest/processor/grok", r.URL.Path)
 		w.Header().Set("Content-Type", "application/json")
-		w.Write([]byte(`{"patterns":{"BAC":"BAC\\|(?<bac_device>.*?)$","CISCOFW":"(?:\\w+)\\s+(?<cisco_action>\\w+)"}}`))
+		_, _ = w.Write([]byte(`{"patterns":{"BAC":"BAC\\|(?<bac_device>.*?)$","CISCOFW":"(?:\\w+)\\s+(?<cisco_action>\\w+)"}}`))
 	}))
 	defer ts.Close()
 

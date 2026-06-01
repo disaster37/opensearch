@@ -19,221 +19,221 @@ func newSecurityTestServer() *httptest.Server {
 		w.Header().Set("Content-Type", "application/json")
 		switch r.Method {
 		case http.MethodGet:
-			w.Write([]byte(`{"test_role":{"cluster_permissions":["*"]}}`))
+			_, _ = w.Write([]byte(`{"test_role":{"cluster_permissions":["*"]}}`))
 		case http.MethodPut:
-			w.Write([]byte(securityResponse))
+			_, _ = w.Write([]byte(securityResponse))
 		case http.MethodDelete:
-			w.Write([]byte(securityResponse))
+			_, _ = w.Write([]byte(securityResponse))
 		}
 	})
 
 	mux.HandleFunc("/_plugins/_security/api/roles", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
-		w.Write([]byte(`{"role1":{"cluster_permissions":["read"]},"role2":{"cluster_permissions":["write"]}}`))
+		_, _ = w.Write([]byte(`{"role1":{"cluster_permissions":["read"]},"role2":{"cluster_permissions":["write"]}}`))
 	})
 
 	mux.HandleFunc("/_plugins/_security/api/rolesmapping/test_role", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
 		switch r.Method {
 		case http.MethodGet:
-			w.Write([]byte(`{"test_role":{"backend_roles":["admin"]}}`))
+			_, _ = w.Write([]byte(`{"test_role":{"backend_roles":["admin"]}}`))
 		case http.MethodPut:
-			w.Write([]byte(securityResponse))
+			_, _ = w.Write([]byte(securityResponse))
 		case http.MethodDelete:
-			w.Write([]byte(securityResponse))
+			_, _ = w.Write([]byte(securityResponse))
 		}
 	})
 
 	mux.HandleFunc("/_plugins/_security/api/rolesmapping", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
-		w.Write([]byte(`{"role1":{"backend_roles":["admin"]}}`))
+		_, _ = w.Write([]byte(`{"role1":{"backend_roles":["admin"]}}`))
 	})
 
 	mux.HandleFunc("/_plugins/_security/api/internalusers/test_user", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
 		switch r.Method {
 		case http.MethodGet:
-			w.Write([]byte(`{"test_user":{"hash":"$2a$12$abc"}}`))
+			_, _ = w.Write([]byte(`{"test_user":{"hash":"$2a$12$abc"}}`))
 		case http.MethodPut:
-			w.Write([]byte(securityResponse))
+			_, _ = w.Write([]byte(securityResponse))
 		case http.MethodDelete:
-			w.Write([]byte(securityResponse))
+			_, _ = w.Write([]byte(securityResponse))
 		}
 	})
 
 	mux.HandleFunc("/_plugins/_security/api/internalusers", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
-		w.Write([]byte(`{"admin":{"hash":"$2a$12$abc"},"user1":{"hash":"$2a$12$def"}}`))
+		_, _ = w.Write([]byte(`{"admin":{"hash":"$2a$12$abc"},"user1":{"hash":"$2a$12$def"}}`))
 	})
 
 	mux.HandleFunc("/_plugins/_security/api/actiongroups/test_ag", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
 		switch r.Method {
 		case http.MethodGet:
-			w.Write([]byte(`{"test_ag":{"allowed_actions":["indices:data/read/search"]}}`))
+			_, _ = w.Write([]byte(`{"test_ag":{"allowed_actions":["indices:data/read/search"]}}`))
 		case http.MethodPut:
-			w.Write([]byte(securityResponse))
+			_, _ = w.Write([]byte(securityResponse))
 		case http.MethodDelete:
-			w.Write([]byte(securityResponse))
+			_, _ = w.Write([]byte(securityResponse))
 		}
 	})
 
 	mux.HandleFunc("/_plugins/_security/api/actiongroups", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
-		w.Write([]byte(`{"read":{"allowed_actions":["indices:data/read/search"]}}`))
+		_, _ = w.Write([]byte(`{"read":{"allowed_actions":["indices:data/read/search"]}}`))
 	})
 
 	mux.HandleFunc("/_plugins/_security/api/tenants/test_tenant", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
 		switch r.Method {
 		case http.MethodGet:
-			w.Write([]byte(`{"test_tenant":{"description":"test"}}`))
+			_, _ = w.Write([]byte(`{"test_tenant":{"description":"test"}}`))
 		case http.MethodPut:
-			w.Write([]byte(securityResponse))
+			_, _ = w.Write([]byte(securityResponse))
 		case http.MethodDelete:
-			w.Write([]byte(securityResponse))
+			_, _ = w.Write([]byte(securityResponse))
 		}
 	})
 
 	mux.HandleFunc("/_plugins/_security/api/tenants", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
-		w.Write([]byte(`{"global_tenant":{"description":"Global tenant"}}`))
+		_, _ = w.Write([]byte(`{"global_tenant":{"description":"Global tenant"}}`))
 	})
 
 	mux.HandleFunc("/_plugins/_security/api/nodesdn/test_dn", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
 		switch r.Method {
 		case http.MethodGet:
-			w.Write([]byte(`{"test_dn":{"nodes_dn":["CN=node1"]}}`))
+			_, _ = w.Write([]byte(`{"test_dn":{"nodes_dn":["CN=node1"]}}`))
 		case http.MethodPut:
-			w.Write([]byte(securityResponse))
+			_, _ = w.Write([]byte(securityResponse))
 		case http.MethodDelete:
-			w.Write([]byte(securityResponse))
+			_, _ = w.Write([]byte(securityResponse))
 		}
 	})
 
 	mux.HandleFunc("/_plugins/_security/api/nodesdn", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
-		w.Write([]byte(`{"node1":{"nodes_dn":["CN=node1"]}}`))
+		_, _ = w.Write([]byte(`{"node1":{"nodes_dn":["CN=node1"]}}`))
 	})
 
 	mux.HandleFunc("/_plugins/_security/api/cache", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
-		w.Write([]byte(`{"status":"OK","message":"Cache flushed"}`))
+		_, _ = w.Write([]byte(`{"status":"OK","message":"Cache flushed"}`))
 	})
 
 	mux.HandleFunc("/_plugins/_security/authinfo", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
-		w.Write([]byte(`{"user":"admin","user_name":"admin","backend_roles":[],"roles":["all_access"],"tenants":{"global_tenant":true},"peer_certificates":"0","remote_address":"127.0.0.1"}`))
+		_, _ = w.Write([]byte(`{"user":"admin","user_name":"admin","backend_roles":[],"roles":["all_access"],"tenants":{"global_tenant":true},"peer_certificates":"0","remote_address":"127.0.0.1"}`))
 	})
 
 	mux.HandleFunc("/_plugins/_security/api/securityconfig", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
-		w.Write([]byte(`{"config":{"dynamic":{}}}`))
+		_, _ = w.Write([]byte(`{"config":{"dynamic":{}}}`))
 	})
 
 	mux.HandleFunc("/_plugins/_security/api/securityconfig/config", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
-		w.Write([]byte(securityResponse))
+		_, _ = w.Write([]byte(securityResponse))
 	})
 
 	mux.HandleFunc("/_plugins/_security/api/audit", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
-		w.Write([]byte(`{"config":{"enabled":true,"compliance":{},"audit":{}}}`))
+		_, _ = w.Write([]byte(`{"config":{"enabled":true,"compliance":{},"audit":{}}}`))
 	})
 
 	mux.HandleFunc("/_plugins/_security/api/audit/config", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
-		w.Write([]byte(securityResponse))
+		_, _ = w.Write([]byte(securityResponse))
 	})
 
 	mux.HandleFunc("/_plugins/_security/health", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
-		w.Write([]byte(`{"status":"UP","message":"Security plugin is healthy"}`))
+		_, _ = w.Write([]byte(`{"status":"UP","message":"Security plugin is healthy"}`))
 	})
 
 	mux.HandleFunc("/_plugins/_security/whoami", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
-		w.Write([]byte(`{"dn":"CN=admin,OU=ops,O=example,C=US","is_admin":true,"is_node_certificate_request":false}`))
+		_, _ = w.Write([]byte(`{"dn":"CN=admin,OU=ops,O=example,C=US","is_admin":true,"is_node_certificate_request":false}`))
 	})
 
 	mux.HandleFunc("/_plugins/_security/tenantinfo", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
-		w.Write([]byte(`{"global_tenant":{"description":"Global"}}`))
+		_, _ = w.Write([]byte(`{"global_tenant":{"description":"Global"}}`))
 	})
 
 	mux.HandleFunc("/_plugins/_security/dashboardsinfo", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
-		w.Write([]byte(`{"multitenancy_enabled":true}`))
+		_, _ = w.Write([]byte(`{"multitenancy_enabled":true}`))
 	})
 
 	mux.HandleFunc("/_plugins/_security/configupdate", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
-		w.Write([]byte(`{"status":"OK","nodes_size":1,"updated_node":1}`))
+		_, _ = w.Write([]byte(`{"status":"OK","nodes_size":1,"updated_node":1}`))
 	})
 
 	mux.HandleFunc("/_opendistro/_security/sslinfo", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
-		w.Write([]byte(`{"http_sslinfo":{"principal":"CN=admin"},"transport_sslinfo":{"principal":"CN=node1"}}`))
+		_, _ = w.Write([]byte(`{"http_sslinfo":{"principal":"CN=admin"},"transport_sslinfo":{"principal":"CN=node1"}}`))
 	})
 
 	mux.HandleFunc("/_plugins/_security/api/permissionsinfo", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
-		w.Write([]byte(`{"has_access":true,"disabled_endpoints":[],"enabled_endpoints":["api/account"]}`))
+		_, _ = w.Write([]byte(`{"has_access":true,"disabled_endpoints":[],"enabled_endpoints":["api/account"]}`))
 	})
 
 	mux.HandleFunc("/_plugins/_security/api/account", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
 		switch r.Method {
 		case http.MethodGet:
-			w.Write([]byte(`{"user_name":"admin","is_reserved":false,"is_hidden":false,"is_system_user":false,"backend_roles":["admin"],"opendistro_security_roles":["all_access"]}`))
+			_, _ = w.Write([]byte(`{"user_name":"admin","is_reserved":false,"is_hidden":false,"is_system_user":false,"backend_roles":["admin"],"opendistro_security_roles":["all_access"]}`))
 		case http.MethodPut:
-			w.Write([]byte(securityResponse))
+			_, _ = w.Write([]byte(securityResponse))
 		}
 	})
 
 	mux.HandleFunc("/_plugins/_security/api/authtoken", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
-		w.Write([]byte(`{"authorization":"Bearer abc123token"}`))
+		_, _ = w.Write([]byte(`{"authorization":"Bearer abc123token"}`))
 	})
 
 	mux.HandleFunc("/_plugins/_security/api/allowlist", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
 		switch r.Method {
 		case http.MethodGet:
-			w.Write([]byte(`{"enabled":true,"requests":{"/_plugins/_security/api/account":["GET"]}}`))
+			_, _ = w.Write([]byte(`{"enabled":true,"requests":{"/_plugins/_security/api/account":["GET"]}}`))
 		case http.MethodPut:
-			w.Write([]byte(securityResponse))
+			_, _ = w.Write([]byte(securityResponse))
 		}
 	})
 
 	mux.HandleFunc("/_plugins/_security/api/certificates", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
-		w.Write([]byte(`{"certificates":[{"issuer_dn":"CN=root","subject_dn":"CN=admin","serial_number":"1234"}]}`))
+		_, _ = w.Write([]byte(`{"certificates":[{"issuer_dn":"CN=root","subject_dn":"CN=admin","serial_number":"1234"}]}`))
 	})
 
 	mux.HandleFunc("/_plugins/_security/api/tenancy/config", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
 		switch r.Method {
 		case http.MethodGet:
-			w.Write([]byte(`{"enabled":true,"default_tenant":"global_tenant","private_tenant_enabled":true,"admin_usernames":["admin"]}`))
+			_, _ = w.Write([]byte(`{"enabled":true,"default_tenant":"global_tenant","private_tenant_enabled":true,"admin_usernames":["admin"]}`))
 		case http.MethodPut:
-			w.Write([]byte(securityResponse))
+			_, _ = w.Write([]byte(securityResponse))
 		}
 	})
 
 	mux.HandleFunc("/_plugins/_security/api/authfailurelisteners", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
-		w.Write([]byte(`{"IpRateLimiter":{"type":"ip","window_duration":"1m","max_count":10,"block_duration":"10m"}}`))
+		_, _ = w.Write([]byte(`{"IpRateLimiter":{"type":"ip","window_duration":"1m","max_count":10,"block_duration":"10m"}}`))
 	})
 
 	mux.HandleFunc("/_plugins/_security/api/authfailurelisteners/test_limiter", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
 		switch r.Method {
 		case http.MethodPut:
-			w.Write([]byte(securityResponse))
+			_, _ = w.Write([]byte(securityResponse))
 		case http.MethodDelete:
-			w.Write([]byte(securityResponse))
+			_, _ = w.Write([]byte(securityResponse))
 		}
 	})
 

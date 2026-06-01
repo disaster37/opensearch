@@ -19,40 +19,40 @@ func newSmTestServer() *httptest.Server {
 		w.Header().Set("Content-Type", "application/json")
 		path := r.URL.Path
 		if strings.HasSuffix(path, "/_explain") {
-			w.Write([]byte(`{"policies":[]}`))
+			_, _ = w.Write([]byte(`{"policies":[]}`))
 			return
 		}
 		switch r.Method {
 		case http.MethodGet:
-			w.Write([]byte(`{"_id":"test","_version":1,"_seq_no":0,"_primary_term":1,"sm_policy":{"policy_id":"test_sm","snapshot_config":{"repository":"my-repo"},"creation":{"schedule":{}}}}`))
+			_, _ = w.Write([]byte(`{"_id":"test","_version":1,"_seq_no":0,"_primary_term":1,"sm_policy":{"policy_id":"test_sm","snapshot_config":{"repository":"my-repo"},"creation":{"schedule":{}}}}`))
 		case http.MethodPut:
-			w.Write([]byte(`{"_id":"test","_version":2,"_seq_no":1,"_primary_term":1,"sm_policy":{"policy_id":"test_sm","snapshot_config":{"repository":"my-repo"},"creation":{"schedule":{}}}}`))
+			_, _ = w.Write([]byte(`{"_id":"test","_version":2,"_seq_no":1,"_primary_term":1,"sm_policy":{"policy_id":"test_sm","snapshot_config":{"repository":"my-repo"},"creation":{"schedule":{}}}}`))
 		case http.MethodPost:
-			w.Write([]byte(`{"_id":"test","_version":1,"_seq_no":0,"_primary_term":1,"sm_policy":{"policy_id":"test_sm","snapshot_config":{"repository":"my-repo"},"creation":{"schedule":{}}}}`))
+			_, _ = w.Write([]byte(`{"_id":"test","_version":1,"_seq_no":0,"_primary_term":1,"sm_policy":{"policy_id":"test_sm","snapshot_config":{"repository":"my-repo"},"creation":{"schedule":{}}}}`))
 		case http.MethodDelete:
-			w.Write([]byte(`{"_index":".opendistro-sm-config","_id":"test_sm","_version":2,"result":"deleted","forced_refresh":false,"_shards":{},"_seq_no":1,"_primary_term":1}`))
+			_, _ = w.Write([]byte(`{"_index":".opendistro-sm-config","_id":"test_sm","_version":2,"result":"deleted","forced_refresh":false,"_shards":{},"_seq_no":1,"_primary_term":1}`))
 		}
 	})
 
 	mux.HandleFunc("/_plugins/_sm/policies/test_sm/_explain", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
-		w.Write([]byte(`{"policies":[]}`))
+		_, _ = w.Write([]byte(`{"policies":[]}`))
 	})
 
 	mux.HandleFunc("/_plugins/_sm/policies/test_sm/_start", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
-		w.Write([]byte(`{"acknowledged":true,"status":"STARTED"}`))
+		_, _ = w.Write([]byte(`{"acknowledged":true,"status":"STARTED"}`))
 	})
 
 	mux.HandleFunc("/_plugins/_sm/policies/test_sm/_stop", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
-		w.Write([]byte(`{"acknowledged":true,"status":"STOPPED"}`))
+		_, _ = w.Write([]byte(`{"acknowledged":true,"status":"STOPPED"}`))
 	})
 
 	mux.HandleFunc("/_plugins/_sm/policies", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
 		if r.Method == http.MethodGet {
-			w.Write([]byte(`{"policies":[{"policy_id":"p1","_seq_no":1,"_primary_term":1}],"total_policies":1}`))
+			_, _ = w.Write([]byte(`{"policies":[{"policy_id":"p1","_seq_no":1,"_primary_term":1}],"total_policies":1}`))
 		}
 	})
 

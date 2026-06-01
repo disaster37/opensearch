@@ -18,7 +18,7 @@ func TestUnitIndicesServiceCreate(t *testing.T) {
 	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		if r.Method == http.MethodPut && r.URL.Path == "/myindex" {
 			w.WriteHeader(200)
-			fmt.Fprint(w, respJSON)
+			_, _ = fmt.Fprint(w, respJSON)
 			return
 		}
 		w.WriteHeader(404)
@@ -55,7 +55,7 @@ func TestUnitIndicesServiceDelete(t *testing.T) {
 	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		if r.Method == http.MethodDelete && strings.HasPrefix(r.URL.Path, "/") {
 			w.WriteHeader(200)
-			fmt.Fprint(w, respJSON)
+			_, _ = fmt.Fprint(w, respJSON)
 			return
 		}
 		w.WriteHeader(404)
@@ -91,7 +91,7 @@ func TestUnitIndicesServiceGet(t *testing.T) {
 	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		if r.Method == http.MethodGet && r.URL.Path != "/" && r.URL.Path != "" {
 			w.WriteHeader(200)
-			fmt.Fprint(w, respJSON)
+			_, _ = fmt.Fprint(w, respJSON)
 			return
 		}
 		w.WriteHeader(404)
@@ -182,7 +182,7 @@ func TestUnitIndicesServiceOpen(t *testing.T) {
 	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		if r.Method == http.MethodPost && r.URL.Path == "/myindex/_open" {
 			w.WriteHeader(200)
-			fmt.Fprint(w, respJSON)
+			_, _ = fmt.Fprint(w, respJSON)
 			return
 		}
 		w.WriteHeader(404)
@@ -212,7 +212,7 @@ func TestUnitIndicesServiceClose(t *testing.T) {
 	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		if r.Method == http.MethodPost && r.URL.Path == "/myindex/_close" {
 			w.WriteHeader(200)
-			fmt.Fprint(w, respJSON)
+			_, _ = fmt.Fprint(w, respJSON)
 			return
 		}
 		w.WriteHeader(404)
@@ -242,7 +242,7 @@ func TestUnitIndicesServiceRollover(t *testing.T) {
 	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		if r.Method == http.MethodPost && strings.HasSuffix(r.URL.Path, "/_rollover") {
 			w.WriteHeader(200)
-			fmt.Fprint(w, respJSON)
+			_, _ = fmt.Fprint(w, respJSON)
 			return
 		}
 		w.WriteHeader(404)
@@ -279,7 +279,7 @@ func TestUnitIndicesServiceShrink(t *testing.T) {
 	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		if r.Method == http.MethodPost && strings.Contains(r.URL.Path, "/_shrink/") {
 			w.WriteHeader(200)
-			fmt.Fprint(w, respJSON)
+			_, _ = fmt.Fprint(w, respJSON)
 			return
 		}
 		w.WriteHeader(404)
@@ -323,7 +323,7 @@ func TestUnitIndicesServiceFlush(t *testing.T) {
 	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		if r.Method == http.MethodPost && strings.HasSuffix(r.URL.Path, "/_flush") {
 			w.WriteHeader(200)
-			fmt.Fprint(w, respJSON)
+			_, _ = fmt.Fprint(w, respJSON)
 			return
 		}
 		w.WriteHeader(404)
@@ -358,7 +358,7 @@ func TestUnitIndicesServiceRefresh(t *testing.T) {
 	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		if r.Method == http.MethodPost && strings.HasSuffix(r.URL.Path, "/_refresh") {
 			w.WriteHeader(200)
-			fmt.Fprint(w, respJSON)
+			_, _ = fmt.Fprint(w, respJSON)
 			return
 		}
 		w.WriteHeader(404)
@@ -393,7 +393,7 @@ func TestUnitIndicesServiceForcemerge(t *testing.T) {
 	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		if r.Method == http.MethodPost && strings.HasSuffix(r.URL.Path, "/_forcemerge") {
 			w.WriteHeader(200)
-			fmt.Fprint(w, respJSON)
+			_, _ = fmt.Fprint(w, respJSON)
 			return
 		}
 		w.WriteHeader(404)
@@ -428,7 +428,7 @@ func TestUnitIndicesServiceFreeze(t *testing.T) {
 	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		if r.Method == http.MethodPost && r.URL.Path == "/myindex/_freeze" {
 			w.WriteHeader(200)
-			fmt.Fprint(w, respJSON)
+			_, _ = fmt.Fprint(w, respJSON)
 			return
 		}
 		w.WriteHeader(404)
@@ -458,7 +458,7 @@ func TestUnitIndicesServiceUnfreeze(t *testing.T) {
 	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		if r.Method == http.MethodPost && r.URL.Path == "/myindex/_unfreeze" {
 			w.WriteHeader(200)
-			fmt.Fprint(w, respJSON)
+			_, _ = fmt.Fprint(w, respJSON)
 			return
 		}
 		w.WriteHeader(404)
@@ -488,7 +488,7 @@ func TestUnitIndicesServiceClearCache(t *testing.T) {
 	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		if r.Method == http.MethodPost && strings.HasSuffix(r.URL.Path, "/_cache/clear") {
 			w.WriteHeader(200)
-			fmt.Fprint(w, respJSON)
+			_, _ = fmt.Fprint(w, respJSON)
 			return
 		}
 		w.WriteHeader(404)
@@ -523,7 +523,7 @@ func TestUnitIndicesServiceStats(t *testing.T) {
 	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		if r.Method == http.MethodGet && strings.Contains(r.URL.Path, "/_stats") {
 			w.WriteHeader(200)
-			fmt.Fprint(w, respJSON)
+			_, _ = fmt.Fprint(w, respJSON)
 			return
 		}
 		w.WriteHeader(404)
@@ -570,7 +570,7 @@ func TestUnitIndicesServiceSegments(t *testing.T) {
 	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		if r.Method == http.MethodGet && strings.HasSuffix(r.URL.Path, "/_segments") {
 			w.WriteHeader(200)
-			fmt.Fprint(w, respJSON)
+			_, _ = fmt.Fprint(w, respJSON)
 			return
 		}
 		w.WriteHeader(404)
@@ -605,7 +605,7 @@ func TestUnitIndicesServiceAnalyze(t *testing.T) {
 	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		if r.Method == http.MethodPost && strings.HasSuffix(r.URL.Path, "/_analyze") {
 			w.WriteHeader(200)
-			fmt.Fprint(w, respJSON)
+			_, _ = fmt.Fprint(w, respJSON)
 			return
 		}
 		w.WriteHeader(404)
@@ -642,7 +642,7 @@ func TestUnitIndicesServicePutAlias(t *testing.T) {
 	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		if r.Method == http.MethodPut && strings.Contains(r.URL.Path, "/_alias/") {
 			w.WriteHeader(200)
-			fmt.Fprint(w, respJSON)
+			_, _ = fmt.Fprint(w, respJSON)
 			return
 		}
 		w.WriteHeader(404)
@@ -686,7 +686,7 @@ func TestUnitIndicesServiceGetAliases(t *testing.T) {
 	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		if r.Method == http.MethodGet && strings.HasSuffix(r.URL.Path, "/_alias") {
 			w.WriteHeader(200)
-			fmt.Fprint(w, respJSON)
+			_, _ = fmt.Fprint(w, respJSON)
 			return
 		}
 		w.WriteHeader(404)
@@ -721,7 +721,7 @@ func TestUnitIndicesServiceGetSettings(t *testing.T) {
 	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		if r.Method == http.MethodGet && strings.HasSuffix(r.URL.Path, "/_settings") {
 			w.WriteHeader(200)
-			fmt.Fprint(w, respJSON)
+			_, _ = fmt.Fprint(w, respJSON)
 			return
 		}
 		w.WriteHeader(404)
@@ -756,7 +756,7 @@ func TestUnitIndicesServicePutSettings(t *testing.T) {
 	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		if r.Method == http.MethodPut && strings.HasSuffix(r.URL.Path, "/_settings") {
 			w.WriteHeader(200)
-			fmt.Fprint(w, respJSON)
+			_, _ = fmt.Fprint(w, respJSON)
 			return
 		}
 		w.WriteHeader(404)
@@ -800,7 +800,7 @@ func TestUnitIndicesServiceGetMapping(t *testing.T) {
 	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		if r.Method == http.MethodGet && strings.HasSuffix(r.URL.Path, "/_mapping") {
 			w.WriteHeader(200)
-			fmt.Fprint(w, respJSON)
+			_, _ = fmt.Fprint(w, respJSON)
 			return
 		}
 		w.WriteHeader(404)
@@ -835,7 +835,7 @@ func TestUnitIndicesServicePutMapping(t *testing.T) {
 	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		if r.Method == http.MethodPut && strings.HasSuffix(r.URL.Path, "/_mapping") {
 			w.WriteHeader(200)
-			fmt.Fprint(w, respJSON)
+			_, _ = fmt.Fprint(w, respJSON)
 			return
 		}
 		w.WriteHeader(404)
@@ -889,7 +889,7 @@ func TestUnitIndicesServiceGetFieldMapping(t *testing.T) {
 	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		if r.Method == http.MethodGet && strings.Contains(r.URL.Path, "/_mapping/field/") {
 			w.WriteHeader(200)
-			fmt.Fprint(w, respJSON)
+			_, _ = fmt.Fprint(w, respJSON)
 			return
 		}
 		w.WriteHeader(404)
@@ -938,7 +938,7 @@ func TestUnitIndicesServiceGetTemplate(t *testing.T) {
 	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		if r.Method == http.MethodGet && strings.HasPrefix(r.URL.Path, "/_template") {
 			w.WriteHeader(200)
-			fmt.Fprint(w, respJSON)
+			_, _ = fmt.Fprint(w, respJSON)
 			return
 		}
 		w.WriteHeader(404)
@@ -973,7 +973,7 @@ func TestUnitIndicesServicePutTemplate(t *testing.T) {
 	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		if r.Method == http.MethodPut && strings.HasPrefix(r.URL.Path, "/_template/") {
 			w.WriteHeader(200)
-			fmt.Fprint(w, respJSON)
+			_, _ = fmt.Fprint(w, respJSON)
 			return
 		}
 		w.WriteHeader(404)
@@ -1060,7 +1060,7 @@ func TestUnitIndicesServiceDeleteTemplate(t *testing.T) {
 	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		if r.Method == http.MethodDelete && strings.HasPrefix(r.URL.Path, "/_template/") {
 			w.WriteHeader(200)
-			fmt.Fprint(w, respJSON)
+			_, _ = fmt.Fprint(w, respJSON)
 			return
 		}
 		w.WriteHeader(404)
@@ -1090,7 +1090,7 @@ func TestUnitIndicesServicePutIndexTemplate(t *testing.T) {
 	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		if r.Method == http.MethodPut && strings.HasPrefix(r.URL.Path, "/_index_template/") {
 			w.WriteHeader(200)
-			fmt.Fprint(w, respJSON)
+			_, _ = fmt.Fprint(w, respJSON)
 			return
 		}
 		w.WriteHeader(404)
@@ -1129,7 +1129,7 @@ func TestUnitIndicesServiceGetIndexTemplate(t *testing.T) {
 	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		if r.Method == http.MethodGet && strings.HasPrefix(r.URL.Path, "/_index_template") {
 			w.WriteHeader(200)
-			fmt.Fprint(w, respJSON)
+			_, _ = fmt.Fprint(w, respJSON)
 			return
 		}
 		w.WriteHeader(404)
@@ -1165,7 +1165,7 @@ func TestUnitIndicesServiceDeleteIndexTemplate(t *testing.T) {
 	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		if r.Method == http.MethodDelete && strings.HasPrefix(r.URL.Path, "/_index_template/") {
 			w.WriteHeader(200)
-			fmt.Fprint(w, respJSON)
+			_, _ = fmt.Fprint(w, respJSON)
 			return
 		}
 		w.WriteHeader(404)
@@ -1195,7 +1195,7 @@ func TestUnitIndicesServicePutComponentTemplate(t *testing.T) {
 	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		if r.Method == http.MethodPut && strings.HasPrefix(r.URL.Path, "/_component_template/") {
 			w.WriteHeader(200)
-			fmt.Fprint(w, respJSON)
+			_, _ = fmt.Fprint(w, respJSON)
 			return
 		}
 		w.WriteHeader(404)
@@ -1234,7 +1234,7 @@ func TestUnitIndicesServiceGetComponentTemplate(t *testing.T) {
 	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		if r.Method == http.MethodGet && strings.HasPrefix(r.URL.Path, "/_component_template") {
 			w.WriteHeader(200)
-			fmt.Fprint(w, respJSON)
+			_, _ = fmt.Fprint(w, respJSON)
 			return
 		}
 		w.WriteHeader(404)
@@ -1270,7 +1270,7 @@ func TestUnitIndicesServiceDeleteComponentTemplate(t *testing.T) {
 	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		if r.Method == http.MethodDelete && strings.HasPrefix(r.URL.Path, "/_component_template/") {
 			w.WriteHeader(200)
-			fmt.Fprint(w, respJSON)
+			_, _ = fmt.Fprint(w, respJSON)
 			return
 		}
 		w.WriteHeader(404)
@@ -1300,7 +1300,7 @@ func TestUnitIndicesServiceCreateDataStream(t *testing.T) {
 	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		if r.Method == http.MethodPut && strings.HasPrefix(r.URL.Path, "/_data_stream/") {
 			w.WriteHeader(200)
-			fmt.Fprint(w, respJSON)
+			_, _ = fmt.Fprint(w, respJSON)
 			return
 		}
 		w.WriteHeader(404)
@@ -1330,7 +1330,7 @@ func TestUnitIndicesServiceGetDataStream(t *testing.T) {
 	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		if r.Method == http.MethodGet && strings.HasPrefix(r.URL.Path, "/_data_stream") {
 			w.WriteHeader(200)
-			fmt.Fprint(w, respJSON)
+			_, _ = fmt.Fprint(w, respJSON)
 			return
 		}
 		w.WriteHeader(404)
@@ -1366,7 +1366,7 @@ func TestUnitIndicesServiceDeleteDataStream(t *testing.T) {
 	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		if r.Method == http.MethodDelete && strings.HasPrefix(r.URL.Path, "/_data_stream/") {
 			w.WriteHeader(200)
-			fmt.Fprint(w, respJSON)
+			_, _ = fmt.Fprint(w, respJSON)
 			return
 		}
 		w.WriteHeader(404)
@@ -1402,7 +1402,7 @@ func TestUnitIndicesServiceAddBlock(t *testing.T) {
 	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		if r.Method == http.MethodPut && strings.Contains(r.URL.Path, "/_block/") {
 			w.WriteHeader(200)
-			fmt.Fprint(w, respJSON)
+			_, _ = fmt.Fprint(w, respJSON)
 			return
 		}
 		w.WriteHeader(404)
@@ -1444,7 +1444,7 @@ func TestUnitIndicesServiceClone(t *testing.T) {
 	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		if r.Method == http.MethodPost && strings.Contains(r.URL.Path, "/_clone/") {
 			w.WriteHeader(200)
-			fmt.Fprint(w, respJSON)
+			_, _ = fmt.Fprint(w, respJSON)
 			return
 		}
 		w.WriteHeader(404)
@@ -1486,7 +1486,7 @@ func TestUnitIndicesServiceSplit(t *testing.T) {
 	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		if r.Method == http.MethodPost && strings.Contains(r.URL.Path, "/_split/") {
 			w.WriteHeader(200)
-			fmt.Fprint(w, respJSON)
+			_, _ = fmt.Fprint(w, respJSON)
 			return
 		}
 		w.WriteHeader(404)
@@ -1528,7 +1528,7 @@ func TestUnitIndicesServiceDeleteAlias(t *testing.T) {
 	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		if r.Method == http.MethodDelete && strings.Contains(r.URL.Path, "/_alias/") {
 			w.WriteHeader(200)
-			fmt.Fprint(w, respJSON)
+			_, _ = fmt.Fprint(w, respJSON)
 			return
 		}
 		w.WriteHeader(404)
@@ -1671,7 +1671,7 @@ func TestUnitIndicesServiceRecovery(t *testing.T) {
 	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		if r.Method == http.MethodGet && strings.HasSuffix(r.URL.Path, "/_recovery") {
 			w.WriteHeader(200)
-			fmt.Fprint(w, respJSON)
+			_, _ = fmt.Fprint(w, respJSON)
 			return
 		}
 		w.WriteHeader(404)
@@ -1700,7 +1700,7 @@ func TestUnitIndicesServiceShardStores(t *testing.T) {
 	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		if r.Method == http.MethodGet && strings.HasSuffix(r.URL.Path, "/_shard_stores") {
 			w.WriteHeader(200)
-			fmt.Fprint(w, respJSON)
+			_, _ = fmt.Fprint(w, respJSON)
 			return
 		}
 		w.WriteHeader(404)
@@ -1729,7 +1729,7 @@ func TestUnitIndicesServiceUpdateAliases(t *testing.T) {
 	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		if r.Method == http.MethodPost && r.URL.Path == "/_aliases" {
 			w.WriteHeader(200)
-			fmt.Fprint(w, respJSON)
+			_, _ = fmt.Fprint(w, respJSON)
 			return
 		}
 		w.WriteHeader(404)
@@ -1760,7 +1760,7 @@ func TestUnitIndicesServiceResolveIndex(t *testing.T) {
 	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		if r.Method == http.MethodGet && strings.HasPrefix(r.URL.Path, "/_resolve/index/") {
 			w.WriteHeader(200)
-			fmt.Fprint(w, respJSON)
+			_, _ = fmt.Fprint(w, respJSON)
 			return
 		}
 		w.WriteHeader(404)
@@ -1791,7 +1791,7 @@ func TestUnitIndicesServiceSimulateIndexTemplate(t *testing.T) {
 	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		if r.Method == http.MethodPost && strings.HasPrefix(r.URL.Path, "/_index_template/_simulate_index/") {
 			w.WriteHeader(200)
-			fmt.Fprint(w, respJSON)
+			_, _ = fmt.Fprint(w, respJSON)
 			return
 		}
 		w.WriteHeader(404)
@@ -1827,7 +1827,7 @@ func TestUnitIndicesServiceSimulateTemplate(t *testing.T) {
 	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		if r.Method == http.MethodPost && strings.HasPrefix(r.URL.Path, "/_index_template/_simulate") {
 			w.WriteHeader(200)
-			fmt.Fprint(w, respJSON)
+			_, _ = fmt.Fprint(w, respJSON)
 			return
 		}
 		w.WriteHeader(404)
@@ -1864,7 +1864,7 @@ func TestUnitIndicesServiceDataStreamsStats(t *testing.T) {
 	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		if r.Method == http.MethodGet && strings.HasSuffix(r.URL.Path, "/_stats") && strings.Contains(r.URL.Path, "/_data_stream") {
 			w.WriteHeader(200)
-			fmt.Fprint(w, respJSON)
+			_, _ = fmt.Fprint(w, respJSON)
 			return
 		}
 		w.WriteHeader(404)

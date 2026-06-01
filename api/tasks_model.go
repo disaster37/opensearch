@@ -22,7 +22,7 @@ type TaskOperationFailure struct {
 	TaskId int64               `json:"task_id"`
 	NodeId string              `json:"node_id"`
 	Status string              `json:"status"`
-	Reason *types.ErrorDetails `json:"reason"`
+	Reason *types.OpenSearchErrorDetails `json:"reason"`
 }
 
 // DiscoveryNode represents a cluster node as reported by the Tasks API,
@@ -72,7 +72,7 @@ type TasksGetTaskResponse struct {
 	Header    http.Header         `json:"-"`
 	Completed bool                `json:"completed"`
 	Task      *TaskInfo           `json:"task,omitempty"`
-	Error     *types.ErrorDetails `json:"error,omitempty"`
+	Error     *types.OpenSearchErrorDetails `json:"error,omitempty"`
 }
 
 // TasksCancelResponse represents the result of cancelling a running task.

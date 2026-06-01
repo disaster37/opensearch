@@ -266,7 +266,7 @@ func (s *DefaultDocumentService) Exists(ctx context.Context, index string, id st
 	if err != nil {
 		return false, wrapNetworkError(s.logger, err)
 	}
-	defer resp.RawResponse.Body.Close()
+	defer func() { _ = resp.RawResponse.Body.Close() }()
 
 	switch resp.StatusCode() {
 	case 200:
@@ -445,7 +445,7 @@ func (s *DefaultDocumentService) ExistsSource(ctx context.Context, index string,
 	if err != nil {
 		return false, wrapNetworkError(s.logger, err)
 	}
-	defer resp.RawResponse.Body.Close()
+	defer func() { _ = resp.RawResponse.Body.Close() }()
 
 	switch resp.StatusCode() {
 	case 200:

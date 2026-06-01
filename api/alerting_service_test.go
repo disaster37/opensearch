@@ -18,60 +18,60 @@ func newAlertingTestServer() *httptest.Server {
 		w.Header().Set("Content-Type", "application/json")
 		switch r.Method {
 		case http.MethodGet:
-			w.Write([]byte(`{"_id":"test","_version":1,"_seq_no":0,"_primary_term":1,"monitor":{"type":"monitor","name":"test","monitor_type":"query_level_monitor","schedule":{},"inputs":[],"triggers":[]}}`))
+			_, _ = w.Write([]byte(`{"_id":"test","_version":1,"_seq_no":0,"_primary_term":1,"monitor":{"type":"monitor","name":"test","monitor_type":"query_level_monitor","schedule":{},"inputs":[],"triggers":[]}}`))
 		case http.MethodPut:
-			w.Write([]byte(`{"_id":"test","_version":2,"_seq_no":1,"_primary_term":1,"monitor":{"type":"monitor","name":"test","monitor_type":"query_level_monitor","schedule":{},"inputs":[],"triggers":[]}}`))
+			_, _ = w.Write([]byte(`{"_id":"test","_version":2,"_seq_no":1,"_primary_term":1,"monitor":{"type":"monitor","name":"test","monitor_type":"query_level_monitor","schedule":{},"inputs":[],"triggers":[]}}`))
 		case http.MethodDelete:
-			w.Write([]byte(`{"_index":".opendistro-alerting-config","_id":"test_monitor","_version":2,"result":"deleted"}`))
+			_, _ = w.Write([]byte(`{"_index":".opendistro-alerting-config","_id":"test_monitor","_version":2,"result":"deleted"}`))
 		}
 	})
 
 	mux.HandleFunc("/_plugins/_alerting/monitors", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
 		if r.Method == http.MethodPost {
-			w.Write([]byte(`{"_id":"new_monitor","_version":1,"_seq_no":0,"_primary_term":1,"monitor":{"type":"monitor","name":"test","monitor_type":"query_level_monitor","schedule":{},"inputs":[],"triggers":[]}}`))
+			_, _ = w.Write([]byte(`{"_id":"new_monitor","_version":1,"_seq_no":0,"_primary_term":1,"monitor":{"type":"monitor","name":"test","monitor_type":"query_level_monitor","schedule":{},"inputs":[],"triggers":[]}}`))
 		}
 	})
 
 	mux.HandleFunc("/_plugins/_alerting/monitors/_search", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
-		w.Write([]byte(`{"hits":{"hits":[{"_id":"test","_source":{"type":"monitor","name":"test","monitor_type":"query_level_monitor","schedule":{},"inputs":[],"triggers":[]}}]}}`))
+		_, _ = w.Write([]byte(`{"hits":{"hits":[{"_id":"test","_source":{"type":"monitor","name":"test","monitor_type":"query_level_monitor","schedule":{},"inputs":[],"triggers":[]}}]}}`))
 	})
 
 	mux.HandleFunc("/_plugins/_alerting/monitors/test_monitor/_execute", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
-		w.Write([]byte(`{"monitor_name":"test","period_start":"2024-01-01","period_end":"2024-01-02","input_results":{},"trigger_results":{}}`))
+		_, _ = w.Write([]byte(`{"monitor_name":"test","period_start":"2024-01-01","period_end":"2024-01-02","input_results":{},"trigger_results":{}}`))
 	})
 
 	mux.HandleFunc("/_plugins/_alerting/monitors/test_monitor/_acknowledge/alerts", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
-		w.Write([]byte(`{"missing_alert_ids":[],"failed_alert_ids":[],"acknowledged_alerts":[{"_id":"alert1","_version":1}]}`))
+		_, _ = w.Write([]byte(`{"missing_alert_ids":[],"failed_alert_ids":[],"acknowledged_alerts":[{"_id":"alert1","_version":1}]}`))
 	})
 
 	mux.HandleFunc("/_plugins/_alerting/monitors/alerts", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
-		w.Write([]byte(`{"totalAlerts":1,"alerts":[{"id":"alert1","monitor_id":"mon1","monitor_name":"test","state":"ACTIVE"}]}`))
+		_, _ = w.Write([]byte(`{"totalAlerts":1,"alerts":[{"id":"alert1","monitor_id":"mon1","monitor_name":"test","state":"ACTIVE"}]}`))
 	})
 
 	mux.HandleFunc("/_plugins/_alerting/monitors/findings/_search", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
-		w.Write([]byte(`{"total_findings":1,"findings":[{"id":"finding1","index":"test-index","monitor_id":"mon1","monitor_name":"test"}]}`))
+		_, _ = w.Write([]byte(`{"total_findings":1,"findings":[{"id":"finding1","index":"test-index","monitor_id":"mon1","monitor_name":"test"}]}`))
 	})
 
 	mux.HandleFunc("/_plugins/_alerting/destinations", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
-		w.Write([]byte(`{"totalDestinations":1,"destinations":[{"id":"dest1","name":"slack","type":"slack"}]}`))
+		_, _ = w.Write([]byte(`{"totalDestinations":1,"destinations":[{"id":"dest1","name":"slack","type":"slack"}]}`))
 	})
 
 	mux.HandleFunc("/_plugins/_alerting/destinations/test_dest", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
-		w.Write([]byte(`{"totalDestinations":1,"destinations":[{"id":"test_dest","name":"test","type":"slack"}]}`))
+		_, _ = w.Write([]byte(`{"totalDestinations":1,"destinations":[{"id":"test_dest","name":"test","type":"slack"}]}`))
 	})
 
 	mux.HandleFunc("/_plugins/_alerting/workflows", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
 		if r.Method == http.MethodPost {
-			w.Write([]byte(`{"_id":"new_workflow","_version":1,"_seq_no":0,"_primary_term":1,"workflow":{"name":"test"}}`))
+			_, _ = w.Write([]byte(`{"_id":"new_workflow","_version":1,"_seq_no":0,"_primary_term":1,"workflow":{"name":"test"}}`))
 		}
 	})
 
@@ -79,27 +79,27 @@ func newAlertingTestServer() *httptest.Server {
 		w.Header().Set("Content-Type", "application/json")
 		switch r.Method {
 		case http.MethodGet:
-			w.Write([]byte(`{"_id":"test_workflow","_version":1,"_seq_no":0,"_primary_term":1,"workflow":{"name":"test"}}`))
+			_, _ = w.Write([]byte(`{"_id":"test_workflow","_version":1,"_seq_no":0,"_primary_term":1,"workflow":{"name":"test"}}`))
 		case http.MethodPut:
-			w.Write([]byte(`{"_id":"test_workflow","_version":2,"_seq_no":1,"_primary_term":1,"workflow":{"name":"test"}}`))
+			_, _ = w.Write([]byte(`{"_id":"test_workflow","_version":2,"_seq_no":1,"_primary_term":1,"workflow":{"name":"test"}}`))
 		case http.MethodDelete:
-			w.Write([]byte(`{"_index":".opendistro-alerting-config","_id":"test_workflow","_version":2,"result":"deleted"}`))
+			_, _ = w.Write([]byte(`{"_index":".opendistro-alerting-config","_id":"test_workflow","_version":2,"result":"deleted"}`))
 		}
 	})
 
 	mux.HandleFunc("/_plugins/_alerting/workflows/test_workflow/_execute", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
-		w.Write([]byte(`{"execution_id":"exec1"}`))
+		_, _ = w.Write([]byte(`{"execution_id":"exec1"}`))
 	})
 
 	mux.HandleFunc("/_plugins/_alerting/workflows/alerts", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
-		w.Write([]byte(`{"totalAlerts":1,"alerts":[{"id":"alert1","monitor_id":"mon1","monitor_name":"test","state":"ACTIVE"}]}`))
+		_, _ = w.Write([]byte(`{"totalAlerts":1,"alerts":[{"id":"alert1","monitor_id":"mon1","monitor_name":"test","state":"ACTIVE"}]}`))
 	})
 
 	mux.HandleFunc("/_plugins/_alerting/workflows/test_workflow/_acknowledge/alerts", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
-		w.Write([]byte(`{"missing_alert_ids":[],"failed_alert_ids":[],"acknowledged_alerts":[{"_id":"alert1","_version":1}]}`))
+		_, _ = w.Write([]byte(`{"missing_alert_ids":[],"failed_alert_ids":[],"acknowledged_alerts":[{"_id":"alert1","_version":1}]}`))
 	})
 
 	return httptest.NewServer(mux)

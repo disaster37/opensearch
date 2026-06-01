@@ -18,45 +18,45 @@ func newIsmTestServer() *httptest.Server {
 		w.Header().Set("Content-Type", "application/json")
 		switch r.Method {
 		case http.MethodGet:
-			w.Write([]byte(`{"_id":"test","_version":1,"_seq_no":0,"_primary_term":1,"policy":{"policy_id":"test","policy":{},"schema_version":1,"last_updated_time":1000}}`))
+			_, _ = w.Write([]byte(`{"_id":"test","_version":1,"_seq_no":0,"_primary_term":1,"policy":{"policy_id":"test","policy":{},"schema_version":1,"last_updated_time":1000}}`))
 		case http.MethodPut:
-			w.Write([]byte(`{"_id":"test","_version":2,"_seq_no":1,"_primary_term":1,"policy":{"policy_id":"test","policy":{},"schema_version":1,"last_updated_time":2000}}`))
+			_, _ = w.Write([]byte(`{"_id":"test","_version":2,"_seq_no":1,"_primary_term":1,"policy":{"policy_id":"test","policy":{},"schema_version":1,"last_updated_time":2000}}`))
 		case http.MethodDelete:
 			result := `"_id"`
 			_ = result
-			w.Write([]byte(`{"_index":".opendistro-ism-config","_id":"test_policy","_version":2,"result":"deleted","forced_refresh":false,"_shards":{},"_seq_no":1,"_primary_term":1}`))
+			_, _ = w.Write([]byte(`{"_index":".opendistro-ism-config","_id":"test_policy","_version":2,"result":"deleted","forced_refresh":false,"_shards":{},"_seq_no":1,"_primary_term":1}`))
 		}
 	})
 
 	mux.HandleFunc("/_plugins/_ism/explain/test_index", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
-		w.Write([]byte(`{"total_managed_indices":0}`))
+		_, _ = w.Write([]byte(`{"total_managed_indices":0}`))
 	})
 
 	mux.HandleFunc("/_plugins/_ism/add/test_index", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
-		w.Write([]byte(`{"updated_indices":1,"failed_indices":[],"failures":false}`))
+		_, _ = w.Write([]byte(`{"updated_indices":1,"failed_indices":[],"failures":false}`))
 	})
 
 	mux.HandleFunc("/_plugins/_ism/remove/test_index", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
-		w.Write([]byte(`{"updated_indices":1,"failed_indices":[],"failures":false}`))
+		_, _ = w.Write([]byte(`{"updated_indices":1,"failed_indices":[],"failures":false}`))
 	})
 
 	mux.HandleFunc("/_plugins/_ism/change_policy/test_index", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
-		w.Write([]byte(`{"updated_indices":1,"failed_indices":[{"index_name":"bad","reason":"not found"}],"failures":true}`))
+		_, _ = w.Write([]byte(`{"updated_indices":1,"failed_indices":[{"index_name":"bad","reason":"not found"}],"failures":true}`))
 	})
 
 	mux.HandleFunc("/_plugins/_ism/retry/test_index", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
-		w.Write([]byte(`{"updated_indices":1,"failed_indices":[],"failures":false}`))
+		_, _ = w.Write([]byte(`{"updated_indices":1,"failed_indices":[],"failures":false}`))
 	})
 
 	mux.HandleFunc("/_plugins/_ism/policies", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
 		if r.Method == http.MethodGet {
-			w.Write([]byte(`{"policies":[{"policy_id":"p1","default_state":"hot"}],"total_policies":1}`))
+			_, _ = w.Write([]byte(`{"policies":[{"policy_id":"p1","default_state":"hot"}],"total_policies":1}`))
 		}
 	})
 

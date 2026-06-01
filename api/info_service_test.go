@@ -15,7 +15,7 @@ func TestUnitInfoService_Info(t *testing.T) {
 		assert.Equal(t, "GET", r.Method)
 		assert.Equal(t, "/", r.URL.Path)
 		w.Header().Set("Content-Type", "application/json")
-		w.Write([]byte(`{"name":"node-1","cluster_name":"test-cluster","cluster_uuid":"abc123","version":{"distribution":"opensearch","number":"2.11.0","build_type":"tar","build_hash":"abc","build_date":"2023-10-01","build_snapshot":false,"lucene_version":"9.7.0","minimum_wire_compatibility_version":"7.10.0","minimum_index_compatibility_version":"7.0.0"},"tagline":"The OpenSearch Project: https://opensearch.org/"}`))
+		_, _ = w.Write([]byte(`{"name":"node-1","cluster_name":"test-cluster","cluster_uuid":"abc123","version":{"distribution":"opensearch","number":"2.11.0","build_type":"tar","build_hash":"abc","build_date":"2023-10-01","build_snapshot":false,"lucene_version":"9.7.0","minimum_wire_compatibility_version":"7.10.0","minimum_index_compatibility_version":"7.0.0"},"tagline":"The OpenSearch Project: https://opensearch.org/"}`))
 	}))
 	defer ts.Close()
 

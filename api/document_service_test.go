@@ -18,12 +18,12 @@ func TestUnitDocumentServiceIndex(t *testing.T) {
 	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		if r.Method == http.MethodPut && r.URL.Path == "/myindex/_doc/1" {
 			w.WriteHeader(201)
-			fmt.Fprint(w, respJSON)
+			_, _ = fmt.Fprint(w, respJSON)
 			return
 		}
 		if r.Method == http.MethodPost && r.URL.Path == "/myindex/_doc" {
 			w.WriteHeader(201)
-			fmt.Fprint(w, respJSON)
+			_, _ = fmt.Fprint(w, respJSON)
 			return
 		}
 		w.WriteHeader(404)
@@ -70,7 +70,7 @@ func TestUnitDocumentServiceIndex(t *testing.T) {
 	t.Run("Index HTTP error", func(t *testing.T) {
 		errSrv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 			w.WriteHeader(500)
-			fmt.Fprint(w, `{"error":{"type":"internal","reason":"test"},"status":500}`)
+			_, _ = fmt.Fprint(w, `{"error":{"type":"internal","reason":"test"},"status":500}`)
 		}))
 		defer errSrv.Close()
 		s := NewDocumentService(restyClient(errSrv), testLogger())
@@ -85,7 +85,7 @@ func TestUnitDocumentServiceGet(t *testing.T) {
 	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		if r.Method == http.MethodGet && strings.HasPrefix(r.URL.Path, "/myindex/_doc/") {
 			w.WriteHeader(200)
-			fmt.Fprint(w, respJSON)
+			_, _ = fmt.Fprint(w, respJSON)
 			return
 		}
 		w.WriteHeader(404)
@@ -129,7 +129,7 @@ func TestUnitDocumentServiceMultiGet(t *testing.T) {
 	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		if r.Method == http.MethodPost && r.URL.Path == "/_mget" {
 			w.WriteHeader(200)
-			fmt.Fprint(w, respJSON)
+			_, _ = fmt.Fprint(w, respJSON)
 			return
 		}
 		w.WriteHeader(404)
@@ -172,12 +172,12 @@ func TestUnitDocumentServiceDelete(t *testing.T) {
 	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		if r.Method == http.MethodDelete && r.URL.Path == "/myindex/_doc/1" {
 			w.WriteHeader(200)
-			fmt.Fprint(w, respJSON)
+			_, _ = fmt.Fprint(w, respJSON)
 			return
 		}
 		if r.Method == http.MethodDelete && r.URL.Path == "/myindex/_doc/999" {
 			w.WriteHeader(404)
-			fmt.Fprint(w, deletedJSON)
+			_, _ = fmt.Fprint(w, deletedJSON)
 			return
 		}
 		w.WriteHeader(404)
@@ -222,7 +222,7 @@ func TestUnitDocumentServiceDeleteByQuery(t *testing.T) {
 	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		if r.Method == http.MethodPost && strings.HasSuffix(r.URL.Path, "/_delete_by_query") {
 			w.WriteHeader(200)
-			fmt.Fprint(w, respJSON)
+			_, _ = fmt.Fprint(w, respJSON)
 			return
 		}
 		w.WriteHeader(404)
@@ -261,7 +261,7 @@ func TestUnitDocumentServiceUpdate(t *testing.T) {
 	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		if r.Method == http.MethodPost && r.URL.Path == "/myindex/_update/1" {
 			w.WriteHeader(200)
-			fmt.Fprint(w, respJSON)
+			_, _ = fmt.Fprint(w, respJSON)
 			return
 		}
 		w.WriteHeader(404)
@@ -306,7 +306,7 @@ func TestUnitDocumentServiceUpdateByQuery(t *testing.T) {
 	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		if r.Method == http.MethodPost && strings.HasSuffix(r.URL.Path, "/_update_by_query") {
 			w.WriteHeader(200)
-			fmt.Fprint(w, respJSON)
+			_, _ = fmt.Fprint(w, respJSON)
 			return
 		}
 		w.WriteHeader(404)
@@ -337,7 +337,7 @@ func TestUnitDocumentServiceBulk(t *testing.T) {
 	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		if r.Method == http.MethodPost && (strings.HasSuffix(r.URL.Path, "/_bulk")) {
 			w.WriteHeader(200)
-			fmt.Fprint(w, respJSON)
+			_, _ = fmt.Fprint(w, respJSON)
 			return
 		}
 		w.WriteHeader(404)
@@ -425,7 +425,7 @@ func TestUnitDocumentServiceExplain(t *testing.T) {
 	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		if r.Method == http.MethodPost && r.URL.Path == "/myindex/_explain/1" {
 			w.WriteHeader(200)
-			fmt.Fprint(w, respJSON)
+			_, _ = fmt.Fprint(w, respJSON)
 			return
 		}
 		w.WriteHeader(404)
@@ -464,7 +464,7 @@ func TestUnitDocumentServiceTermVectors(t *testing.T) {
 	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		if (r.Method == http.MethodGet || r.Method == http.MethodPost) && r.URL.Path == "/myindex/_termvectors/1" {
 			w.WriteHeader(200)
-			fmt.Fprint(w, respJSON)
+			_, _ = fmt.Fprint(w, respJSON)
 			return
 		}
 		w.WriteHeader(404)
@@ -509,7 +509,7 @@ func TestUnitDocumentServiceMultiTermVectors(t *testing.T) {
 	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		if (r.Method == http.MethodGet || r.Method == http.MethodPost) && strings.HasSuffix(r.URL.Path, "/_mtermvectors") {
 			w.WriteHeader(200)
-			fmt.Fprint(w, respJSON)
+			_, _ = fmt.Fprint(w, respJSON)
 			return
 		}
 		w.WriteHeader(404)
@@ -546,7 +546,7 @@ func TestUnitDocumentServiceReindex(t *testing.T) {
 	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		if r.Method == http.MethodPost && r.URL.Path == "/_reindex" {
 			w.WriteHeader(200)
-			fmt.Fprint(w, respJSON)
+			_, _ = fmt.Fprint(w, respJSON)
 			return
 		}
 		w.WriteHeader(404)
@@ -983,7 +983,7 @@ func TestUnitDocumentServiceCreate(t *testing.T) {
 	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		if r.Method == http.MethodPut && r.URL.Path == "/myindex/_create/1" {
 			w.WriteHeader(201)
-			fmt.Fprint(w, respJSON)
+			_, _ = fmt.Fprint(w, respJSON)
 			return
 		}
 		w.WriteHeader(404)
@@ -1031,7 +1031,7 @@ func TestUnitDocumentServiceGetSource(t *testing.T) {
 	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		if r.Method == http.MethodGet && r.URL.Path == "/myindex/_source/1" {
 			w.WriteHeader(200)
-			fmt.Fprint(w, respJSON)
+			_, _ = fmt.Fprint(w, respJSON)
 			return
 		}
 		w.WriteHeader(404)
@@ -1092,7 +1092,7 @@ func TestUnitDocumentServiceReindexRethrottle(t *testing.T) {
 	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		if r.Method == http.MethodPost && strings.Contains(r.URL.Path, "/_reindex/") && strings.HasSuffix(r.URL.Path, "/_rethrottle") {
 			w.WriteHeader(200)
-			fmt.Fprint(w, respJSON)
+			_, _ = fmt.Fprint(w, respJSON)
 			return
 		}
 		w.WriteHeader(404)
@@ -1123,7 +1123,7 @@ func TestUnitDocumentServiceDeleteByQueryRethrottle(t *testing.T) {
 	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		if r.Method == http.MethodPost && strings.Contains(r.URL.Path, "/_delete_by_query/") {
 			w.WriteHeader(200)
-			fmt.Fprint(w, respJSON)
+			_, _ = fmt.Fprint(w, respJSON)
 			return
 		}
 		w.WriteHeader(404)
@@ -1160,7 +1160,7 @@ func TestUnitDocumentServiceUpdateByQueryRethrottle(t *testing.T) {
 	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		if r.Method == http.MethodPost && strings.Contains(r.URL.Path, "/_update_by_query/") {
 			w.WriteHeader(200)
-			fmt.Fprint(w, respJSON)
+			_, _ = fmt.Fprint(w, respJSON)
 			return
 		}
 		w.WriteHeader(404)

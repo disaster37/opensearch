@@ -15,7 +15,7 @@ func TestUnitSnapshotService_Create(t *testing.T) {
 		assert.Equal(t, "PUT", r.Method)
 		assert.Equal(t, "/_snapshot/my-repo/snap1", r.URL.Path)
 		w.Header().Set("Content-Type", "application/json")
-		w.Write([]byte(`{"accepted":true,"snapshot":{"snapshot":"snap1","uuid":"abc123","version_id":2,"version":"2.0.0","indices":["test-idx"],"state":"SUCCESS","shards":{"total":5,"successful":5,"failed":0}}}`))
+		_, _ = w.Write([]byte(`{"accepted":true,"snapshot":{"snapshot":"snap1","uuid":"abc123","version_id":2,"version":"2.0.0","indices":["test-idx"],"state":"SUCCESS","shards":{"total":5,"successful":5,"failed":0}}}`))
 	}))
 	defer ts.Close()
 
@@ -38,11 +38,11 @@ func TestUnitSnapshotService_Get(t *testing.T) {
 	mux := http.NewServeMux()
 	mux.HandleFunc("/_snapshot/my-repo/snap1", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
-		w.Write([]byte(`{"snapshots":[{"snapshot":"snap1","uuid":"abc123","version_id":2,"version":"2.0.0","indices":["test-idx"],"state":"SUCCESS"}]}`))
+		_, _ = w.Write([]byte(`{"snapshots":[{"snapshot":"snap1","uuid":"abc123","version_id":2,"version":"2.0.0","indices":["test-idx"],"state":"SUCCESS"}]}`))
 	})
 	mux.HandleFunc("/_snapshot/my-repo/_all", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
-		w.Write([]byte(`{"snapshots":[{"snapshot":"snap1","uuid":"abc123","version_id":2,"version":"2.0.0","indices":["test-idx"],"state":"SUCCESS"},{"snapshot":"snap2","uuid":"def456","version_id":2,"version":"2.0.0","indices":["test-idx"],"state":"SUCCESS"}]}`))
+		_, _ = w.Write([]byte(`{"snapshots":[{"snapshot":"snap1","uuid":"abc123","version_id":2,"version":"2.0.0","indices":["test-idx"],"state":"SUCCESS"},{"snapshot":"snap2","uuid":"def456","version_id":2,"version":"2.0.0","indices":["test-idx"],"state":"SUCCESS"}]}`))
 	})
 
 	ts := httptest.NewServer(mux)
@@ -70,7 +70,7 @@ func TestUnitSnapshotService_Delete(t *testing.T) {
 		assert.Equal(t, "DELETE", r.Method)
 		assert.Equal(t, "/_snapshot/my-repo/snap1", r.URL.Path)
 		w.Header().Set("Content-Type", "application/json")
-		w.Write([]byte(`{"acknowledged":true}`))
+		_, _ = w.Write([]byte(`{"acknowledged":true}`))
 	}))
 	defer ts.Close()
 
@@ -87,11 +87,11 @@ func TestUnitSnapshotService_Status(t *testing.T) {
 	mux := http.NewServeMux()
 	mux.HandleFunc("/_snapshot/my-repo/snap1/_status", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
-		w.Write([]byte(`{"snapshots":[{"snapshot":"snap1","repository":"my-repo","uuid":"abc123","state":"IN_PROGRESS","include_global_state":true}]}`))
+		_, _ = w.Write([]byte(`{"snapshots":[{"snapshot":"snap1","repository":"my-repo","uuid":"abc123","state":"IN_PROGRESS","include_global_state":true}]}`))
 	})
 	mux.HandleFunc("/_snapshot/my-repo/_status", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
-		w.Write([]byte(`{"snapshots":[{"snapshot":"snap1","repository":"my-repo","uuid":"abc123","state":"IN_PROGRESS","include_global_state":true}]}`))
+		_, _ = w.Write([]byte(`{"snapshots":[{"snapshot":"snap1","repository":"my-repo","uuid":"abc123","state":"IN_PROGRESS","include_global_state":true}]}`))
 	})
 
 	ts := httptest.NewServer(mux)
@@ -120,7 +120,7 @@ func TestUnitSnapshotService_Restore(t *testing.T) {
 		assert.Equal(t, "POST", r.Method)
 		assert.Equal(t, "/_snapshot/my-repo/snap1/_restore", r.URL.Path)
 		w.Header().Set("Content-Type", "application/json")
-		w.Write([]byte(`{"accepted":true,"snapshot":{"snapshot":"snap1","indices":["test-idx"],"shards":{"total":5,"successful":5,"failed":0}}}`))
+		_, _ = w.Write([]byte(`{"accepted":true,"snapshot":{"snapshot":"snap1","indices":["test-idx"],"shards":{"total":5,"successful":5,"failed":0}}}`))
 	}))
 	defer ts.Close()
 
@@ -144,7 +144,7 @@ func TestUnitSnapshotService_CreateRepository(t *testing.T) {
 		assert.Equal(t, "PUT", r.Method)
 		assert.Equal(t, "/_snapshot/my-repo", r.URL.Path)
 		w.Header().Set("Content-Type", "application/json")
-		w.Write([]byte(`{"acknowledged":true}`))
+		_, _ = w.Write([]byte(`{"acknowledged":true}`))
 	}))
 	defer ts.Close()
 
@@ -164,11 +164,11 @@ func TestUnitSnapshotService_GetRepository(t *testing.T) {
 	mux := http.NewServeMux()
 	mux.HandleFunc("/_snapshot/my-repo", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
-		w.Write([]byte(`{"my-repo":{"type":"fs","settings":{"location":"/backups"}}}`))
+		_, _ = w.Write([]byte(`{"my-repo":{"type":"fs","settings":{"location":"/backups"}}}`))
 	})
 	mux.HandleFunc("/_snapshot", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
-		w.Write([]byte(`{"my-repo":{"type":"fs","settings":{"location":"/backups"}},"other-repo":{"type":"s3","settings":{"bucket":"my-bucket"}}}`))
+		_, _ = w.Write([]byte(`{"my-repo":{"type":"fs","settings":{"location":"/backups"}},"other-repo":{"type":"s3","settings":{"bucket":"my-bucket"}}}`))
 	})
 
 	ts := httptest.NewServer(mux)
@@ -196,7 +196,7 @@ func TestUnitSnapshotService_DeleteRepository(t *testing.T) {
 		assert.Equal(t, "DELETE", r.Method)
 		assert.Equal(t, "/_snapshot/my-repo", r.URL.Path)
 		w.Header().Set("Content-Type", "application/json")
-		w.Write([]byte(`{"acknowledged":true}`))
+		_, _ = w.Write([]byte(`{"acknowledged":true}`))
 	}))
 	defer ts.Close()
 
@@ -214,7 +214,7 @@ func TestUnitSnapshotService_VerifyRepository(t *testing.T) {
 		assert.Equal(t, "POST", r.Method)
 		assert.Equal(t, "/_snapshot/my-repo/_verify", r.URL.Path)
 		w.Header().Set("Content-Type", "application/json")
-		w.Write([]byte(`{"nodes":{"n1":{"name":"node1"},"n2":{"name":"node2"}}}`))
+		_, _ = w.Write([]byte(`{"nodes":{"n1":{"name":"node1"},"n2":{"name":"node2"}}}`))
 	}))
 	defer ts.Close()
 
@@ -233,7 +233,7 @@ func TestUnitSnapshotService_CleanupRepository(t *testing.T) {
 		assert.Equal(t, "POST", r.Method)
 		assert.Equal(t, "/_snapshot/my-repo/_cleanup", r.URL.Path)
 		w.Header().Set("Content-Type", "application/json")
-		w.Write([]byte(`{"results":{"deleted_bytes":1024,"deleted_blobs":5}}`))
+		_, _ = w.Write([]byte(`{"results":{"deleted_bytes":1024,"deleted_blobs":5}}`))
 	}))
 	defer ts.Close()
 
@@ -253,7 +253,7 @@ func TestUnitSnapshotService_Clone(t *testing.T) {
 		assert.Equal(t, "PUT", r.Method)
 		assert.Equal(t, "/_snapshot/my-repo/snap1/_clone/snap1-clone", r.URL.Path)
 		w.Header().Set("Content-Type", "application/json")
-		w.Write([]byte(`{"acknowledged":true}`))
+		_, _ = w.Write([]byte(`{"acknowledged":true}`))
 	}))
 	defer ts.Close()
 

@@ -431,10 +431,6 @@ func TestValidationError(t *testing.T) {
 	assert.Contains(t, err.Error(), "validation:")
 }
 
-func ptr[T any](v T) *T {
-	return &v
-}
-
 func TestIsmPutPolicyRequest_Validate_WithVersion(t *testing.T) {
 	seqNo := int64(1)
 	primaryTerm := int64(1)
