@@ -1,6 +1,6 @@
 package api
 
-import "github.com/disaster37/opensearch/v3/types"
+import "github.com/disaster37/opensearch/v4/types"
 
 // IndicesGetResponse represents the full metadata of an index returned by the get index API,
 // including its aliases, mappings, settings, and warmers.

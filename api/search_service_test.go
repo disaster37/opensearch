@@ -198,7 +198,7 @@ func TestUnitSearchServiceValidate(t *testing.T) {
 	respJSON := `{"valid":true,"_shards":{"total":1,"successful":1,"failed":0}}`
 
 	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		if r.Method == http.MethodGet && strings.HasSuffix(r.URL.Path, "/_validate/query") {
+		if (r.Method == http.MethodGet || r.Method == http.MethodPost) && strings.HasSuffix(r.URL.Path, "/_validate/query") {
 			w.WriteHeader(200)
 			fmt.Fprint(w, respJSON)
 			return

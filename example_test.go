@@ -6,8 +6,8 @@ import (
 	"log"
 	"testing"
 
-	opensearch "github.com/disaster37/opensearch/v3"
-	"github.com/disaster37/opensearch/v3/api"
+	opensearch "github.com/disaster37/opensearch/v4"
+	"github.com/disaster37/opensearch/v4/api"
 	"github.com/sirupsen/logrus"
 )
 

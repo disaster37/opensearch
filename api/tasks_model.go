@@ -3,7 +3,7 @@ package api
 import (
 	"net/http"
 
-	"github.com/disaster37/opensearch/v3/types"
+	"github.com/disaster37/opensearch/v4/types"
 )
 
 // TasksListResponse represents the result of listing all running tasks.

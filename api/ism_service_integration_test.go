@@ -6,7 +6,7 @@ import (
 	"context"
 	"testing"
 
-	"github.com/disaster37/opensearch/v3/api"
+	"github.com/disaster37/opensearch/v4/api"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
@@ -23,6 +23,7 @@ func TestIsmService_PutGetDeletePolicy(t *testing.T) {
 	putResult, err := client.ISM().PutPolicy(ctx, &api.IsmPutPolicyRequest{
 		PolicyName: policyName,
 		Body: &api.IsmPolicyBase{
+			Description:  strPtr("test ISM policy"),
 			DefaultState: strPtr("hot"),
 			States: []api.IsmPolicyState{
 				{Name: "hot"},

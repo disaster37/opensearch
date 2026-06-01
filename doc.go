@@ -16,7 +16,7 @@
 // Create a client:
 //
 //	import (
-//	    "github.com/disaster37/opensearch/v3"
+//	    "github.com/disaster37/opensearch/v4"
 //	    "github.com/sirupsen/logrus"
 //	)
 //
@@ -73,7 +73,7 @@
 //
 // For complex queries, use the querydsl sub-package to build type-safe queries:
 //
-//	import "github.com/disaster37/opensearch/v3/querydsl"
+//	import "github.com/disaster37/opensearch/v4/querydsl"
 //
 //	// Build a bool query
 //	query := querydsl.BoolQuery().

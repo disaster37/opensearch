@@ -1,6 +1,6 @@
 package api
 
-import "github.com/disaster37/opensearch/v3/types"
+import "github.com/disaster37/opensearch/v4/types"
 
 // ClusterHealthResponse represents the result of a cluster health request.
 // It contains the overall cluster status (green, yellow, red), node counts,

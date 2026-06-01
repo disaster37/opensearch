@@ -7,7 +7,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/disaster37/opensearch/v3/types"
+	"github.com/disaster37/opensearch/v4/types"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )

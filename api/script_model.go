@@ -3,7 +3,7 @@ package api
 import (
 	json "github.com/goccy/go-json"
 
-	"github.com/disaster37/opensearch/v3/types"
+	"github.com/disaster37/opensearch/v4/types"
 )
 
 // ScriptGetResponse represents the result of retrieving a stored script.

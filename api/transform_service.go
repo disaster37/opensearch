@@ -89,7 +89,18 @@ func (s *DefaultTransformService) DeleteJob(ctx context.Context, jobName string)
 }
 
 func (s *DefaultTransformService) SearchJob(ctx context.Context, body any) (*TransformSearchJobResponse, error) {
-	resp, err := s.client.R().SetContext(ctx).SetBody(body).Get("/_plugins/_transform")
+	req := s.client.R().SetContext(ctx)
+	if body != nil {
+		req = req.SetBody(body)
+	}
+
+	var resp *resty.Response
+	var err error
+	if body != nil {
+		resp, err = req.Post("/_plugins/_transform/_search")
+	} else {
+		resp, err = req.Get("/_plugins/_transform")
+	}
 	if err != nil {
 		return nil, wrapNetworkError(s.logger, err)
 	}

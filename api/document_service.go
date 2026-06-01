@@ -76,6 +76,7 @@ func (s *DefaultDocumentService) Index(ctx context.Context, req *IndexRequest) (
 	if err := json.Unmarshal(resp.Body(), &result); err != nil {
 		return nil, wrapUnmarshalError(s.logger, resp, err)
 	}
+	result.Status = resp.StatusCode()
 	return &result, nil
 }
 
@@ -88,6 +89,9 @@ func (s *DefaultDocumentService) Get(ctx context.Context, req *GetRequest) (*Get
 	resp, err := s.client.R().SetContext(ctx).SetQueryParams(req.Params).Get(path)
 	if err != nil {
 		return nil, wrapNetworkError(s.logger, err)
+	}
+	if resp.StatusCode() == 404 {
+		return &GetResult{Found: false, Index: req.Index, Id: req.Id}, nil
 	}
 	if resp.IsError() {
 		return nil, logAndReturnError(s.logger, resp)
@@ -117,7 +121,7 @@ func (s *DefaultDocumentService) MultiGet(ctx context.Context, items []*MultiGet
 		"docs": docs,
 	}
 
-	resp, err := s.client.R().SetContext(ctx).SetBody(body).Get("/_mget")
+	resp, err := s.client.R().SetContext(ctx).SetBody(body).Post("/_mget")
 	if err != nil {
 		return nil, wrapNetworkError(s.logger, err)
 	}
@@ -283,7 +287,7 @@ func (s *DefaultDocumentService) Explain(ctx context.Context, index string, id s
 	}
 
 	path := fmt.Sprintf("/%s/_explain/%s", index, id)
-	resp, err := s.client.R().SetContext(ctx).SetBody(body).Get(path)
+	resp, err := s.client.R().SetContext(ctx).SetBody(body).Post(path)
 	if err != nil {
 		return nil, wrapNetworkError(s.logger, err)
 	}
@@ -308,11 +312,16 @@ func (s *DefaultDocumentService) TermVectors(ctx context.Context, index string, 
 
 	path := fmt.Sprintf("/%s/_termvectors/%s", index, id)
 	req := s.client.R().SetContext(ctx)
+	var (
+		resp *resty.Response
+		err  error
+	)
 	if body != nil {
 		req = req.SetBody(body)
+		resp, err = req.Post(path)
+	} else {
+		resp, err = req.Get(path)
 	}
-
-	resp, err := req.Get(path)
 	if err != nil {
 		return nil, wrapNetworkError(s.logger, err)
 	}
@@ -340,7 +349,7 @@ func (s *DefaultDocumentService) MultiTermVectors(ctx context.Context, index str
 		req = req.SetBody(body)
 	}
 
-	resp, err := req.Get(path)
+	resp, err := req.Post(path)
 	if err != nil {
 		return nil, wrapNetworkError(s.logger, err)
 	}

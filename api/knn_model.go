@@ -1,6 +1,6 @@
 package api
 
-import "github.com/disaster37/opensearch/v3/types"
+import "github.com/disaster37/opensearch/v4/types"
 
 // KnnStatsResponse represents the response from the KNN stats endpoint.
 // The map contains cluster-level statistics about the k-NN plugin.

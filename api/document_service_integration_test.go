@@ -7,7 +7,7 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/disaster37/opensearch/v3/api"
+	"github.com/disaster37/opensearch/v4/api"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
@@ -376,8 +376,10 @@ func TestDocumentService_MultiTermVectors(t *testing.T) {
 	indexTestDoc(t, client, "mtv-2", map[string]any{"title": "foo bar"})
 
 	resp, err := doc.MultiTermVectors(ctx, testDocIndex, map[string]any{
-		"ids":    []string{"mtv-1", "mtv-2"},
-		"fields": []string{"title"},
+		"docs": []map[string]any{
+			{"_id": "mtv-1", "fields": []string{"title"}},
+			{"_id": "mtv-2", "fields": []string{"title"}},
+		},
 	})
 	require.NoError(t, err)
 	assert.NotNil(t, resp)

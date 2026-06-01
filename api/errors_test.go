@@ -5,7 +5,7 @@ import (
 	"net/http"
 	"testing"
 
-	"github.com/disaster37/opensearch/v3/types"
+	"github.com/disaster37/opensearch/v4/types"
 	"github.com/go-resty/resty/v2"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"

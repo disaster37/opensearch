@@ -6,7 +6,7 @@ import (
 	"context"
 	"testing"
 
-	"github.com/disaster37/opensearch/v3/api"
+	"github.com/disaster37/opensearch/v4/api"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )

@@ -1,6 +1,6 @@
 # How to Contribute
 
-This is the Go client for [OpenSearch](https://opensearch.org/), module `github.com/disaster37/opensearch/v3`. It targets **OpenSearch 3.4.0+** and requires **Go 1.26**.
+This is the Go client for [OpenSearch](https://opensearch.org/), module `github.com/disaster37/opensearch/v4`. It targets **OpenSearch 3.4.0+** and requires **Go 1.26**.
 
 > Read this document end-to-end before writing code. A large portion of it applies to AI code assistants as well as human contributors.
 >
@@ -13,7 +13,7 @@ This is the Go client for [OpenSearch](https://opensearch.org/), module `github.
 The project is split into **five packages** chosen to give each concern a clean boundary and a small per-file count:
 
 ```
-github.com/disaster37/opensearch/v3/
+github.com/disaster37/opensearch/v4/
 ├── client.go, common.go, errors.go, doc.go, generate.go    # package opensearch  (entry point)
 ├── types/                                                    # package types      (shared foundation, 0 internal imports)
 ├── api/                                                      # package api        (16 service interfaces + models)
@@ -40,7 +40,7 @@ root           (assembles Client, re-exports type aliases)
 The root package re-exports common types from `types/` as type aliases so users can write:
 
 ```go
-import opensearch "github.com/disaster37/opensearch/v3"
+import opensearch "github.com/disaster37/opensearch/v4"
 
 os.IsNotFound(err)        // re-export from types
 _, _ = client.Cluster().Health(ctx, nil)  // returns *api.ClusterHealthResponse
@@ -89,13 +89,13 @@ Do **not** add new runtime dependencies without justification. `encoding/json`, 
 
 | Branch | Target |
 |---|---|
-| `release-branch.v3` | OpenSearch 3.x (active development) |
+| `release-branch.v4` | OpenSearch 3.x (active development) |
 | `release-branch.v2` | OpenSearch 2.x (maintenance only) |
 
-**Always branch from `release-branch.v3`:**
+**Always branch from `release-branch.v4`:**
 
 ```bash
-git checkout release-branch.v3 && git pull origin release-branch.v3
+git checkout release-branch.v4 && git pull origin release-branch.v4
 git checkout -b feature/my-feature
 # or
 git checkout -b fix/my-fix
@@ -402,7 +402,7 @@ OpenTelemetry tracing is already implemented in `trace/opentelemetry/`. It is **
 **How users enable it** (documented in `trace/opentelemetry/`):
 
 ```go
-import "github.com/disaster37/opensearch/v3/trace/opentelemetry"
+import "github.com/disaster37/opensearch/v4/trace/opentelemetry"
 
 before, after := opentelemetry.Middleware("my-service")
 client.RestyClient().
@@ -720,7 +720,7 @@ Integration tests exist because **the official OpenSearch documentation is somet
 
 - **File name:** `{group}_service_integration_test.go` in `api/` (e.g. `document_service_integration_test.go`).
 - **First line:** `//go:build integration` — without exception.
-- **Package:** `api_test` (black-box). Imports `github.com/disaster37/opensearch/v3` and `github.com/disaster37/opensearch/v3/api`.
+- **Package:** `api_test` (black-box). Imports `github.com/disaster37/opensearch/v4` and `github.com/disaster37/opensearch/v4/api`.
 - **Shared client:** use the `newIntegrationClient()` helper from `api/integration_helper_test.go`. It panics if `OPENSEARCH_URL`, `OPENSEARCH_USERNAME`, or `OPENSEARCH_PASSWORD` are unset — do **not** re-introduce hardcoded credential fallbacks.
 - **Index names:** use a predictable prefix `test-<service>-` (e.g. `test-doc-svc`, `test-idx-svc`) and register cleanup with `t.Cleanup(func() { client.Indices().Delete(ctx, []string{name}) })`. Do **not** leave test indices behind.
 - **Ordering:** when a test needs an existing resource (document, index, user, pipeline), create it inside the test body, then register cleanup. Don't rely on a `TestMain` that sets up global state — each integration test function should be self-contained.
@@ -736,7 +736,7 @@ import (
     "context"
     "testing"
 
-    "github.com/disaster37/opensearch/v3/api"
+    "github.com/disaster37/opensearch/v4/api"
     "github.com/stretchr/testify/assert"
     "github.com/stretchr/testify/require"
 )
@@ -846,7 +846,7 @@ Starts Delve on port 4000. Connect via VS Code:
 
 ## Pull Request Checklist
 
-- [ ] Branch is based on `release-branch.v3`
+- [ ] Branch is based on `release-branch.v4`
 - [ ] One feature or fix per PR
 - [ ] New code is in the correct package (see Architecture Overview)
 - [ ] Code is formatted: `go fmt ./...`

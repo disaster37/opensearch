@@ -3,7 +3,7 @@ package api
 import (
 	"time"
 
-	"github.com/disaster37/opensearch/v3/types"
+	"github.com/disaster37/opensearch/v4/types"
 )
 
 // SnapshotShardFailure describes a single shard that failed during a snapshot

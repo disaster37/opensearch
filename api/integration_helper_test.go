@@ -5,7 +5,7 @@ package api_test
 import (
 	"os"
 
-	opensearch "github.com/disaster37/opensearch/v3"
+	opensearch "github.com/disaster37/opensearch/v4"
 	"github.com/sirupsen/logrus"
 )
 

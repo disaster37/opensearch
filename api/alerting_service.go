@@ -135,7 +135,7 @@ func (s *DefaultAlertingService) DeleteMonitor(ctx context.Context, monitorId st
 
 // SearchMonitor searches for monitors using the given query body.
 func (s *DefaultAlertingService) SearchMonitor(ctx context.Context, body any) ([]AlertingSearchMonitorHit, error) {
-	resp, err := s.client.R().SetContext(ctx).SetBody(body).Get("/_plugins/_alerting/monitors/_search")
+	resp, err := s.client.R().SetContext(ctx).SetBody(body).Post("/_plugins/_alerting/monitors/_search")
 	if err != nil {
 		return nil, wrapNetworkError(s.logger, err)
 	}

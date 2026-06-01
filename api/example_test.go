@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"log"
 
-	"github.com/disaster37/opensearch/v3/api"
-	"github.com/disaster37/opensearch/v3/querydsl"
+	"github.com/disaster37/opensearch/v4/api"
+	"github.com/disaster37/opensearch/v4/querydsl"
 	"github.com/sirupsen/logrus"
 )
 

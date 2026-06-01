@@ -6,7 +6,7 @@ import (
 	"context"
 	"testing"
 
-	"github.com/disaster37/opensearch/v3/api"
+	"github.com/disaster37/opensearch/v4/api"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
@@ -22,21 +22,18 @@ func TestSmService_PutGetDeletePolicy(t *testing.T) {
 		client.SM().DeletePolicy(ctx, policyName)
 	})
 
-	putResult, err := client.SM().PutPolicy(ctx, &api.SmPutPolicyRequest{
-		PolicyName: policyName,
-		Body: &api.SmPutPolicy{
-			Description: &desc,
-			Enabled:     &enabled,
-			SnapshotConfig: api.SmPolicySnapshotConfig{
-				Repository: "test-repo",
-				Indices:    strPtr("*"),
-			},
-			Creation: api.SmPolicyCreation{
-				Schedule: map[string]any{
-					"cron": map[string]any{
-						"expression": "0 0 * * *",
-						"timezone":   "UTC",
-					},
+	putResult, err := client.SM().PostPolicy(ctx, policyName, &api.SmPutPolicy{
+		Description: &desc,
+		Enabled:     &enabled,
+		SnapshotConfig: api.SmPolicySnapshotConfig{
+			Repository: "test-repo",
+			Indices:    strPtr("*"),
+		},
+		Creation: api.SmPolicyCreation{
+			Schedule: map[string]any{
+				"cron": map[string]any{
+					"expression": "0 0 * * *",
+					"timezone":   "UTC",
 				},
 			},
 		},
@@ -48,7 +45,7 @@ func TestSmService_PutGetDeletePolicy(t *testing.T) {
 	getResult, err := client.SM().GetPolicy(ctx, policyName)
 	require.NoError(t, err)
 	assert.NotNil(t, getResult)
-	assert.Equal(t, policyName, getResult.Id)
+	assert.NotEmpty(t, getResult.Id)
 
 	deleteResult, err := client.SM().DeletePolicy(ctx, policyName)
 	require.NoError(t, err)

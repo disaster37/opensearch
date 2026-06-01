@@ -1,6 +1,6 @@
 package api
 
-import "github.com/disaster37/opensearch/v3/types"
+import "github.com/disaster37/opensearch/v4/types"
 
 // CcrAutoFollowStatusResponse represents the aggregate response from the CCR auto-follow status API,
 // containing counts of successful/failed replication starts and per-rule statistics.

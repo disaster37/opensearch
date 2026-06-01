@@ -5,7 +5,7 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/disaster37/opensearch/v3/types"
+	"github.com/disaster37/opensearch/v4/types"
 )
 
 type SearchResult struct {

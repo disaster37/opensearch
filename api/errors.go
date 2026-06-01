@@ -6,7 +6,7 @@ import (
 	json "github.com/goccy/go-json"
 	"github.com/sirupsen/logrus"
 
-	"github.com/disaster37/opensearch/v3/types"
+	"github.com/disaster37/opensearch/v4/types"
 	"github.com/go-resty/resty/v2"
 )
 

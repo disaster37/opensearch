@@ -5,7 +5,7 @@ import (
 	json "github.com/goccy/go-json"
 	"time"
 
-	"github.com/disaster37/opensearch/v3/types"
+	"github.com/disaster37/opensearch/v4/types"
 )
 
 func ExampleOpenSearchError() {

@@ -1,10 +1,12 @@
 # opensearch-go
 
-[![Go Reference](https://pkg.go.dev/badge/github.com/disaster37/opensearch/v3.svg)](https://pkg.go.dev/github.com/disaster37/opensearch/v3)
-[![Go Report Card](https://goreportcard.com/badge/github.com/disaster37/opensearch/v3)](https://goreportcard.com/report/github.com/disaster37/opensearch/v3)
+[![Go Reference](https://pkg.go.dev/badge/github.com/disaster37/opensearch/v4.svg)](https://pkg.go.dev/github.com/disaster37/opensearch/v4)
+[![Go Report Card](https://goreportcard.com/badge/github.com/disaster37/opensearch/v4)](https://goreportcard.com/report/github.com/disaster37/opensearch/v4)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
 Go client for [OpenSearch](https://opensearch.org/) and OpenSearch-compatible clusters.
+
+> **⚠️ v4 is a complete rewrite of the library. Expect breaking changes from v3.** Review the [v4 migration guide](CHANGELOG.md) before upgrading. Import paths change from `v3` to `v4`, and most APIs have new signatures.
 
 - Type-safe interfaces for all 16 OpenSearch API groups
 - Fluent query-builder DSL (`querydsl/`) — no raw JSON required
@@ -16,7 +18,7 @@ Go client for [OpenSearch](https://opensearch.org/) and OpenSearch-compatible cl
 ## Install
 
 ```bash
-go get github.com/disaster37/opensearch/v3
+go get github.com/disaster37/opensearch/v4
 ```
 
 Requires Go 1.18+ (uses generics in `api/` and `querydsl/`).
@@ -30,7 +32,7 @@ import (
     "context"
     "log"
 
-    os "github.com/disaster37/opensearch/v3"
+    os "github.com/disaster37/opensearch/v4"
     "github.com/sirupsen/logrus"
 )
 
@@ -66,7 +68,7 @@ func main() {
 Build type-safe queries without raw JSON maps:
 
 ```go
-import "github.com/disaster37/opensearch/v3/querydsl"
+import "github.com/disaster37/opensearch/v4/querydsl"
 
 // Bool query with must/should/filter clauses
 query := querydsl.Bool{
@@ -171,7 +173,7 @@ _, err = client.Document().Update(ctx, "my-index", "doc-id", newDoc,
 import (
     "time"
 
-    os "github.com/disaster37/opensearch/v3"
+    os "github.com/disaster37/opensearch/v4"
 )
 
 client, err := os.New(&os.Config{
@@ -190,7 +192,7 @@ Wrap the client with the OTel trace middleware:
 
 ```go
 import (
-    otel "github.com/disaster37/opensearch/v3/trace/opentelemetry"
+    otel "github.com/disaster37/opensearch/v4/trace/opentelemetry"
 )
 
 client, _ := os.New(cfg, logger)

@@ -6,7 +6,7 @@ import (
 	"net/http/httptest"
 	"testing"
 
-	"github.com/disaster37/opensearch/v3/types"
+	"github.com/disaster37/opensearch/v4/types"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
@@ -46,7 +46,7 @@ func newTransformTestServer() *httptest.Server {
 		w.Write([]byte(`{"documents":[{"key":"value"}]}`))
 	})
 
-	mux.HandleFunc("/_plugins/_transform", func(w http.ResponseWriter, r *http.Request) {
+	mux.HandleFunc("/_plugins/_transform/_search", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
 		w.Write([]byte(`{"total_transforms":1,"transforms":[{"_id":"test","_version":1,"_seq_no":0,"_primary_term":1,"transform":{"source_index":"source","target_index":"target"}}]}`))
 	})

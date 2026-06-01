@@ -6,7 +6,7 @@ import (
 	json "github.com/goccy/go-json"
 	"strings"
 
-	"github.com/disaster37/opensearch/v3/querydsl"
+	"github.com/disaster37/opensearch/v4/querydsl"
 	"github.com/go-resty/resty/v2"
 	"github.com/sirupsen/logrus"
 )
@@ -185,7 +185,13 @@ func (s *DefaultSearchService) Validate(ctx context.Context, indices []string, b
 		req = req.SetBody(body)
 	}
 
-	resp, err := req.Get(path)
+	var resp *resty.Response
+	var err error
+	if body != nil {
+		resp, err = req.Post(path)
+	} else {
+		resp, err = req.Get(path)
+	}
 	if err != nil {
 		return nil, wrapNetworkError(s.logger, err)
 	}

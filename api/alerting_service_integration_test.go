@@ -42,9 +42,21 @@ func TestAlertingService_PostGetDeleteMonitor(t *testing.T) {
 		"inputs": []map[string]any{
 			{
 				"search": map[string]any{
-					"indices": []string{".opendistro-alerting-config"},
+					"indices": []string{"*"},
 					"query": map[string]any{
-						"match_all": map[string]any{},
+						"size": 0,
+						"query": map[string]any{
+							"match": map[string]any{
+								"type": "monitor",
+							},
+						},
+						"aggregations": map[string]any{
+							"test_agg": map[string]any{
+								"value_count": map[string]any{
+									"field": "_id",
+								},
+							},
+						},
 					},
 				},
 			},

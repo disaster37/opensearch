@@ -6,7 +6,7 @@ import (
 	"context"
 	"testing"
 
-	"github.com/disaster37/opensearch/v3/api"
+	"github.com/disaster37/opensearch/v4/api"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
@@ -25,7 +25,7 @@ func TestSecurityService_PutGetDeleteRole(t *testing.T) {
 	})
 	require.NoError(t, err)
 	assert.NotNil(t, putResult)
-	assert.Equal(t, "OK", putResult.Status)
+	assert.Equal(t, "CREATED", putResult.Status)
 
 	getResult, err := client.Security().GetRole(ctx, roleName)
 	require.NoError(t, err)
@@ -56,7 +56,7 @@ func TestSecurityService_PutGetDeleteUser(t *testing.T) {
 	})
 	require.NoError(t, err)
 	assert.NotNil(t, putResult)
-	assert.Equal(t, "OK", putResult.Status)
+	assert.Equal(t, "CREATED", putResult.Status)
 
 	getResult, err := client.Security().GetUser(ctx, username)
 	require.NoError(t, err)
@@ -114,7 +114,7 @@ func TestSecurityService_PutGetDeleteActionGroup(t *testing.T) {
 	})
 	require.NoError(t, err)
 	assert.NotNil(t, putResult)
-	assert.Equal(t, "OK", putResult.Status)
+	assert.Equal(t, "CREATED", putResult.Status)
 
 	getResult, err := client.Security().GetActionGroup(ctx, name)
 	require.NoError(t, err)
@@ -142,7 +142,7 @@ func TestSecurityService_PutGetDeleteTenant(t *testing.T) {
 	})
 	require.NoError(t, err)
 	assert.NotNil(t, putResult)
-	assert.Equal(t, "OK", putResult.Status)
+	assert.Equal(t, "CREATED", putResult.Status)
 
 	getResult, err := client.Security().GetTenant(ctx, name)
 	require.NoError(t, err)
@@ -178,7 +178,7 @@ func TestSecurityService_PutGetDeleteRoleMapping(t *testing.T) {
 	})
 	require.NoError(t, err)
 	assert.NotNil(t, putResult)
-	assert.Equal(t, "OK", putResult.Status)
+	assert.Equal(t, "CREATED", putResult.Status)
 
 	getResult, err := client.Security().GetRoleMapping(ctx, mappingRoleName)
 	require.NoError(t, err)

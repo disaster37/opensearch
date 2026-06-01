@@ -60,7 +60,7 @@ func (h *spanHolder) endSpan() {
 // the corresponding resty Request is garbage-collected.
 func Middleware(tracerName string) (resty.RequestMiddleware, resty.ResponseMiddleware) {
 	if tracerName == "" {
-		tracerName = "github.com/disaster37/opensearch/v3"
+		tracerName = "github.com/disaster37/opensearch/v4"
 	}
 
 	before := func(_ *resty.Client, req *resty.Request) error {

@@ -4,7 +4,7 @@ import (
 	json "github.com/goccy/go-json"
 	"net/http"
 
-	"github.com/disaster37/opensearch/v3/types"
+	"github.com/disaster37/opensearch/v4/types"
 )
 
 // IndexResponse represents the result of an index (add/update) document operation.

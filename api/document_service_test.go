@@ -127,7 +127,7 @@ func TestUnitDocumentServiceMultiGet(t *testing.T) {
 	respJSON := `{"docs":[{"_index":"idx","_id":"1","found":true},{"_index":"idx","_id":"2","found":true}]}`
 
 	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		if r.Method == http.MethodGet && r.URL.Path == "/_mget" {
+		if r.Method == http.MethodPost && r.URL.Path == "/_mget" {
 			w.WriteHeader(200)
 			fmt.Fprint(w, respJSON)
 			return
@@ -423,7 +423,7 @@ func TestUnitDocumentServiceExplain(t *testing.T) {
 	respJSON := `{"_index":"myindex","_type":"_doc","_id":"1","matched":true,"explanation":{"value":1.0,"description":"weight"}}`
 
 	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		if r.Method == http.MethodGet && r.URL.Path == "/myindex/_explain/1" {
+		if r.Method == http.MethodPost && r.URL.Path == "/myindex/_explain/1" {
 			w.WriteHeader(200)
 			fmt.Fprint(w, respJSON)
 			return
@@ -462,7 +462,7 @@ func TestUnitDocumentServiceTermVectors(t *testing.T) {
 	respJSON := `{"_index":"myindex","_type":"_doc","_id":"1","_version":1,"found":true,"took":5,"term_vectors":{"content":{"field_statistics":{"doc_count":10,"sum_doc_freq":100,"sum_ttf":200},"terms":{"hello":{"doc_freq":5,"term_freq":3,"ttf":10,"tokens":[{"start_offset":0,"end_offset":5,"position":0}]}}}}}`
 
 	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		if r.Method == http.MethodGet && r.URL.Path == "/myindex/_termvectors/1" {
+		if (r.Method == http.MethodGet || r.Method == http.MethodPost) && r.URL.Path == "/myindex/_termvectors/1" {
 			w.WriteHeader(200)
 			fmt.Fprint(w, respJSON)
 			return
@@ -507,7 +507,7 @@ func TestUnitDocumentServiceMultiTermVectors(t *testing.T) {
 	respJSON := `{"docs":[{"_index":"myindex","_id":"1","_version":1,"found":true,"took":5}]}`
 
 	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		if r.Method == http.MethodGet && strings.HasSuffix(r.URL.Path, "/_mtermvectors") {
+		if (r.Method == http.MethodGet || r.Method == http.MethodPost) && strings.HasSuffix(r.URL.Path, "/_mtermvectors") {
 			w.WriteHeader(200)
 			fmt.Fprint(w, respJSON)
 			return
@@ -592,8 +592,9 @@ func TestUnitDocumentServiceErrorPaths(t *testing.T) {
 		srv := errServer(404)
 		defer srv.Close()
 		s := NewDocumentService(restyClient(srv), testLogger())
-		_, err := s.Get(ctx, &GetRequest{Index: "myindex", Id: "1"})
-		require.Error(t, err)
+		resp, err := s.Get(ctx, &GetRequest{Index: "myindex", Id: "1"})
+		require.NoError(t, err)
+		assert.False(t, resp.Found)
 	})
 
 	t.Run("Get unmarshal error", func(t *testing.T) {

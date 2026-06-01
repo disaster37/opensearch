@@ -5,7 +5,7 @@ import (
 	"fmt"
 	json "github.com/goccy/go-json"
 
-	"github.com/disaster37/opensearch/v3/types"
+	"github.com/disaster37/opensearch/v4/types"
 	"github.com/go-resty/resty/v2"
 	"github.com/sirupsen/logrus"
 )

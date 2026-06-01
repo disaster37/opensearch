@@ -1,6 +1,6 @@
 package opensearch
 
-import "github.com/disaster37/opensearch/v3/types"
+import "github.com/disaster37/opensearch/v4/types"
 
 // CommonParams are the query parameters common to all OpenSearch API requests.
 // They are forwarded to all service methods via [DocumentService], [SearchService], etc.

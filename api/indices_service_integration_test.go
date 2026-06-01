@@ -6,7 +6,7 @@ import (
 	"context"
 	"testing"
 
-	"github.com/disaster37/opensearch/v3/api"
+	"github.com/disaster37/opensearch/v4/api"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
@@ -131,6 +131,14 @@ func TestIndicesService_Rollover(t *testing.T) {
 		},
 	}
 	_, err := svc.Create(ctx, idx, body)
+	require.NoError(t, err)
+
+	_, err = client.Document().Index(ctx, &api.IndexRequest{
+		Index:  idx,
+		Id:     "roll-doc-1",
+		Body:   map[string]any{"data": "rollover"},
+		Params: map[string]string{"refresh": "true"},
+	})
 	require.NoError(t, err)
 
 	resp, err := svc.Rollover(ctx, aliasName, map[string]any{
@@ -647,6 +655,7 @@ func TestIndicesService_CreateDataStream(t *testing.T) {
 		Body: map[string]any{
 			"index_patterns": []string{"test-ds-svc"},
 			"data_stream":    map[string]any{},
+			"priority":       501,
 			"template": map[string]any{
 				"settings": map[string]any{
 					"number_of_shards": 1,
@@ -682,6 +691,7 @@ func TestIndicesService_GetDataStream(t *testing.T) {
 		Body: map[string]any{
 			"index_patterns": []string{"test-ds-svc"},
 			"data_stream":    map[string]any{},
+			"priority":       501,
 			"template": map[string]any{
 				"settings": map[string]any{
 					"number_of_shards": 1,
@@ -716,6 +726,7 @@ func TestIndicesService_DeleteDataStream(t *testing.T) {
 		Body: map[string]any{
 			"index_patterns": []string{"test-ds-svc"},
 			"data_stream":    map[string]any{},
+			"priority":       501,
 			"template": map[string]any{
 				"settings": map[string]any{
 					"number_of_shards": 1,

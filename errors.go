@@ -1,6 +1,6 @@
 package opensearch
 
-import "github.com/disaster37/opensearch/v3/types"
+import "github.com/disaster37/opensearch/v4/types"
 
 // IsNotFound returns true when err is an [OpenSearchError] with status 404.
 // Use this to branch on "document or index not found" cases without

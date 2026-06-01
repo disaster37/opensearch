@@ -5,8 +5,8 @@ import (
 	"crypto/x509"
 	"time"
 
-	"github.com/disaster37/opensearch/v3/api"
-	"github.com/disaster37/opensearch/v3/types"
+	"github.com/disaster37/opensearch/v4/api"
+	"github.com/disaster37/opensearch/v4/types"
 	"github.com/go-resty/resty/v2"
 	"github.com/sirupsen/logrus"
 )

@@ -3,7 +3,7 @@ package api
 import (
 	"fmt"
 
-	"github.com/disaster37/opensearch/v3/types"
+	"github.com/disaster37/opensearch/v4/types"
 	"github.com/go-playground/validator/v10"
 )
 

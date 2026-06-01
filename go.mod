@@ -1,4 +1,4 @@
-module github.com/disaster37/opensearch/v3
+module github.com/disaster37/opensearch/v4
 
 go 1.26
 
