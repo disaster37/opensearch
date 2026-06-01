@@ -2,9 +2,10 @@ package querydsl
 
 import (
 	"fmt"
-	json "github.com/goccy/go-json"
 	"strconv"
 	"strings"
+
+	json "github.com/goccy/go-json"
 )
 
 // GeoPoint is a geographic position described via latitude and longitude.

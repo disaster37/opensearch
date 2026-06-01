@@ -2,6 +2,7 @@ package querydsl
 
 import (
 	"fmt"
+
 	json "github.com/goccy/go-json"
 )
 

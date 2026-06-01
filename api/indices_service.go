@@ -3,9 +3,10 @@ package api
 import (
 	"context"
 	"fmt"
-	json "github.com/goccy/go-json"
 	"net/http"
 	"strings"
+
+	json "github.com/goccy/go-json"
 
 	"github.com/disaster37/opensearch/v4/types"
 	"github.com/go-resty/resty/v2"

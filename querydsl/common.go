@@ -1,8 +1,9 @@
 package querydsl
 
 import (
-	json "github.com/goccy/go-json"
 	"strconv"
+
+	json "github.com/goccy/go-json"
 )
 
 func itoa(i int) string { return strconv.Itoa(i) }

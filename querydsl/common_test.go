@@ -1,8 +1,9 @@
 package querydsl
 
 import (
-	json "github.com/goccy/go-json"
 	"testing"
+
+	json "github.com/goccy/go-json"
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
@@ -1877,10 +1878,12 @@ func TestParentIdQuery_Source(t *testing.T) {
 
 func TestPercolatorQuery_Source(t *testing.T) {
 	ver := int64(1)
-	q := PercolatorQuery{Field: "query", DocumentType: "doc", Name: "my_query",
+	q := PercolatorQuery{
+		Field: "query", DocumentType: "doc", Name: "my_query",
 		Documents:            []any{map[string]string{"text": "hello"}},
 		IndexedDocumentIndex: "idx", IndexedDocumentType: "_doc", IndexedDocumentID: "1",
-		IndexedDocumentRouting: "r", IndexedDocumentPreference: "primary", IndexedDocumentVersion: &ver}
+		IndexedDocumentRouting: "r", IndexedDocumentPreference: "primary", IndexedDocumentVersion: &ver,
+	}
 	src, err := q.Source()
 	require.NoError(t, err)
 	m := src.(map[string]any)

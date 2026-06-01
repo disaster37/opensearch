@@ -1,8 +1,9 @@
 package querydsl
 
 import (
-	json "github.com/goccy/go-json"
 	"strings"
+
+	json "github.com/goccy/go-json"
 )
 
 // SearchRequest combines a search request and its query details (see SearchSource).

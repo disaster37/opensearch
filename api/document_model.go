@@ -1,8 +1,9 @@
 package api
 
 import (
-	json "github.com/goccy/go-json"
 	"net/http"
+
+	json "github.com/goccy/go-json"
 
 	"github.com/disaster37/opensearch/v4/types"
 )

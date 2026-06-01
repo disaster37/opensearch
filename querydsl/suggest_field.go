@@ -2,6 +2,7 @@ package querydsl
 
 import (
 	"errors"
+
 	json "github.com/goccy/go-json"
 )
 

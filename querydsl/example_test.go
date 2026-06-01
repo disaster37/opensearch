@@ -2,6 +2,7 @@ package querydsl_test
 
 import (
 	"fmt"
+
 	json "github.com/goccy/go-json"
 
 	"github.com/disaster37/opensearch/v4/querydsl"

@@ -2,6 +2,7 @@ package querydsl
 
 import (
 	"bytes"
+
 	json "github.com/goccy/go-json"
 )
 

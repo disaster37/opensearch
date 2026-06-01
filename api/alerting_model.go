@@ -63,18 +63,18 @@ type AlertingSearchMonitorHit struct {
 // AlertingExecuteMonitorResponse represents the response from executing a monitor on-demand.
 type AlertingExecuteMonitorResponse struct {
 	MonitorName    string         `json:"monitor_name,omitempty"`
-	PeriodStart   string         `json:"period_start,omitempty"`
-	PeriodEnd     string         `json:"period_end,omitempty"`
-	Error         *string        `json:"error,omitempty"`
-	InputResults  map[string]any `json:"input_results,omitempty"`
+	PeriodStart    string         `json:"period_start,omitempty"`
+	PeriodEnd      string         `json:"period_end,omitempty"`
+	Error          *string        `json:"error,omitempty"`
+	InputResults   map[string]any `json:"input_results,omitempty"`
 	TriggerResults map[string]any `json:"trigger_results,omitempty"`
 }
 
 // AlertingAcknowledgeAlertResponse represents the result of acknowledging alerts.
 type AlertingAcknowledgeAlertResponse struct {
-	MissingAlertIds      []string                      `json:"missing_alert_ids,omitempty"`
-	FailedAlertIds       []string                      `json:"failed_alert_ids,omitempty"`
-	AcknowledgedAlertIds []AlertingAcknowledgedAlert   `json:"acknowledged_alerts,omitempty"`
+	MissingAlertIds      []string                    `json:"missing_alert_ids,omitempty"`
+	FailedAlertIds       []string                    `json:"failed_alert_ids,omitempty"`
+	AcknowledgedAlertIds []AlertingAcknowledgedAlert `json:"acknowledged_alerts,omitempty"`
 }
 
 // AlertingAcknowledgedAlert represents a single acknowledged alert.
@@ -144,7 +144,7 @@ type AlertingDestination struct {
 // AlertingWorkflow represents a workflow definition.
 type AlertingWorkflow struct {
 	Name         string           `json:"name"`
-	WorkflowType string          `json:"workflow_type,omitempty"`
+	WorkflowType string           `json:"workflow_type,omitempty"`
 	Enabled      *bool            `json:"enabled,omitempty"`
 	Schedule     map[string]any   `json:"schedule,omitempty"`
 	Inputs       []map[string]any `json:"inputs,omitempty"`

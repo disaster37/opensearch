@@ -192,12 +192,12 @@ func TestUnitKnnService_TrainModel(t *testing.T) {
 	ctx := context.Background()
 
 	resp, err := svc.TrainModel(ctx, map[string]any{
-		"training_index":  "train-index",
-		"training_field":  "vector_field",
-		"dimension":       2,
+		"training_index":            "train-index",
+		"training_field":            "vector_field",
+		"dimension":                 2,
 		"max_training_vector_count": 1200,
-		"search_size":     50,
-		"method":          map[string]any{"name": "hnsw", "engine": "nmslib", "space_type": "l2"},
+		"search_size":               50,
+		"method":                    map[string]any{"name": "hnsw", "engine": "nmslib", "space_type": "l2"},
 	})
 	require.NoError(t, err)
 	require.NotNil(t, resp)

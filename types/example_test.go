@@ -2,8 +2,9 @@ package types_test
 
 import (
 	"fmt"
-	json "github.com/goccy/go-json"
 	"time"
+
+	json "github.com/goccy/go-json"
 
 	"github.com/disaster37/opensearch/v4/types"
 )

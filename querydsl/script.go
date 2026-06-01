@@ -3,8 +3,9 @@ package querydsl
 import (
 	"errors"
 	"fmt"
-	json "github.com/goccy/go-json"
 	"strings"
+
+	json "github.com/goccy/go-json"
 )
 
 // Script holds all the parameters necessary to compile or find in cache

@@ -1,9 +1,10 @@
 package querydsl
 
 import (
-	json "github.com/goccy/go-json"
 	"net/http"
 	"time"
+
+	json "github.com/goccy/go-json"
 
 	"github.com/disaster37/opensearch/v4/types"
 )

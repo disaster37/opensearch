@@ -3,8 +3,9 @@ package api
 import (
 	"context"
 	"fmt"
-	json "github.com/goccy/go-json"
 	"strings"
+
+	json "github.com/goccy/go-json"
 
 	"github.com/go-resty/resty/v2"
 	"github.com/sirupsen/logrus"

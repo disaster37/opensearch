@@ -19,9 +19,9 @@ type TasksListResponse struct {
 // TaskOperationFailure represents a failure that occurred during a task
 // operation, including the task ID, node ID, status, and error reason.
 type TaskOperationFailure struct {
-	TaskId int64               `json:"task_id"`
-	NodeId string              `json:"node_id"`
-	Status string              `json:"status"`
+	TaskId int64                         `json:"task_id"`
+	NodeId string                        `json:"node_id"`
+	Status string                        `json:"status"`
 	Reason *types.OpenSearchErrorDetails `json:"reason"`
 }
 
@@ -69,9 +69,9 @@ type StartTaskResult struct {
 // The Completed field indicates whether the task has finished; if so, the
 // Task field contains its final state, and Error contains any failure details.
 type TasksGetTaskResponse struct {
-	Header    http.Header         `json:"-"`
-	Completed bool                `json:"completed"`
-	Task      *TaskInfo           `json:"task,omitempty"`
+	Header    http.Header                   `json:"-"`
+	Completed bool                          `json:"completed"`
+	Task      *TaskInfo                     `json:"task,omitempty"`
 	Error     *types.OpenSearchErrorDetails `json:"error,omitempty"`
 }
 

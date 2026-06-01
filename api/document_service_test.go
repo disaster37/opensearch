@@ -335,7 +335,7 @@ func TestUnitDocumentServiceBulk(t *testing.T) {
 	respJSON := `{"took":30,"errors":false,"items":[{"index":{"_index":"idx","_id":"1","_version":1,"result":"created","status":201,"_shards":{"total":2,"successful":1,"failed":0},"_seq_no":0,"_primary_term":1}}]}`
 
 	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		if r.Method == http.MethodPost && (strings.HasSuffix(r.URL.Path, "/_bulk")) {
+		if r.Method == http.MethodPost && strings.HasSuffix(r.URL.Path, "/_bulk") {
 			w.WriteHeader(200)
 			_, _ = fmt.Fprint(w, respJSON)
 			return

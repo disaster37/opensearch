@@ -2695,6 +2695,7 @@ func TestUnitIndicesServiceErrorPaths(t *testing.T) {
 		assert.Contains(t, err.Error(), "unmarshal")
 	})
 }
+
 func TestUnitIndicesServiceNetworkErrors(t *testing.T) {
 	ctx := context.Background()
 	s := NewIndicesService(deadClient(), testLogger())

@@ -1,8 +1,9 @@
 package types
 
 import (
-	json "github.com/goccy/go-json"
 	"time"
+
+	json "github.com/goccy/go-json"
 )
 
 // UnixMilliTime is a [time.Time] that serializes to/from an integer

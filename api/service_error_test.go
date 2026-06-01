@@ -360,9 +360,15 @@ func TestIsmServiceErrorPaths(t *testing.T) {
 		}},
 		{"DeletePolicy", func(s IsmService) error { _, err := s.DeletePolicy(ctx, "p"); return err }},
 		{"ExplainPolicy", func(s IsmService) error { _, err := s.ExplainPolicy(ctx, "idx"); return err }},
-		{"AddPolicy", func(s IsmService) error { _, err := s.AddPolicy(ctx, "idx", map[string]any{"policy_id": "p"}); return err }},
+		{"AddPolicy", func(s IsmService) error {
+			_, err := s.AddPolicy(ctx, "idx", map[string]any{"policy_id": "p"})
+			return err
+		}},
 		{"RemovePolicy", func(s IsmService) error { _, err := s.RemovePolicy(ctx, "idx"); return err }},
-		{"ChangePolicy", func(s IsmService) error { _, err := s.ChangePolicy(ctx, "idx", map[string]any{"policy_id": "p"}); return err }},
+		{"ChangePolicy", func(s IsmService) error {
+			_, err := s.ChangePolicy(ctx, "idx", map[string]any{"policy_id": "p"})
+			return err
+		}},
 		{"RetryFailedIndex", func(s IsmService) error { _, err := s.RetryFailedIndex(ctx, "idx", nil); return err }},
 		{"ListPolicies", func(s IsmService) error { _, err := s.ListPolicies(ctx); return err }},
 	}

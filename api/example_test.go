@@ -736,4 +736,3 @@ func ExampleNeuralService_NeuralWarmup() {
 	// Output:
 	// NeuralService.NeuralWarmup(ctx, index)
 }
-

@@ -164,7 +164,7 @@ type SmListPoliciesResponse struct {
 
 // SmPolicyBase represents a single SM policy entry as returned by the list policies API.
 type SmPolicyBase struct {
-	SmPolicy         `json:",inline"`
-	SequenceNumber   *int64 `json:"_seq_no,omitempty"`
-	PrimaryTerm      *int64 `json:"_primary_term,omitempty"`
+	SmPolicy       `json:",inline"`
+	SequenceNumber *int64 `json:"_seq_no,omitempty"`
+	PrimaryTerm    *int64 `json:"_primary_term,omitempty"`
 }

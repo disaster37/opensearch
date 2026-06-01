@@ -79,25 +79,25 @@ type Config struct {
 
 // DefaultClient is the default [Client] implementation returned by [New].
 type DefaultClient struct {
-	client    *resty.Client
-	logger    *logrus.Entry
-	document  api.DocumentService
-	search    api.SearchService
-	indices   api.IndicesService
-	cluster   api.ClusterService
-	nodes     api.NodesService
-	cat       api.CatService
-	ingest    api.IngestService
-	snapshot  api.SnapshotService
-	tasks     api.TasksService
-	script    api.ScriptService
-	security  api.SecurityService
-	ism       api.IsmService
-	sm        api.SmService
-	alerting  api.AlertingService
-	transform api.TransformService
-	ccr       api.CcrService
-	info      api.InfoService
+	client      *resty.Client
+	logger      *logrus.Entry
+	document    api.DocumentService
+	search      api.SearchService
+	indices     api.IndicesService
+	cluster     api.ClusterService
+	nodes       api.NodesService
+	cat         api.CatService
+	ingest      api.IngestService
+	snapshot    api.SnapshotService
+	tasks       api.TasksService
+	script      api.ScriptService
+	security    api.SecurityService
+	ism         api.IsmService
+	sm          api.SmService
+	alerting    api.AlertingService
+	transform   api.TransformService
+	ccr         api.CcrService
+	info        api.InfoService
 	rollup      api.RollupService
 	ml          api.MlService
 	sql         api.SqlService
@@ -168,25 +168,25 @@ func New(cfg *Config, logger *logrus.Entry) (Client, error) {
 	})
 
 	return &DefaultClient{
-		client:    c,
-		logger:    logger,
-		document:  api.NewDocumentService(c, logger),
-		search:    api.NewSearchService(c, logger),
-		indices:   api.NewIndicesService(c, logger),
-		cluster:   api.NewClusterService(c, logger),
-		nodes:     api.NewNodesService(c, logger),
-		cat:       api.NewCatService(c, logger),
-		ingest:    api.NewIngestService(c, logger),
-		snapshot:  api.NewSnapshotService(c, logger),
-		tasks:     api.NewTasksService(c, logger),
-		script:    api.NewScriptService(c, logger),
-		security:  api.NewSecurityService(c, logger),
-		ism:       api.NewIsmService(c, logger),
-		sm:        api.NewSmService(c, logger),
-		alerting:  api.NewAlertingService(c, logger),
-		transform: api.NewTransformService(c, logger),
-		ccr:       api.NewCcrService(c, logger),
-		info:      api.NewInfoService(c, logger),
+		client:      c,
+		logger:      logger,
+		document:    api.NewDocumentService(c, logger),
+		search:      api.NewSearchService(c, logger),
+		indices:     api.NewIndicesService(c, logger),
+		cluster:     api.NewClusterService(c, logger),
+		nodes:       api.NewNodesService(c, logger),
+		cat:         api.NewCatService(c, logger),
+		ingest:      api.NewIngestService(c, logger),
+		snapshot:    api.NewSnapshotService(c, logger),
+		tasks:       api.NewTasksService(c, logger),
+		script:      api.NewScriptService(c, logger),
+		security:    api.NewSecurityService(c, logger),
+		ism:         api.NewIsmService(c, logger),
+		sm:          api.NewSmService(c, logger),
+		alerting:    api.NewAlertingService(c, logger),
+		transform:   api.NewTransformService(c, logger),
+		ccr:         api.NewCcrService(c, logger),
+		info:        api.NewInfoService(c, logger),
 		rollup:      api.NewRollupService(c, logger),
 		ml:          api.NewMlService(c, logger),
 		sql:         api.NewSqlService(c, logger),
@@ -197,28 +197,28 @@ func New(cfg *Config, logger *logrus.Entry) (Client, error) {
 	}, nil
 }
 
-func (c *DefaultClient) RestyClient() *resty.Client      { return c.client }
-func (c *DefaultClient) Document() api.DocumentService   { return c.document }
-func (c *DefaultClient) Search() api.SearchService       { return c.search }
-func (c *DefaultClient) Indices() api.IndicesService     { return c.indices }
-func (c *DefaultClient) Cluster() api.ClusterService     { return c.cluster }
-func (c *DefaultClient) Nodes() api.NodesService         { return c.nodes }
-func (c *DefaultClient) Cat() api.CatService             { return c.cat }
-func (c *DefaultClient) Ingest() api.IngestService       { return c.ingest }
-func (c *DefaultClient) Snapshot() api.SnapshotService   { return c.snapshot }
-func (c *DefaultClient) Tasks() api.TasksService         { return c.tasks }
-func (c *DefaultClient) Script() api.ScriptService       { return c.script }
-func (c *DefaultClient) Security() api.SecurityService   { return c.security }
-func (c *DefaultClient) ISM() api.IsmService             { return c.ism }
-func (c *DefaultClient) SM() api.SmService               { return c.sm }
-func (c *DefaultClient) Alerting() api.AlertingService   { return c.alerting }
-func (c *DefaultClient) Transform() api.TransformService { return c.transform }
-func (c *DefaultClient) CCR() api.CcrService             { return c.ccr }
-func (c *DefaultClient) Info() api.InfoService            { return c.info }
-func (c *DefaultClient) Rollup() api.RollupService        { return c.rollup }
-func (c *DefaultClient) ML() api.MlService                { return c.ml }
-func (c *DefaultClient) SQL() api.SqlService                   { return c.sql }
-func (c *DefaultClient) AD() api.AdService                     { return c.ad }
-func (c *DefaultClient) AsyncSearch() api.AsyncSearchService   { return c.asyncSearch }
-func (c *DefaultClient) KNN() api.KnnService                   { return c.knn }
-func (c *DefaultClient) Neural() api.NeuralService             { return c.neural }
+func (c *DefaultClient) RestyClient() *resty.Client          { return c.client }
+func (c *DefaultClient) Document() api.DocumentService       { return c.document }
+func (c *DefaultClient) Search() api.SearchService           { return c.search }
+func (c *DefaultClient) Indices() api.IndicesService         { return c.indices }
+func (c *DefaultClient) Cluster() api.ClusterService         { return c.cluster }
+func (c *DefaultClient) Nodes() api.NodesService             { return c.nodes }
+func (c *DefaultClient) Cat() api.CatService                 { return c.cat }
+func (c *DefaultClient) Ingest() api.IngestService           { return c.ingest }
+func (c *DefaultClient) Snapshot() api.SnapshotService       { return c.snapshot }
+func (c *DefaultClient) Tasks() api.TasksService             { return c.tasks }
+func (c *DefaultClient) Script() api.ScriptService           { return c.script }
+func (c *DefaultClient) Security() api.SecurityService       { return c.security }
+func (c *DefaultClient) ISM() api.IsmService                 { return c.ism }
+func (c *DefaultClient) SM() api.SmService                   { return c.sm }
+func (c *DefaultClient) Alerting() api.AlertingService       { return c.alerting }
+func (c *DefaultClient) Transform() api.TransformService     { return c.transform }
+func (c *DefaultClient) CCR() api.CcrService                 { return c.ccr }
+func (c *DefaultClient) Info() api.InfoService               { return c.info }
+func (c *DefaultClient) Rollup() api.RollupService           { return c.rollup }
+func (c *DefaultClient) ML() api.MlService                   { return c.ml }
+func (c *DefaultClient) SQL() api.SqlService                 { return c.sql }
+func (c *DefaultClient) AD() api.AdService                   { return c.ad }
+func (c *DefaultClient) AsyncSearch() api.AsyncSearchService { return c.asyncSearch }
+func (c *DefaultClient) KNN() api.KnnService                 { return c.knn }
+func (c *DefaultClient) Neural() api.NeuralService           { return c.neural }

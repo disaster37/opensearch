@@ -2,11 +2,12 @@ package api
 
 import (
 	"context"
+	"net/http"
+
 	json "github.com/goccy/go-json"
 
 	"github.com/go-resty/resty/v2"
 	"github.com/sirupsen/logrus"
-	"net/http"
 )
 
 // InfoService provides access to cluster-level info and ping endpoints.

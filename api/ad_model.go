@@ -47,11 +47,11 @@ type AdDeleteDetectorResponse struct {
 
 // AdExecuteDetectorResponse represents the response from executing an anomaly detector.
 type AdExecuteDetectorResponse struct {
-	AnomalyGrade  float64            `json:"anomaly_grade,omitempty"`
-	Confidence    float64            `json:"confidence,omitempty"`
-	DataStartTime string             `json:"data_start_time,omitempty"`
-	DataEndTime   string             `json:"data_end_time,omitempty"`
-	Features      []map[string]any   `json:"features,omitempty"`
+	AnomalyGrade  float64          `json:"anomaly_grade,omitempty"`
+	Confidence    float64          `json:"confidence,omitempty"`
+	DataStartTime string           `json:"data_start_time,omitempty"`
+	DataEndTime   string           `json:"data_end_time,omitempty"`
+	Features      []map[string]any `json:"features,omitempty"`
 }
 
 // AdPreviewDetectorResponse represents the response from previewing an anomaly detector.
@@ -61,8 +61,8 @@ type AdPreviewDetectorResponse struct {
 
 // AdSearchDetectorsResponse wraps the search detectors hits.
 type AdSearchDetectorsResponse struct {
-	Total     int64           `json:"total_anomaly_detectors"`
-	Detectors []AdSearchHit  `json:"anomaly_detectors"`
+	Total     int64         `json:"total_anomaly_detectors"`
+	Detectors []AdSearchHit `json:"anomaly_detectors"`
 }
 
 // AdSearchHit represents a single detector search hit.

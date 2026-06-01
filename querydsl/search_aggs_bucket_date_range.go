@@ -33,10 +33,11 @@ type DateRangeAggregationEntry struct {
 // NewDateRangeAggregation returns a zero-value DateRangeAggregation.
 func NewDateRangeAggregation() DateRangeAggregation { return DateRangeAggregation{} }
 
-func (a DateRangeAggregation) WithField(v string) DateRangeAggregation    { a.Field = v; return a }
-func (a DateRangeAggregation) WithScript(v *Script) DateRangeAggregation  { a.Script = v; return a }
-func (a DateRangeAggregation) WithKeyed(v bool) DateRangeAggregation      { a.Keyed = &v; return a }
-func (a DateRangeAggregation) WithUnmapped(v bool) DateRangeAggregation   { a.Unmapped = &v; return a }
+func (a DateRangeAggregation) WithField(v string) DateRangeAggregation   { a.Field = v; return a }
+func (a DateRangeAggregation) WithScript(v *Script) DateRangeAggregation { a.Script = v; return a }
+func (a DateRangeAggregation) WithKeyed(v bool) DateRangeAggregation     { a.Keyed = &v; return a }
+func (a DateRangeAggregation) WithUnmapped(v bool) DateRangeAggregation { a.Unmapped = &v; return a }
+
 func (a DateRangeAggregation) WithTimeZone(v string) DateRangeAggregation { a.TimeZone = v; return a }
 func (a DateRangeAggregation) WithFormat(v string) DateRangeAggregation   { a.Format = v; return a }
 
