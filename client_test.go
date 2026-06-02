@@ -159,3 +159,27 @@ func TestNew_HTTPCallbacks(t *testing.T) {
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusOK, resp.StatusCode())
 }
+
+func TestNew_ContentTypeHeader(t *testing.T) {
+	logger := logrus.NewEntry(logrus.StandardLogger())
+
+	var capturedContentType string
+	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		capturedContentType = r.Header.Get("Content-Type")
+		w.WriteHeader(http.StatusOK)
+	}))
+	defer server.Close()
+
+	client, err := New(&Config{URL: server.URL}, logger)
+	require.NoError(t, err)
+
+	// Send a raw string body – without the global header this would produce
+	// "text/plain; charset=utf-8" instead of "application/json".
+	_, err = client.RestyClient().R().
+		SetBody(`{"settings":{"number_of_shards":1}}`).
+		Put(server.URL + "/test-index")
+	require.NoError(t, err)
+
+	assert.Equal(t, "application/json", capturedContentType,
+		"Content-Type must be application/json even when body is a raw string")
+}

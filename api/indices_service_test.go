@@ -49,6 +49,49 @@ func TestUnitIndicesServiceCreate(t *testing.T) {
 	})
 }
 
+// TestUnitIndicesServiceCreate_ContentType verifies that Create sends
+// Content-Type: application/json regardless of whether the body is a struct,
+// a raw JSON string, or a []byte – resty defaults to text/plain for string/[]byte
+// bodies unless the client has a global Content-Type header set.
+func TestUnitIndicesServiceCreate_ContentType(t *testing.T) {
+	respJSON := `{"acknowledged":true,"shards_acknowledged":true,"index":"test"}`
+
+	var capturedContentType string
+	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		capturedContentType = r.Header.Get("Content-Type")
+		w.WriteHeader(200)
+		_, _ = fmt.Fprint(w, respJSON)
+	}))
+	defer srv.Close()
+
+	svc := NewIndicesService(restyClient(srv), testLogger())
+	ctx := context.Background()
+
+	t.Run("struct body sends application/json", func(t *testing.T) {
+		capturedContentType = ""
+		body := map[string]any{"settings": map[string]any{"number_of_shards": 1}}
+		_, err := svc.Create(ctx, "myindex", body)
+		require.NoError(t, err)
+		assert.Equal(t, "application/json", capturedContentType)
+	})
+
+	t.Run("raw string body sends application/json", func(t *testing.T) {
+		capturedContentType = ""
+		_, err := svc.Create(ctx, "myindex", `{"settings":{"number_of_shards":1}}`)
+		require.NoError(t, err)
+		assert.Equal(t, "application/json", capturedContentType,
+			"Content-Type must be application/json even when body is a raw string")
+	})
+
+	t.Run("byte slice body sends application/json", func(t *testing.T) {
+		capturedContentType = ""
+		_, err := svc.Create(ctx, "myindex", []byte(`{"settings":{"number_of_shards":1}}`))
+		require.NoError(t, err)
+		assert.Equal(t, "application/json", capturedContentType,
+			"Content-Type must be application/json even when body is a []byte")
+	})
+}
+
 func TestUnitIndicesServiceDelete(t *testing.T) {
 	respJSON := `{"acknowledged":true}`
 

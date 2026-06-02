@@ -19,6 +19,7 @@ func testLogger() *logrus.Entry {
 func restyClient(ts *httptest.Server) *resty.Client {
 	c := resty.New()
 	c.SetBaseURL(ts.URL)
+	c.SetHeader("Content-Type", "application/json")
 	return c
 }
 

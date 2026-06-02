@@ -122,6 +122,10 @@ type DefaultClient struct {
 func New(cfg *Config, logger *logrus.Entry) (Client, error) {
 	c := resty.New()
 
+	// Always send application/json so that string/[]byte bodies are not sent
+	// with the resty default of "text/plain; charset=utf-8".
+	c.SetHeader("Content-Type", "application/json")
+
 	if cfg.URL != "" {
 		c.SetBaseURL(cfg.URL)
 	}
