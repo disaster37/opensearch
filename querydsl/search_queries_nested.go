@@ -28,8 +28,38 @@ type NestedQuery struct {
 }
 
 // NewNestedQuery creates a NestedQuery for the given path and inner query.
-func NewNestedQuery(path string, query Query) NestedQuery {
-	return NestedQuery{Path: path, Query: query}
+func NewNestedQuery(path string, query Query) *NestedQuery {
+	return &NestedQuery{Path: path, Query: query}
+}
+
+// WithScoreMode sets how scores from matching nested documents are combined.
+func (q *NestedQuery) WithScoreMode(scoreMode string) *NestedQuery {
+	q.ScoreMode = scoreMode
+	return q
+}
+
+// WithBoost sets the boost factor for the query.
+func (q *NestedQuery) WithBoost(boost float64) *NestedQuery {
+	q.Boost = &boost
+	return q
+}
+
+// WithQueryName sets the optional query name for identification in responses.
+func (q *NestedQuery) WithQueryName(queryName string) *NestedQuery {
+	q.QueryName = queryName
+	return q
+}
+
+// WithInnerHit sets the inner_hits configuration to return matched nested objects.
+func (q *NestedQuery) WithInnerHit(innerHit *InnerHit) *NestedQuery {
+	q.InnerHit = innerHit
+	return q
+}
+
+// WithIgnoreUnmapped sets whether documents without the nested mapping are skipped instead of failing.
+func (q *NestedQuery) WithIgnoreUnmapped(ignoreUnmapped bool) *NestedQuery {
+	q.IgnoreUnmapped = &ignoreUnmapped
+	return q
 }
 
 func (q NestedQuery) Source() (any, error) {

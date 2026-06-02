@@ -29,8 +29,50 @@ type HasChildQuery struct {
 }
 
 // NewHasChildQuery creates a HasChildQuery for the given child type and inner query.
-func NewHasChildQuery(childType string, query Query) HasChildQuery {
-	return HasChildQuery{Type: childType, Query: query}
+func NewHasChildQuery(childType string, query Query) *HasChildQuery {
+	return &HasChildQuery{Type: childType, Query: query}
+}
+
+// WithBoost sets the boost factor for the query.
+func (q *HasChildQuery) WithBoost(boost float64) *HasChildQuery {
+	q.Boost = &boost
+	return q
+}
+
+// WithScoreMode sets how child scores are aggregated into the parent score.
+func (q *HasChildQuery) WithScoreMode(scoreMode string) *HasChildQuery {
+	q.ScoreMode = scoreMode
+	return q
+}
+
+// WithMinChildren sets the minimum number of matching child documents required.
+func (q *HasChildQuery) WithMinChildren(minChildren int) *HasChildQuery {
+	q.MinChildren = &minChildren
+	return q
+}
+
+// WithMaxChildren sets the maximum number of matching child documents allowed.
+func (q *HasChildQuery) WithMaxChildren(maxChildren int) *HasChildQuery {
+	q.MaxChildren = &maxChildren
+	return q
+}
+
+// WithShortCircuitCutoff sets the short_circuit_cutoff value for the query.
+func (q *HasChildQuery) WithShortCircuitCutoff(cutoff int) *HasChildQuery {
+	q.ShortCircuitCutoff = &cutoff
+	return q
+}
+
+// WithQueryName sets the optional query name for identification in responses.
+func (q *HasChildQuery) WithQueryName(queryName string) *HasChildQuery {
+	q.QueryName = queryName
+	return q
+}
+
+// WithInnerHit sets the inner_hits configuration to return matched child documents.
+func (q *HasChildQuery) WithInnerHit(innerHit *InnerHit) *HasChildQuery {
+	q.InnerHit = innerHit
+	return q
 }
 
 func (q HasChildQuery) Source() (any, error) {

@@ -10,8 +10,32 @@ type GeoDistanceQuery struct {
 	QueryName    string
 }
 
-func NewGeoDistanceQuery(field string) GeoDistanceQuery {
-	return GeoDistanceQuery{Field: field}
+func NewGeoDistanceQuery(field string) *GeoDistanceQuery {
+	return &GeoDistanceQuery{Field: field}
+}
+
+// WithGeoHash sets the geohash for the center point instead of lat/lon.
+func (q *GeoDistanceQuery) WithGeoHash(geoHash string) *GeoDistanceQuery {
+	q.GeoHash = geoHash
+	return q
+}
+
+// WithDistance sets the distance radius for the query (e.g., "12km").
+func (q *GeoDistanceQuery) WithDistance(distance string) *GeoDistanceQuery {
+	q.Distance = distance
+	return q
+}
+
+// WithDistanceType sets the distance calculation type (arc or plane).
+func (q *GeoDistanceQuery) WithDistanceType(distanceType string) *GeoDistanceQuery {
+	q.DistanceType = distanceType
+	return q
+}
+
+// WithQueryName sets the query name used for matched_filters per hit.
+func (q *GeoDistanceQuery) WithQueryName(name string) *GeoDistanceQuery {
+	q.QueryName = name
+	return q
 }
 
 func (q GeoDistanceQuery) Point(lat, lon float64) GeoDistanceQuery {

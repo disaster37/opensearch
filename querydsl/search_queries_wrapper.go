@@ -4,8 +4,8 @@ type WrapperQuery struct {
 	Query string `json:"query"`
 }
 
-func NewWrapperQuery(source string) WrapperQuery {
-	return WrapperQuery{Query: source}
+func NewWrapperQuery(source string) *WrapperQuery {
+	return &WrapperQuery{Query: source}
 }
 
 func (q WrapperQuery) Source() (any, error) {

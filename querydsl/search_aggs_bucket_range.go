@@ -32,64 +32,109 @@ type RangeAggregationEntry struct {
 }
 
 // NewRangeAggregation returns a zero-value RangeAggregation.
-func NewRangeAggregation() RangeAggregation { return RangeAggregation{} }
+func NewRangeAggregation() *RangeAggregation { return &RangeAggregation{} }
 
-func (a RangeAggregation) AddRange(from, to any) RangeAggregation {
+// WithField sets the field to aggregate on.
+func (a *RangeAggregation) WithField(field string) *RangeAggregation {
+	a.FieldVal = field
+	return a
+}
+
+// WithScript sets the script used to compute values.
+func (a *RangeAggregation) WithScript(script *Script) *RangeAggregation {
+	a.Script = script
+	return a
+}
+
+// WithMissing sets the value to use for documents missing the field.
+func (a *RangeAggregation) WithMissing(missing any) *RangeAggregation {
+	a.Missing = missing
+	return a
+}
+
+// WithKeyed sets whether buckets are returned as a keyed object.
+func (a *RangeAggregation) WithKeyed(keyed bool) *RangeAggregation {
+	a.Keyed = &keyed
+	return a
+}
+
+// WithUnmapped sets whether unmapped fields are treated as missing.
+func (a *RangeAggregation) WithUnmapped(unmapped bool) *RangeAggregation {
+	a.Unmapped = &unmapped
+	return a
+}
+
+// WithSubAggregation adds a sub-aggregation.
+func (a *RangeAggregation) WithSubAggregation(name string, sub Aggregation) *RangeAggregation {
+	if a.SubAggs == nil {
+		a.SubAggs = map[string]Aggregation{}
+	}
+	a.SubAggs[name] = sub
+	return a
+}
+
+// WithMeta sets the meta data for the aggregation.
+func (a *RangeAggregation) WithMeta(meta map[string]any) *RangeAggregation {
+	a.Meta = meta
+	return a
+}
+
+func (a *RangeAggregation) AddRange(from, to any) *RangeAggregation {
 	a.Ranges = append(a.Ranges, RangeAggregationEntry{From: from, To: to})
 	return a
 }
 
-func (a RangeAggregation) AddRangeWithKey(key string, from, to any) RangeAggregation {
+func (a *RangeAggregation) AddRangeWithKey(key string, from, to any) *RangeAggregation {
 	a.Ranges = append(a.Ranges, RangeAggregationEntry{Key: key, From: from, To: to})
 	return a
 }
 
-func (a RangeAggregation) AddUnboundedTo(from any) RangeAggregation {
+func (a *RangeAggregation) AddUnboundedTo(from any) *RangeAggregation {
 	a.Ranges = append(a.Ranges, RangeAggregationEntry{From: from})
 	return a
 }
 
-func (a RangeAggregation) AddUnboundedToWithKey(key string, from any) RangeAggregation {
+func (a *RangeAggregation) AddUnboundedToWithKey(key string, from any) *RangeAggregation {
 	a.Ranges = append(a.Ranges, RangeAggregationEntry{Key: key, From: from})
 	return a
 }
 
-func (a RangeAggregation) AddUnboundedFrom(to any) RangeAggregation {
+func (a *RangeAggregation) AddUnboundedFrom(to any) *RangeAggregation {
 	a.Ranges = append(a.Ranges, RangeAggregationEntry{To: to})
 	return a
 }
 
-func (a RangeAggregation) AddUnboundedFromWithKey(key string, to any) RangeAggregation {
+func (a *RangeAggregation) AddUnboundedFromWithKey(key string, to any) *RangeAggregation {
 	a.Ranges = append(a.Ranges, RangeAggregationEntry{Key: key, To: to})
 	return a
 }
 
-func (a RangeAggregation) Lt(to any) RangeAggregation {
+func (a *RangeAggregation) Lt(to any) *RangeAggregation {
 	a.Ranges = append(a.Ranges, RangeAggregationEntry{To: to})
 	return a
 }
 
-func (a RangeAggregation) LtWithKey(key string, to any) RangeAggregation {
+func (a *RangeAggregation) LtWithKey(key string, to any) *RangeAggregation {
 	a.Ranges = append(a.Ranges, RangeAggregationEntry{Key: key, To: to})
 	return a
 }
 
-func (a RangeAggregation) Between(from, to any) RangeAggregation {
+func (a *RangeAggregation) Between(from, to any) *RangeAggregation {
 	a.Ranges = append(a.Ranges, RangeAggregationEntry{From: from, To: to})
 	return a
 }
 
-func (a RangeAggregation) BetweenWithKey(key string, from, to any) RangeAggregation {
+func (a *RangeAggregation) BetweenWithKey(key string, from, to any) *RangeAggregation {
 	a.Ranges = append(a.Ranges, RangeAggregationEntry{Key: key, From: from, To: to})
 	return a
 }
 
-func (a RangeAggregation) Gt(from any) RangeAggregation {
+func (a *RangeAggregation) Gt(from any) *RangeAggregation {
 	a.Ranges = append(a.Ranges, RangeAggregationEntry{From: from})
 	return a
 }
 
-func (a RangeAggregation) GtWithKey(key string, from any) RangeAggregation {
+func (a *RangeAggregation) GtWithKey(key string, from any) *RangeAggregation {
 	a.Ranges = append(a.Ranges, RangeAggregationEntry{Key: key, From: from})
 	return a
 }

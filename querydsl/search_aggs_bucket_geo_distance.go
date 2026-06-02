@@ -19,11 +19,42 @@ type GeoDistanceRange struct {
 	To   any    `json:"to,omitempty"`
 }
 
-func NewGeoDistanceAggregation() GeoDistanceAggregation {
-	return GeoDistanceAggregation{}
+func NewGeoDistanceAggregation() *GeoDistanceAggregation {
+	return &GeoDistanceAggregation{}
 }
 
-func (a GeoDistanceAggregation) SubAggregation(name string, subAggregation Aggregation) GeoDistanceAggregation {
+// WithField sets the geo_point field.
+func (a *GeoDistanceAggregation) WithField(field string) *GeoDistanceAggregation {
+	a.Field = field
+	return a
+}
+
+// WithUnit sets the distance unit (e.g. "km", "mi").
+func (a *GeoDistanceAggregation) WithUnit(unit string) *GeoDistanceAggregation {
+	a.Unit = unit
+	return a
+}
+
+// WithDistanceType sets the distance calculation algorithm.
+func (a *GeoDistanceAggregation) WithDistanceType(distanceType string) *GeoDistanceAggregation {
+	a.DistanceType = distanceType
+	return a
+}
+
+// WithOrigin sets the origin point for distance calculation.
+func (a *GeoDistanceAggregation) WithOrigin(origin string) *GeoDistanceAggregation {
+	a.Origin = origin
+	return a
+}
+
+// WithMeta sets the meta data for the aggregation.
+func (a *GeoDistanceAggregation) WithMeta(meta map[string]any) *GeoDistanceAggregation {
+	a.Meta = meta
+	return a
+}
+
+// SubAggregation adds a sub-aggregation.
+func (a *GeoDistanceAggregation) SubAggregation(name string, subAggregation Aggregation) *GeoDistanceAggregation {
 	if a.SubAggs == nil {
 		a.SubAggs = make(map[string]Aggregation)
 	}
@@ -31,42 +62,42 @@ func (a GeoDistanceAggregation) SubAggregation(name string, subAggregation Aggre
 	return a
 }
 
-func (a GeoDistanceAggregation) AddRange(from, to any) GeoDistanceAggregation {
+func (a *GeoDistanceAggregation) AddRange(from, to any) *GeoDistanceAggregation {
 	a.Ranges = append(a.Ranges, GeoDistanceRange{From: from, To: to})
 	return a
 }
 
-func (a GeoDistanceAggregation) AddRangeWithKey(key string, from, to any) GeoDistanceAggregation {
+func (a *GeoDistanceAggregation) AddRangeWithKey(key string, from, to any) *GeoDistanceAggregation {
 	a.Ranges = append(a.Ranges, GeoDistanceRange{Key: key, From: from, To: to})
 	return a
 }
 
-func (a GeoDistanceAggregation) AddUnboundedTo(from float64) GeoDistanceAggregation {
+func (a *GeoDistanceAggregation) AddUnboundedTo(from float64) *GeoDistanceAggregation {
 	a.Ranges = append(a.Ranges, GeoDistanceRange{From: from, To: nil})
 	return a
 }
 
-func (a GeoDistanceAggregation) AddUnboundedToWithKey(key string, from float64) GeoDistanceAggregation {
+func (a *GeoDistanceAggregation) AddUnboundedToWithKey(key string, from float64) *GeoDistanceAggregation {
 	a.Ranges = append(a.Ranges, GeoDistanceRange{Key: key, From: from, To: nil})
 	return a
 }
 
-func (a GeoDistanceAggregation) AddUnboundedFrom(to float64) GeoDistanceAggregation {
+func (a *GeoDistanceAggregation) AddUnboundedFrom(to float64) *GeoDistanceAggregation {
 	a.Ranges = append(a.Ranges, GeoDistanceRange{From: nil, To: to})
 	return a
 }
 
-func (a GeoDistanceAggregation) AddUnboundedFromWithKey(key string, to float64) GeoDistanceAggregation {
+func (a *GeoDistanceAggregation) AddUnboundedFromWithKey(key string, to float64) *GeoDistanceAggregation {
 	a.Ranges = append(a.Ranges, GeoDistanceRange{Key: key, From: nil, To: to})
 	return a
 }
 
-func (a GeoDistanceAggregation) Between(from, to any) GeoDistanceAggregation {
+func (a *GeoDistanceAggregation) Between(from, to any) *GeoDistanceAggregation {
 	a.Ranges = append(a.Ranges, GeoDistanceRange{From: from, To: to})
 	return a
 }
 
-func (a GeoDistanceAggregation) BetweenWithKey(key string, from, to any) GeoDistanceAggregation {
+func (a *GeoDistanceAggregation) BetweenWithKey(key string, from, to any) *GeoDistanceAggregation {
 	a.Ranges = append(a.Ranges, GeoDistanceRange{Key: key, From: from, To: to})
 	return a
 }

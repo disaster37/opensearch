@@ -15,11 +15,30 @@ type SignificantTextAggregation struct {
 	Heuristic             SignificanceHeuristic           `json:"-"`
 }
 
-func NewSignificantTextAggregation() SignificantTextAggregation {
-	return SignificantTextAggregation{}
+func NewSignificantTextAggregation() *SignificantTextAggregation {
+	return &SignificantTextAggregation{}
 }
 
-func (a SignificantTextAggregation) SubAggregation(name string, subAggregation Aggregation) SignificantTextAggregation {
+// WithField sets the text field to run significant text on.
+func (a *SignificantTextAggregation) WithField(field string) *SignificantTextAggregation {
+	a.FieldVal = field
+	return a
+}
+
+// WithSourceFieldNames sets the source field names to use for text analysis.
+func (a *SignificantTextAggregation) WithSourceFieldNames(names ...string) *SignificantTextAggregation {
+	a.SourceFieldNames = names
+	return a
+}
+
+// WithFilterDuplicateText sets whether to filter duplicate text.
+func (a *SignificantTextAggregation) WithFilterDuplicateText(v bool) *SignificantTextAggregation {
+	a.FilterDuplicateText = &v
+	return a
+}
+
+// SubAggregation adds a sub-aggregation.
+func (a *SignificantTextAggregation) SubAggregation(name string, subAggregation Aggregation) *SignificantTextAggregation {
 	if a.SubAggs == nil {
 		a.SubAggs = make(map[string]Aggregation)
 	}
@@ -27,22 +46,26 @@ func (a SignificantTextAggregation) SubAggregation(name string, subAggregation A
 	return a
 }
 
-func (a SignificantTextAggregation) WithMeta(metaData map[string]any) SignificantTextAggregation {
+// WithMeta sets meta data for the aggregation.
+func (a *SignificantTextAggregation) WithMeta(metaData map[string]any) *SignificantTextAggregation {
 	a.Meta = metaData
 	return a
 }
 
-func (a SignificantTextAggregation) BackgroundFilter(filter Query) SignificantTextAggregation {
+// BackgroundFilter sets a background filter query.
+func (a *SignificantTextAggregation) BackgroundFilter(filter Query) *SignificantTextAggregation {
 	a.Filter = filter
 	return a
 }
 
-func (a SignificantTextAggregation) SignificanceHeuristic(heuristic SignificanceHeuristic) SignificantTextAggregation {
+// SignificanceHeuristic sets the significance heuristic.
+func (a *SignificantTextAggregation) SignificanceHeuristic(heuristic SignificanceHeuristic) *SignificantTextAggregation {
 	a.Heuristic = heuristic
 	return a
 }
 
-func (a SignificantTextAggregation) MinDocCount(minDocCount int64) SignificantTextAggregation {
+// MinDocCount sets the minimum document count threshold.
+func (a *SignificantTextAggregation) MinDocCount(minDocCount int64) *SignificantTextAggregation {
 	if a.BucketCountThresholds == nil {
 		a.BucketCountThresholds = &BucketCountThresholds{}
 	}
@@ -50,7 +73,8 @@ func (a SignificantTextAggregation) MinDocCount(minDocCount int64) SignificantTe
 	return a
 }
 
-func (a SignificantTextAggregation) ShardMinDocCount(shardMinDocCount int64) SignificantTextAggregation {
+// ShardMinDocCount sets the shard-level minimum document count threshold.
+func (a *SignificantTextAggregation) ShardMinDocCount(shardMinDocCount int64) *SignificantTextAggregation {
 	if a.BucketCountThresholds == nil {
 		a.BucketCountThresholds = &BucketCountThresholds{}
 	}
@@ -58,7 +82,8 @@ func (a SignificantTextAggregation) ShardMinDocCount(shardMinDocCount int64) Sig
 	return a
 }
 
-func (a SignificantTextAggregation) WithSize(size int) SignificantTextAggregation {
+// WithSize sets the number of significant text terms to return.
+func (a *SignificantTextAggregation) WithSize(size int) *SignificantTextAggregation {
 	if a.BucketCountThresholds == nil {
 		a.BucketCountThresholds = &BucketCountThresholds{}
 	}
@@ -66,7 +91,8 @@ func (a SignificantTextAggregation) WithSize(size int) SignificantTextAggregatio
 	return a
 }
 
-func (a SignificantTextAggregation) WithShardSize(shardSize int) SignificantTextAggregation {
+// WithShardSize sets the number of significant text terms to fetch per shard.
+func (a *SignificantTextAggregation) WithShardSize(shardSize int) *SignificantTextAggregation {
 	if a.BucketCountThresholds == nil {
 		a.BucketCountThresholds = &BucketCountThresholds{}
 	}
@@ -74,7 +100,8 @@ func (a SignificantTextAggregation) WithShardSize(shardSize int) SignificantText
 	return a
 }
 
-func (a SignificantTextAggregation) Include(regexp string) SignificantTextAggregation {
+// Include sets a regexp pattern for included term values.
+func (a *SignificantTextAggregation) Include(regexp string) *SignificantTextAggregation {
 	if a.IncludeExclude == nil {
 		a.IncludeExclude = &TermsAggregationIncludeExclude{}
 	}
@@ -82,7 +109,8 @@ func (a SignificantTextAggregation) Include(regexp string) SignificantTextAggreg
 	return a
 }
 
-func (a SignificantTextAggregation) IncludeValues(values ...any) SignificantTextAggregation {
+// IncludeValues sets an explicit list of values to include.
+func (a *SignificantTextAggregation) IncludeValues(values ...any) *SignificantTextAggregation {
 	if a.IncludeExclude == nil {
 		a.IncludeExclude = &TermsAggregationIncludeExclude{}
 	}
@@ -90,7 +118,8 @@ func (a SignificantTextAggregation) IncludeValues(values ...any) SignificantText
 	return a
 }
 
-func (a SignificantTextAggregation) Exclude(regexp string) SignificantTextAggregation {
+// Exclude sets a regexp pattern for excluded term values.
+func (a *SignificantTextAggregation) Exclude(regexp string) *SignificantTextAggregation {
 	if a.IncludeExclude == nil {
 		a.IncludeExclude = &TermsAggregationIncludeExclude{}
 	}
@@ -98,7 +127,8 @@ func (a SignificantTextAggregation) Exclude(regexp string) SignificantTextAggreg
 	return a
 }
 
-func (a SignificantTextAggregation) ExcludeValues(values ...any) SignificantTextAggregation {
+// ExcludeValues sets an explicit list of values to exclude.
+func (a *SignificantTextAggregation) ExcludeValues(values ...any) *SignificantTextAggregation {
 	if a.IncludeExclude == nil {
 		a.IncludeExclude = &TermsAggregationIncludeExclude{}
 	}
@@ -106,7 +136,8 @@ func (a SignificantTextAggregation) ExcludeValues(values ...any) SignificantText
 	return a
 }
 
-func (a SignificantTextAggregation) Partition(p int) SignificantTextAggregation {
+// Partition sets the partition number for partitioned term filtering.
+func (a *SignificantTextAggregation) Partition(p int) *SignificantTextAggregation {
 	if a.IncludeExclude == nil {
 		a.IncludeExclude = &TermsAggregationIncludeExclude{}
 	}
@@ -114,7 +145,8 @@ func (a SignificantTextAggregation) Partition(p int) SignificantTextAggregation 
 	return a
 }
 
-func (a SignificantTextAggregation) NumPartitions(n int) SignificantTextAggregation {
+// NumPartitions sets the total number of partitions for partitioned term filtering.
+func (a *SignificantTextAggregation) NumPartitions(n int) *SignificantTextAggregation {
 	if a.IncludeExclude == nil {
 		a.IncludeExclude = &TermsAggregationIncludeExclude{}
 	}
@@ -122,7 +154,8 @@ func (a SignificantTextAggregation) NumPartitions(n int) SignificantTextAggregat
 	return a
 }
 
-func (a SignificantTextAggregation) SetIncludeExclude(includeExclude *TermsAggregationIncludeExclude) SignificantTextAggregation {
+// SetIncludeExclude sets the include/exclude filter directly.
+func (a *SignificantTextAggregation) SetIncludeExclude(includeExclude *TermsAggregationIncludeExclude) *SignificantTextAggregation {
 	a.IncludeExclude = includeExclude
 	return a
 }

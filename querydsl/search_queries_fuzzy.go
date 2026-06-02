@@ -33,8 +33,50 @@ type FuzzyQuery struct {
 }
 
 // NewFuzzyQuery creates a FuzzyQuery for the given field and search value.
-func NewFuzzyQuery(field string, value any) FuzzyQuery {
-	return FuzzyQuery{Field: field, fuzzyInner: fuzzyInner{Value: value}}
+func NewFuzzyQuery(field string, value any) *FuzzyQuery {
+	return &FuzzyQuery{Field: field, fuzzyInner: fuzzyInner{Value: value}}
+}
+
+// WithBoost sets the boost factor for this query.
+func (q *FuzzyQuery) WithBoost(boost float64) *FuzzyQuery {
+	q.Boost = &boost
+	return q
+}
+
+// WithFuzziness sets the maximum edit distance for fuzzy matching (e.g., "AUTO", "1", "2").
+func (q *FuzzyQuery) WithFuzziness(fuzziness any) *FuzzyQuery {
+	q.Fuzziness = fuzziness
+	return q
+}
+
+// WithPrefixLength sets the number of leading characters that must match exactly.
+func (q *FuzzyQuery) WithPrefixLength(prefixLength int) *FuzzyQuery {
+	q.PrefixLength = &prefixLength
+	return q
+}
+
+// WithMaxExpansions sets the maximum number of term variants to expand to.
+func (q *FuzzyQuery) WithMaxExpansions(maxExpansions int) *FuzzyQuery {
+	q.MaxExpansions = &maxExpansions
+	return q
+}
+
+// WithTranspositions sets whether transpositions count as a single edit.
+func (q *FuzzyQuery) WithTranspositions(transpositions bool) *FuzzyQuery {
+	q.Transpositions = &transpositions
+	return q
+}
+
+// WithRewrite sets the rewrite method used to score fuzzy matching terms.
+func (q *FuzzyQuery) WithRewrite(rewrite string) *FuzzyQuery {
+	q.Rewrite = rewrite
+	return q
+}
+
+// WithQueryName sets the query name for identification in search responses.
+func (q *FuzzyQuery) WithQueryName(queryName string) *FuzzyQuery {
+	q.QueryName = queryName
+	return q
 }
 
 func (q FuzzyQuery) Source() (any, error) {

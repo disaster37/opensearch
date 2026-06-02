@@ -6,8 +6,14 @@ type GeoPolygonQuery struct {
 	QueryName string
 }
 
-func NewGeoPolygonQuery(field string) GeoPolygonQuery {
-	return GeoPolygonQuery{Field: field}
+func NewGeoPolygonQuery(field string) *GeoPolygonQuery {
+	return &GeoPolygonQuery{Field: field}
+}
+
+// WithQueryName sets the query name used for matched_filters per hit.
+func (q *GeoPolygonQuery) WithQueryName(name string) *GeoPolygonQuery {
+	q.QueryName = name
+	return q
 }
 
 func (q GeoPolygonQuery) AddPoint(lat, lon float64) GeoPolygonQuery {

@@ -22,8 +22,14 @@ type ConstantScoreQuery struct {
 }
 
 // NewConstantScoreQuery creates a new ConstantScoreQuery with the given filter.
-func NewConstantScoreQuery(filter Query) ConstantScoreQuery {
-	return ConstantScoreQuery{Filter: filter}
+func NewConstantScoreQuery(filter Query) *ConstantScoreQuery {
+	return &ConstantScoreQuery{Filter: filter}
+}
+
+// WithBoost sets the boost factor applied to all matching documents.
+func (q *ConstantScoreQuery) WithBoost(boost float64) *ConstantScoreQuery {
+	q.Boost = &boost
+	return q
 }
 
 func (q ConstantScoreQuery) Source() (any, error) {

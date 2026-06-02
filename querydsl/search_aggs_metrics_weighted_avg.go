@@ -1,5 +1,6 @@
 package querydsl
 
+// MultiValuesSourceFieldConfig configures a field source for weighted average aggregation.
 type MultiValuesSourceFieldConfig struct {
 	FieldName string
 	Missing   any
@@ -24,6 +25,9 @@ func (f MultiValuesSourceFieldConfig) Source() (any, error) {
 	return m, nil
 }
 
+// WeightedAvgAggregation computes a weighted average of numeric values extracted
+// from the aggregated documents. The value and weight sources can each be a field
+// or a script.
 type WeightedAvgAggregation struct {
 	Fields    map[string]*MultiValuesSourceFieldConfig
 	ValueType string
@@ -34,8 +38,51 @@ type WeightedAvgAggregation struct {
 	Meta      map[string]any
 }
 
-func NewWeightedAvgAggregation() WeightedAvgAggregation {
-	return WeightedAvgAggregation{Fields: map[string]*MultiValuesSourceFieldConfig{}}
+// NewWeightedAvgAggregation returns a new WeightedAvgAggregation with default settings.
+func NewWeightedAvgAggregation() *WeightedAvgAggregation {
+	return &WeightedAvgAggregation{Fields: map[string]*MultiValuesSourceFieldConfig{}}
+}
+
+// WithFields sets the fields map for the aggregation.
+func (a *WeightedAvgAggregation) WithFields(fields map[string]*MultiValuesSourceFieldConfig) *WeightedAvgAggregation {
+	a.Fields = fields
+	return a
+}
+
+// WithValueType sets the value type hint for the aggregation.
+func (a *WeightedAvgAggregation) WithValueType(valueType string) *WeightedAvgAggregation {
+	a.ValueType = valueType
+	return a
+}
+
+// WithFormat sets the numeric format for the output value.
+func (a *WeightedAvgAggregation) WithFormat(format string) *WeightedAvgAggregation {
+	a.Format = format
+	return a
+}
+
+// WithValue sets the value source configuration.
+func (a *WeightedAvgAggregation) WithValue(value *MultiValuesSourceFieldConfig) *WeightedAvgAggregation {
+	a.Value = value
+	return a
+}
+
+// WithWeight sets the weight source configuration.
+func (a *WeightedAvgAggregation) WithWeight(weight *MultiValuesSourceFieldConfig) *WeightedAvgAggregation {
+	a.Weight = weight
+	return a
+}
+
+// WithSubAggs sets the sub-aggregations.
+func (a *WeightedAvgAggregation) WithSubAggs(subAggs map[string]Aggregation) *WeightedAvgAggregation {
+	a.SubAggs = subAggs
+	return a
+}
+
+// WithMeta sets the meta data for the aggregation.
+func (a *WeightedAvgAggregation) WithMeta(meta map[string]any) *WeightedAvgAggregation {
+	a.Meta = meta
+	return a
 }
 
 func (a WeightedAvgAggregation) Source() (any, error) {

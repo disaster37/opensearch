@@ -113,6 +113,41 @@ func (fn *ExponentialDecayFunction) Source() (any, error) {
 	return source, nil
 }
 
+// WithFieldName sets the name of the field this decay function applies to.
+func (fn *ExponentialDecayFunction) WithFieldName(fieldName string) *ExponentialDecayFunction {
+	return fn.FieldName(fieldName)
+}
+
+// WithOrigin sets the central point from which distance is calculated.
+func (fn *ExponentialDecayFunction) WithOrigin(origin any) *ExponentialDecayFunction {
+	return fn.Origin(origin)
+}
+
+// WithScale sets the scale used with the decay parameter.
+func (fn *ExponentialDecayFunction) WithScale(scale any) *ExponentialDecayFunction {
+	return fn.Scale(scale)
+}
+
+// WithDecay sets how documents are scored at the distance given a Scale.
+func (fn *ExponentialDecayFunction) WithDecay(decay float64) *ExponentialDecayFunction {
+	return fn.Decay(decay)
+}
+
+// WithOffset sets the offset beyond which the decay function is computed.
+func (fn *ExponentialDecayFunction) WithOffset(offset any) *ExponentialDecayFunction {
+	return fn.Offset(offset)
+}
+
+// WithMultiValueMode sets how the decay function is calculated on multi-valued fields.
+func (fn *ExponentialDecayFunction) WithMultiValueMode(mode string) *ExponentialDecayFunction {
+	return fn.MultiValueMode(mode)
+}
+
+// WithWeight sets the weight adjustment for this score function.
+func (fn *ExponentialDecayFunction) WithWeight(weight float64) *ExponentialDecayFunction {
+	return fn.Weight(weight)
+}
+
 // -- Gauss Decay --
 
 // GaussDecayFunction builds a gauss decay score function.
@@ -214,6 +249,41 @@ func (fn *GaussDecayFunction) Source() (any, error) {
 	}
 	// Notice that the weight has to be serialized in FunctionScoreQuery.
 	return source, nil
+}
+
+// WithFieldName sets the name of the field this decay function applies to.
+func (fn *GaussDecayFunction) WithFieldName(fieldName string) *GaussDecayFunction {
+	return fn.FieldName(fieldName)
+}
+
+// WithOrigin sets the central point from which distance is calculated.
+func (fn *GaussDecayFunction) WithOrigin(origin any) *GaussDecayFunction {
+	return fn.Origin(origin)
+}
+
+// WithScale sets the scale used with the decay parameter.
+func (fn *GaussDecayFunction) WithScale(scale any) *GaussDecayFunction {
+	return fn.Scale(scale)
+}
+
+// WithDecay sets how documents are scored at the distance given a Scale.
+func (fn *GaussDecayFunction) WithDecay(decay float64) *GaussDecayFunction {
+	return fn.Decay(decay)
+}
+
+// WithOffset sets the offset beyond which the decay function is computed.
+func (fn *GaussDecayFunction) WithOffset(offset any) *GaussDecayFunction {
+	return fn.Offset(offset)
+}
+
+// WithMultiValueMode sets how the decay function is calculated on multi-valued fields.
+func (fn *GaussDecayFunction) WithMultiValueMode(mode string) *GaussDecayFunction {
+	return fn.MultiValueMode(mode)
+}
+
+// WithWeight sets the weight adjustment for this score function.
+func (fn *GaussDecayFunction) WithWeight(weight float64) *GaussDecayFunction {
+	return fn.Weight(weight)
 }
 
 // -- Linear Decay --
@@ -326,6 +396,41 @@ func (fn *LinearDecayFunction) Source() (any, error) {
 	return source, nil
 }
 
+// WithFieldName sets the name of the field this decay function applies to.
+func (fn *LinearDecayFunction) WithFieldName(fieldName string) *LinearDecayFunction {
+	return fn.FieldName(fieldName)
+}
+
+// WithOrigin sets the central point from which distance is calculated.
+func (fn *LinearDecayFunction) WithOrigin(origin any) *LinearDecayFunction {
+	return fn.Origin(origin)
+}
+
+// WithScale sets the scale used with the decay parameter.
+func (fn *LinearDecayFunction) WithScale(scale any) *LinearDecayFunction {
+	return fn.Scale(scale)
+}
+
+// WithDecay sets how documents are scored at the distance given a Scale.
+func (fn *LinearDecayFunction) WithDecay(decay float64) *LinearDecayFunction {
+	return fn.Decay(decay)
+}
+
+// WithOffset sets the offset beyond which the decay function is computed.
+func (fn *LinearDecayFunction) WithOffset(offset any) *LinearDecayFunction {
+	return fn.Offset(offset)
+}
+
+// WithMultiValueMode sets how the decay function is calculated on multi-valued fields.
+func (fn *LinearDecayFunction) WithMultiValueMode(mode string) *LinearDecayFunction {
+	return fn.MultiValueMode(mode)
+}
+
+// WithWeight sets the weight adjustment for this score function.
+func (fn *LinearDecayFunction) WithWeight(weight float64) *LinearDecayFunction {
+	return fn.Weight(weight)
+}
+
 // -- Script --
 
 // ScriptFunction builds a script score function. It uses a script to
@@ -380,6 +485,16 @@ func (fn *ScriptFunction) Source() (any, error) {
 	}
 	// Notice that the weight has to be serialized in FunctionScoreQuery.
 	return source, nil
+}
+
+// WithScript sets the script to be executed for this score function.
+func (fn *ScriptFunction) WithScript(script *Script) *ScriptFunction {
+	return fn.Script(script)
+}
+
+// WithWeight sets the weight adjustment for this score function.
+func (fn *ScriptFunction) WithWeight(weight float64) *ScriptFunction {
+	return fn.Weight(weight)
 }
 
 // -- Field value factor --
@@ -463,6 +578,31 @@ func (fn *FieldValueFactorFunction) Source() (any, error) {
 	}
 	// Notice that the weight has to be serialized in FunctionScoreQuery.
 	return source, nil
+}
+
+// WithField sets the field to be extracted from the document.
+func (fn *FieldValueFactorFunction) WithField(field string) *FieldValueFactorFunction {
+	return fn.Field(field)
+}
+
+// WithFactor sets the factor to multiply the field value with.
+func (fn *FieldValueFactorFunction) WithFactor(factor float64) *FieldValueFactorFunction {
+	return fn.Factor(factor)
+}
+
+// WithModifier sets the modifier to apply to the field value.
+func (fn *FieldValueFactorFunction) WithModifier(modifier string) *FieldValueFactorFunction {
+	return fn.Modifier(modifier)
+}
+
+// WithMissing sets the value to use when a document does not have the field.
+func (fn *FieldValueFactorFunction) WithMissing(missing float64) *FieldValueFactorFunction {
+	return fn.Missing(missing)
+}
+
+// WithWeight sets the weight adjustment for this score function.
+func (fn *FieldValueFactorFunction) WithWeight(weight float64) *FieldValueFactorFunction {
+	return fn.Weight(weight)
 }
 
 // -- Weight Factor --
@@ -571,4 +711,19 @@ func (fn *RandomFunction) Source() (any, error) {
 	}
 	// Notice that the weight has to be serialized in FunctionScoreQuery.
 	return source, nil
+}
+
+// WithField sets the field used for random number generation.
+func (fn *RandomFunction) WithField(field string) *RandomFunction {
+	return fn.Field(field)
+}
+
+// WithSeed sets the seed for random number generation.
+func (fn *RandomFunction) WithSeed(seed any) *RandomFunction {
+	return fn.Seed(seed)
+}
+
+// WithWeight sets the weight adjustment for this score function.
+func (fn *RandomFunction) WithWeight(weight float64) *RandomFunction {
+	return fn.Weight(weight)
 }

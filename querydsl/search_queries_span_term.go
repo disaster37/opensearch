@@ -22,11 +22,29 @@ type SpanTermQuery struct {
 
 // NewSpanTermQuery creates a SpanTermQuery for the given field; value is
 // optional and should be provided as the first variadic argument.
-func NewSpanTermQuery(field string, value ...any) SpanTermQuery {
-	q := SpanTermQuery{Field: field}
+func NewSpanTermQuery(field string, value ...any) *SpanTermQuery {
+	q := &SpanTermQuery{Field: field}
 	if len(value) > 0 {
 		q.Value = value[0]
 	}
+	return q
+}
+
+// WithValue sets the term value for this span term query.
+func (q *SpanTermQuery) WithValue(value any) *SpanTermQuery {
+	q.Value = value
+	return q
+}
+
+// WithBoost sets the boost factor for this query.
+func (q *SpanTermQuery) WithBoost(boost float64) *SpanTermQuery {
+	q.Boost = &boost
+	return q
+}
+
+// WithQueryName sets the query name used for matched_filters per hit.
+func (q *SpanTermQuery) WithQueryName(name string) *SpanTermQuery {
+	q.QueryName = name
 	return q
 }
 

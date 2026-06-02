@@ -23,8 +23,32 @@ type BoostingQuery struct {
 }
 
 // NewBoostingQuery creates a new empty BoostingQuery.
-func NewBoostingQuery() BoostingQuery {
-	return BoostingQuery{}
+func NewBoostingQuery() *BoostingQuery {
+	return &BoostingQuery{}
+}
+
+// WithPositive sets the positive query.
+func (q *BoostingQuery) WithPositive(positive Query) *BoostingQuery {
+	q.Positive = positive
+	return q
+}
+
+// WithNegative sets the negative query.
+func (q *BoostingQuery) WithNegative(negative Query) *BoostingQuery {
+	q.Negative = negative
+	return q
+}
+
+// WithNegativeBoost sets the negative_boost factor applied to documents matching the negative query.
+func (q *BoostingQuery) WithNegativeBoost(negativeBoost float64) *BoostingQuery {
+	q.NegativeBoost = &negativeBoost
+	return q
+}
+
+// WithBoost sets the boost factor for the query.
+func (q *BoostingQuery) WithBoost(boost float64) *BoostingQuery {
+	q.Boost = &boost
+	return q
 }
 
 func (q BoostingQuery) Source() (any, error) {

@@ -8,8 +8,38 @@ type PercentilesBucketAggregation struct {
 	Meta         map[string]any
 }
 
-func NewPercentilesBucketAggregation() PercentilesBucketAggregation {
-	return PercentilesBucketAggregation{}
+func NewPercentilesBucketAggregation() *PercentilesBucketAggregation {
+	return &PercentilesBucketAggregation{}
+}
+
+// WithFormat sets the format for the percentiles bucket aggregation.
+func (a *PercentilesBucketAggregation) WithFormat(format string) *PercentilesBucketAggregation {
+	a.Format = format
+	return a
+}
+
+// WithGapPolicy sets the gap policy for the percentiles bucket aggregation.
+func (a *PercentilesBucketAggregation) WithGapPolicy(policy string) *PercentilesBucketAggregation {
+	a.GapPolicy = policy
+	return a
+}
+
+// WithPercents sets the percentiles for the percentiles bucket aggregation.
+func (a *PercentilesBucketAggregation) WithPercents(percents ...float64) *PercentilesBucketAggregation {
+	a.Percents = percents
+	return a
+}
+
+// WithBucketsPaths sets the buckets paths for the percentiles bucket aggregation.
+func (a *PercentilesBucketAggregation) WithBucketsPaths(paths ...string) *PercentilesBucketAggregation {
+	a.BucketsPaths = paths
+	return a
+}
+
+// WithMeta sets the meta for the percentiles bucket aggregation.
+func (a *PercentilesBucketAggregation) WithMeta(meta map[string]any) *PercentilesBucketAggregation {
+	a.Meta = meta
+	return a
 }
 
 func (a PercentilesBucketAggregation) Source() (any, error) {

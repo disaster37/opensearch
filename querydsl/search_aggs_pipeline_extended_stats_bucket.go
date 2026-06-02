@@ -8,8 +8,38 @@ type ExtendedStatsBucketAggregation struct {
 	Meta         map[string]any
 }
 
-func NewExtendedStatsBucketAggregation() ExtendedStatsBucketAggregation {
-	return ExtendedStatsBucketAggregation{}
+func NewExtendedStatsBucketAggregation() *ExtendedStatsBucketAggregation {
+	return &ExtendedStatsBucketAggregation{}
+}
+
+// WithFormat sets the format for the extended stats bucket aggregation.
+func (a *ExtendedStatsBucketAggregation) WithFormat(format string) *ExtendedStatsBucketAggregation {
+	a.Format = format
+	return a
+}
+
+// WithGapPolicy sets the gap policy for the extended stats bucket aggregation.
+func (a *ExtendedStatsBucketAggregation) WithGapPolicy(policy string) *ExtendedStatsBucketAggregation {
+	a.GapPolicy = policy
+	return a
+}
+
+// WithSigma sets the sigma value for the extended stats bucket aggregation.
+func (a *ExtendedStatsBucketAggregation) WithSigma(sigma float32) *ExtendedStatsBucketAggregation {
+	a.Sigma = &sigma
+	return a
+}
+
+// WithBucketsPaths sets the buckets paths for the extended stats bucket aggregation.
+func (a *ExtendedStatsBucketAggregation) WithBucketsPaths(paths ...string) *ExtendedStatsBucketAggregation {
+	a.BucketsPaths = paths
+	return a
+}
+
+// WithMeta sets the meta for the extended stats bucket aggregation.
+func (a *ExtendedStatsBucketAggregation) WithMeta(meta map[string]any) *ExtendedStatsBucketAggregation {
+	a.Meta = meta
+	return a
 }
 
 func (a ExtendedStatsBucketAggregation) Source() (any, error) {

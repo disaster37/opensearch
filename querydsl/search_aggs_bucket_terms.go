@@ -29,24 +29,28 @@ type TermsAggregation struct {
 }
 
 // NewTermsAggregation returns a zero-value TermsAggregation.
-func NewTermsAggregation() TermsAggregation { return TermsAggregation{} }
+func NewTermsAggregation() *TermsAggregation { return &TermsAggregation{} }
 
-func (a TermsAggregation) WithField(field string) TermsAggregation {
+// WithField sets the field to aggregate on.
+func (a *TermsAggregation) WithField(field string) *TermsAggregation {
 	a.Field = field
 	return a
 }
 
-func (a TermsAggregation) WithScript(script *Script) TermsAggregation {
+// WithScript sets the script used to compute bucket keys.
+func (a *TermsAggregation) WithScript(script *Script) *TermsAggregation {
 	a.Script = script
 	return a
 }
 
-func (a TermsAggregation) WithMissing(missing any) TermsAggregation {
+// WithMissing sets the value used for documents without the field.
+func (a *TermsAggregation) WithMissing(missing any) *TermsAggregation {
 	a.Missing = missing
 	return a
 }
 
-func (a TermsAggregation) WithSubAggregation(name string, sub Aggregation) TermsAggregation {
+// WithSubAggregation adds a sub-aggregation.
+func (a *TermsAggregation) WithSubAggregation(name string, sub Aggregation) *TermsAggregation {
 	if a.SubAggs == nil {
 		a.SubAggs = map[string]Aggregation{}
 	}
@@ -54,37 +58,44 @@ func (a TermsAggregation) WithSubAggregation(name string, sub Aggregation) Terms
 	return a
 }
 
-func (a TermsAggregation) WithMeta(meta map[string]any) TermsAggregation {
+// WithMeta sets the meta data for the aggregation.
+func (a *TermsAggregation) WithMeta(meta map[string]any) *TermsAggregation {
 	a.Meta = meta
 	return a
 }
 
-func (a TermsAggregation) WithSize(size int) TermsAggregation {
+// WithSize sets the number of term buckets to return.
+func (a *TermsAggregation) WithSize(size int) *TermsAggregation {
 	a.Size = &size
 	return a
 }
 
-func (a TermsAggregation) WithRequiredSize(size int) TermsAggregation {
+// WithRequiredSize sets the required number of term buckets.
+func (a *TermsAggregation) WithRequiredSize(size int) *TermsAggregation {
 	a.RequiredSize = &size
 	return a
 }
 
-func (a TermsAggregation) WithShardSize(size int) TermsAggregation {
+// WithShardSize sets the number of term buckets to fetch per shard.
+func (a *TermsAggregation) WithShardSize(size int) *TermsAggregation {
 	a.ShardSize = &size
 	return a
 }
 
-func (a TermsAggregation) WithMinDocCount(count int) TermsAggregation {
+// WithMinDocCount sets the minimum document count for a bucket to be returned.
+func (a *TermsAggregation) WithMinDocCount(count int) *TermsAggregation {
 	a.MinDocCount = &count
 	return a
 }
 
-func (a TermsAggregation) WithShardMinDocCount(count int) TermsAggregation {
+// WithShardMinDocCount sets the shard-level minimum document count.
+func (a *TermsAggregation) WithShardMinDocCount(count int) *TermsAggregation {
 	a.ShardMinDocCount = &count
 	return a
 }
 
-func (a TermsAggregation) WithInclude(regexp string) TermsAggregation {
+// WithInclude sets a regexp pattern for included term values.
+func (a *TermsAggregation) WithInclude(regexp string) *TermsAggregation {
 	if a.IncludeExclude == nil {
 		a.IncludeExclude = &TermsAggregationIncludeExclude{}
 	}
@@ -92,7 +103,8 @@ func (a TermsAggregation) WithInclude(regexp string) TermsAggregation {
 	return a
 }
 
-func (a TermsAggregation) WithIncludeValues(values ...any) TermsAggregation {
+// WithIncludeValues sets an explicit list of values to include.
+func (a *TermsAggregation) WithIncludeValues(values ...any) *TermsAggregation {
 	if a.IncludeExclude == nil {
 		a.IncludeExclude = &TermsAggregationIncludeExclude{}
 	}
@@ -100,7 +112,8 @@ func (a TermsAggregation) WithIncludeValues(values ...any) TermsAggregation {
 	return a
 }
 
-func (a TermsAggregation) WithExclude(regexp string) TermsAggregation {
+// WithExclude sets a regexp pattern for excluded term values.
+func (a *TermsAggregation) WithExclude(regexp string) *TermsAggregation {
 	if a.IncludeExclude == nil {
 		a.IncludeExclude = &TermsAggregationIncludeExclude{}
 	}
@@ -108,7 +121,8 @@ func (a TermsAggregation) WithExclude(regexp string) TermsAggregation {
 	return a
 }
 
-func (a TermsAggregation) WithExcludeValues(values ...any) TermsAggregation {
+// WithExcludeValues sets an explicit list of values to exclude.
+func (a *TermsAggregation) WithExcludeValues(values ...any) *TermsAggregation {
 	if a.IncludeExclude == nil {
 		a.IncludeExclude = &TermsAggregationIncludeExclude{}
 	}
@@ -116,7 +130,8 @@ func (a TermsAggregation) WithExcludeValues(values ...any) TermsAggregation {
 	return a
 }
 
-func (a TermsAggregation) WithPartition(p int) TermsAggregation {
+// WithPartition sets the partition number for partitioned term filtering.
+func (a *TermsAggregation) WithPartition(p int) *TermsAggregation {
 	if a.IncludeExclude == nil {
 		a.IncludeExclude = &TermsAggregationIncludeExclude{}
 	}
@@ -124,7 +139,8 @@ func (a TermsAggregation) WithPartition(p int) TermsAggregation {
 	return a
 }
 
-func (a TermsAggregation) WithNumPartitions(n int) TermsAggregation {
+// WithNumPartitions sets the total number of partitions for partitioned term filtering.
+func (a *TermsAggregation) WithNumPartitions(n int) *TermsAggregation {
 	if a.IncludeExclude == nil {
 		a.IncludeExclude = &TermsAggregationIncludeExclude{}
 	}
@@ -132,81 +148,98 @@ func (a TermsAggregation) WithNumPartitions(n int) TermsAggregation {
 	return a
 }
 
-func (a TermsAggregation) WithIncludeExclude(ie *TermsAggregationIncludeExclude) TermsAggregation {
+// WithIncludeExclude sets the include/exclude filter directly.
+func (a *TermsAggregation) WithIncludeExclude(ie *TermsAggregationIncludeExclude) *TermsAggregation {
 	a.IncludeExclude = ie
 	return a
 }
 
-func (a TermsAggregation) WithValueType(vt string) TermsAggregation {
+// WithValueType sets the value type hint for the aggregation.
+func (a *TermsAggregation) WithValueType(vt string) *TermsAggregation {
 	a.ValueType = vt
 	return a
 }
 
-func (a TermsAggregation) OrderBy(field string, asc bool) TermsAggregation {
+// OrderBy appends an ordering criterion by field name.
+func (a *TermsAggregation) OrderBy(field string, asc bool) *TermsAggregation {
 	a.Order = append(a.Order, TermsOrder{Field: field, Ascending: asc})
 	return a
 }
 
-func (a TermsAggregation) OrderByCount(asc bool) TermsAggregation {
+// OrderByCount orders buckets by document count.
+func (a *TermsAggregation) OrderByCount(asc bool) *TermsAggregation {
 	a.Order = append(a.Order, TermsOrder{Field: "_count", Ascending: asc})
 	return a
 }
 
-func (a TermsAggregation) OrderByCountAsc() TermsAggregation {
+// OrderByCountAsc orders buckets by document count ascending.
+func (a *TermsAggregation) OrderByCountAsc() *TermsAggregation {
 	return a.OrderByCount(true)
 }
 
-func (a TermsAggregation) OrderByCountDesc() TermsAggregation {
+// OrderByCountDesc orders buckets by document count descending.
+func (a *TermsAggregation) OrderByCountDesc() *TermsAggregation {
 	return a.OrderByCount(false)
 }
 
-func (a TermsAggregation) OrderByTerm(asc bool) TermsAggregation {
+// OrderByTerm orders buckets by term value.
+func (a *TermsAggregation) OrderByTerm(asc bool) *TermsAggregation {
 	a.Order = append(a.Order, TermsOrder{Field: "_term", Ascending: asc})
 	return a
 }
 
-func (a TermsAggregation) OrderByTermAsc() TermsAggregation {
+// OrderByTermAsc orders buckets by term value ascending.
+func (a *TermsAggregation) OrderByTermAsc() *TermsAggregation {
 	return a.OrderByTerm(true)
 }
 
-func (a TermsAggregation) OrderByTermDesc() TermsAggregation {
+// OrderByTermDesc orders buckets by term value descending.
+func (a *TermsAggregation) OrderByTermDesc() *TermsAggregation {
 	return a.OrderByTerm(false)
 }
 
-func (a TermsAggregation) OrderByKey(asc bool) TermsAggregation {
+// OrderByKey orders buckets by key.
+func (a *TermsAggregation) OrderByKey(asc bool) *TermsAggregation {
 	a.Order = append(a.Order, TermsOrder{Field: "_key", Ascending: asc})
 	return a
 }
 
-func (a TermsAggregation) OrderByKeyAsc() TermsAggregation {
+// OrderByKeyAsc orders buckets by key ascending.
+func (a *TermsAggregation) OrderByKeyAsc() *TermsAggregation {
 	return a.OrderByKey(true)
 }
 
-func (a TermsAggregation) OrderByKeyDesc() TermsAggregation {
+// OrderByKeyDesc orders buckets by key descending.
+func (a *TermsAggregation) OrderByKeyDesc() *TermsAggregation {
 	return a.OrderByKey(false)
 }
 
-func (a TermsAggregation) OrderByAggregation(aggName string, asc bool) TermsAggregation {
+// OrderByAggregation orders by a sub-aggregation metric.
+func (a *TermsAggregation) OrderByAggregation(aggName string, asc bool) *TermsAggregation {
 	a.Order = append(a.Order, TermsOrder{Field: aggName, Ascending: asc})
 	return a
 }
 
-func (a TermsAggregation) OrderByAggregationAndMetric(aggName, metric string, asc bool) TermsAggregation {
+// OrderByAggregationAndMetric orders by a sub-aggregation metric path.
+func (a *TermsAggregation) OrderByAggregationAndMetric(aggName, metric string, asc bool) *TermsAggregation {
 	a.Order = append(a.Order, TermsOrder{Field: aggName + "." + metric, Ascending: asc})
 	return a
 }
 
-func (a TermsAggregation) WithExecutionHint(hint string) TermsAggregation {
+// WithExecutionHint sets the execution hint for the aggregation.
+func (a *TermsAggregation) WithExecutionHint(hint string) *TermsAggregation {
 	a.ExecutionHint = hint
 	return a
 }
 
-func (a TermsAggregation) WithCollectionMode(mode string) TermsAggregation {
+// WithCollectionMode sets the collection mode (breadth_first or depth_first).
+func (a *TermsAggregation) WithCollectionMode(mode string) *TermsAggregation {
 	a.CollectionMode = mode
 	return a
 }
 
-func (a TermsAggregation) WithShowTermDocCountError(show bool) TermsAggregation {
+// WithShowTermDocCountError sets whether per-bucket doc count errors are shown.
+func (a *TermsAggregation) WithShowTermDocCountError(show bool) *TermsAggregation {
 	a.ShowTermDocCountError = &show
 	return a
 }

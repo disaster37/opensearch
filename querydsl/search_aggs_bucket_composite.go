@@ -11,26 +11,30 @@ type CompositeAggregation struct {
 	Meta          map[string]any                     `json:"meta,omitempty"`
 }
 
-func NewCompositeAggregation() CompositeAggregation {
-	return CompositeAggregation{}
+func NewCompositeAggregation() *CompositeAggregation {
+	return &CompositeAggregation{}
 }
 
-func (a CompositeAggregation) WithSize(size int) CompositeAggregation {
+// WithSize sets the number of composite buckets to return.
+func (a *CompositeAggregation) WithSize(size int) *CompositeAggregation {
 	a.Size = &size
 	return a
 }
 
-func (a CompositeAggregation) AggregateAfter(after map[string]any) CompositeAggregation {
+// AggregateAfter sets the after key for pagination.
+func (a *CompositeAggregation) AggregateAfter(after map[string]any) *CompositeAggregation {
 	a.After = after
 	return a
 }
 
-func (a CompositeAggregation) Sources(sources ...CompositeAggregationValuesSource) CompositeAggregation {
+// Sources appends values sources to the composite aggregation.
+func (a *CompositeAggregation) Sources(sources ...CompositeAggregationValuesSource) *CompositeAggregation {
 	a.ValuesSources = append(a.ValuesSources, sources...)
 	return a
 }
 
-func (a CompositeAggregation) SubAggregation(name string, subAggregation Aggregation) CompositeAggregation {
+// SubAggregation adds a sub-aggregation.
+func (a *CompositeAggregation) SubAggregation(name string, subAggregation Aggregation) *CompositeAggregation {
 	if a.SubAggs == nil {
 		a.SubAggs = make(map[string]Aggregation)
 	}
@@ -38,7 +42,8 @@ func (a CompositeAggregation) SubAggregation(name string, subAggregation Aggrega
 	return a
 }
 
-func (a CompositeAggregation) WithMeta(metaData map[string]any) CompositeAggregation {
+// WithMeta sets meta data for the aggregation.
+func (a *CompositeAggregation) WithMeta(metaData map[string]any) *CompositeAggregation {
 	a.Meta = metaData
 	return a
 }

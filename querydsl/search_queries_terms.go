@@ -19,19 +19,37 @@ type TermsQuery struct {
 
 // NewTermsQuery creates a TermsQuery for the given field and one or more
 // term values of any type.
-func NewTermsQuery(field string, values ...any) TermsQuery {
-	return TermsQuery{Field: field, Values: values}
+func NewTermsQuery(field string, values ...any) *TermsQuery {
+	return &TermsQuery{Field: field, Values: values}
 }
 
 // NewTermsQueryFromStrings creates a TermsQuery for the given field using
 // string values, converting them to the []any representation required
 // by the JSON DSL.
-func NewTermsQueryFromStrings(field string, values ...string) TermsQuery {
+func NewTermsQueryFromStrings(field string, values ...string) *TermsQuery {
 	vs := make([]any, len(values))
 	for i, v := range values {
 		vs[i] = v
 	}
-	return TermsQuery{Field: field, Values: vs}
+	return &TermsQuery{Field: field, Values: vs}
+}
+
+// WithTermsLookup sets a terms lookup to fetch term values from another document.
+func (q *TermsQuery) WithTermsLookup(lookup *TermsLookup) *TermsQuery {
+	q.TermsLookup = lookup
+	return q
+}
+
+// WithBoost sets the boost factor for this query.
+func (q *TermsQuery) WithBoost(boost float64) *TermsQuery {
+	q.Boost = &boost
+	return q
+}
+
+// WithQueryName sets the query name for identification in search responses.
+func (q *TermsQuery) WithQueryName(queryName string) *TermsQuery {
+	q.QueryName = queryName
+	return q
 }
 
 func (q TermsQuery) Source() (any, error) {

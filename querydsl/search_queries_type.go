@@ -4,8 +4,8 @@ type TypeQuery struct {
 	Value string `json:"value"`
 }
 
-func NewTypeQuery(typ string) TypeQuery {
-	return TypeQuery{Value: typ}
+func NewTypeQuery(typ string) *TypeQuery {
+	return &TypeQuery{Value: typ}
 }
 
 func (q TypeQuery) Source() (any, error) {

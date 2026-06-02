@@ -21,8 +21,26 @@ type TermQuery struct {
 }
 
 // NewTermQuery creates a TermQuery for the given field and exact-match value.
-func NewTermQuery(field string, value any) TermQuery {
-	return TermQuery{Field: field, Value: value}
+func NewTermQuery(field string, value any) *TermQuery {
+	return &TermQuery{Field: field, Value: value}
+}
+
+// WithBoost sets the boost factor for this query.
+func (q *TermQuery) WithBoost(boost float64) *TermQuery {
+	q.Boost = &boost
+	return q
+}
+
+// WithCaseInsensitive sets whether the term match is case-insensitive.
+func (q *TermQuery) WithCaseInsensitive(caseInsensitive bool) *TermQuery {
+	q.CaseInsensitive = &caseInsensitive
+	return q
+}
+
+// WithQueryName sets the query name for identification in search responses.
+func (q *TermQuery) WithQueryName(queryName string) *TermQuery {
+	q.QueryName = queryName
+	return q
 }
 
 func (q TermQuery) Source() (any, error) {

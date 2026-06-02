@@ -26,8 +26,8 @@ type HistogramAggregation struct {
 }
 
 // NewHistogramAggregation returns a zero-value HistogramAggregation.
-func NewHistogramAggregation() HistogramAggregation {
-	return HistogramAggregation{}
+func NewHistogramAggregation() *HistogramAggregation {
+	return &HistogramAggregation{}
 }
 
 func (a *HistogramAggregation) Field_(v string) *HistogramAggregation   { a.Field = v; return a }

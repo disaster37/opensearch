@@ -31,17 +31,34 @@ type DateRangeAggregationEntry struct {
 }
 
 // NewDateRangeAggregation returns a zero-value DateRangeAggregation.
-func NewDateRangeAggregation() DateRangeAggregation { return DateRangeAggregation{} }
+func NewDateRangeAggregation() *DateRangeAggregation { return &DateRangeAggregation{} }
 
-func (a DateRangeAggregation) WithField(v string) DateRangeAggregation   { a.Field = v; return a }
-func (a DateRangeAggregation) WithScript(v *Script) DateRangeAggregation { a.Script = v; return a }
-func (a DateRangeAggregation) WithKeyed(v bool) DateRangeAggregation     { a.Keyed = &v; return a }
-func (a DateRangeAggregation) WithUnmapped(v bool) DateRangeAggregation { a.Unmapped = &v; return a }
+// WithField sets the date field to aggregate on.
+func (a *DateRangeAggregation) WithField(v string) *DateRangeAggregation { a.Field = v; return a }
 
-func (a DateRangeAggregation) WithTimeZone(v string) DateRangeAggregation { a.TimeZone = v; return a }
-func (a DateRangeAggregation) WithFormat(v string) DateRangeAggregation   { a.Format = v; return a }
+// WithScript sets the script used to compute bucket keys.
+func (a *DateRangeAggregation) WithScript(v *Script) *DateRangeAggregation { a.Script = v; return a }
 
-func (a DateRangeAggregation) WithSubAggregation(name string, sub Aggregation) DateRangeAggregation {
+// WithKeyed sets whether buckets are returned as a keyed object.
+func (a *DateRangeAggregation) WithKeyed(v bool) *DateRangeAggregation { a.Keyed = &v; return a }
+
+// WithUnmapped sets whether unmapped fields are treated as missing.
+func (a *DateRangeAggregation) WithUnmapped(v bool) *DateRangeAggregation {
+	a.Unmapped = &v
+	return a
+}
+
+// WithTimeZone sets the time zone for date range computation.
+func (a *DateRangeAggregation) WithTimeZone(v string) *DateRangeAggregation {
+	a.TimeZone = v
+	return a
+}
+
+// WithFormat sets the date format for range keys.
+func (a *DateRangeAggregation) WithFormat(v string) *DateRangeAggregation { a.Format = v; return a }
+
+// WithSubAggregation adds a sub-aggregation.
+func (a *DateRangeAggregation) WithSubAggregation(name string, sub Aggregation) *DateRangeAggregation {
 	if a.SubAggs == nil {
 		a.SubAggs = map[string]Aggregation{}
 	}
@@ -49,64 +66,65 @@ func (a DateRangeAggregation) WithSubAggregation(name string, sub Aggregation) D
 	return a
 }
 
-func (a DateRangeAggregation) WithMeta(v map[string]any) DateRangeAggregation { a.Meta = v; return a }
+// WithMeta sets the meta data for the aggregation.
+func (a *DateRangeAggregation) WithMeta(v map[string]any) *DateRangeAggregation { a.Meta = v; return a }
 
-func (a DateRangeAggregation) AddRange(from, to any) DateRangeAggregation {
+func (a *DateRangeAggregation) AddRange(from, to any) *DateRangeAggregation {
 	a.Ranges = append(a.Ranges, DateRangeAggregationEntry{From: from, To: to})
 	return a
 }
 
-func (a DateRangeAggregation) AddRangeWithKey(key string, from, to any) DateRangeAggregation {
+func (a *DateRangeAggregation) AddRangeWithKey(key string, from, to any) *DateRangeAggregation {
 	a.Ranges = append(a.Ranges, DateRangeAggregationEntry{Key: key, From: from, To: to})
 	return a
 }
 
-func (a DateRangeAggregation) AddUnboundedTo(from any) DateRangeAggregation {
+func (a *DateRangeAggregation) AddUnboundedTo(from any) *DateRangeAggregation {
 	a.Ranges = append(a.Ranges, DateRangeAggregationEntry{From: from})
 	return a
 }
 
-func (a DateRangeAggregation) AddUnboundedToWithKey(key string, from any) DateRangeAggregation {
+func (a *DateRangeAggregation) AddUnboundedToWithKey(key string, from any) *DateRangeAggregation {
 	a.Ranges = append(a.Ranges, DateRangeAggregationEntry{Key: key, From: from})
 	return a
 }
 
-func (a DateRangeAggregation) AddUnboundedFrom(to any) DateRangeAggregation {
+func (a *DateRangeAggregation) AddUnboundedFrom(to any) *DateRangeAggregation {
 	a.Ranges = append(a.Ranges, DateRangeAggregationEntry{To: to})
 	return a
 }
 
-func (a DateRangeAggregation) AddUnboundedFromWithKey(key string, to any) DateRangeAggregation {
+func (a *DateRangeAggregation) AddUnboundedFromWithKey(key string, to any) *DateRangeAggregation {
 	a.Ranges = append(a.Ranges, DateRangeAggregationEntry{Key: key, To: to})
 	return a
 }
 
-func (a DateRangeAggregation) Lt(to any) DateRangeAggregation {
+func (a *DateRangeAggregation) Lt(to any) *DateRangeAggregation {
 	a.Ranges = append(a.Ranges, DateRangeAggregationEntry{To: to})
 	return a
 }
 
-func (a DateRangeAggregation) LtWithKey(key string, to any) DateRangeAggregation {
+func (a *DateRangeAggregation) LtWithKey(key string, to any) *DateRangeAggregation {
 	a.Ranges = append(a.Ranges, DateRangeAggregationEntry{Key: key, To: to})
 	return a
 }
 
-func (a DateRangeAggregation) Between(from, to any) DateRangeAggregation {
+func (a *DateRangeAggregation) Between(from, to any) *DateRangeAggregation {
 	a.Ranges = append(a.Ranges, DateRangeAggregationEntry{From: from, To: to})
 	return a
 }
 
-func (a DateRangeAggregation) BetweenWithKey(key string, from, to any) DateRangeAggregation {
+func (a *DateRangeAggregation) BetweenWithKey(key string, from, to any) *DateRangeAggregation {
 	a.Ranges = append(a.Ranges, DateRangeAggregationEntry{Key: key, From: from, To: to})
 	return a
 }
 
-func (a DateRangeAggregation) Gt(from any) DateRangeAggregation {
+func (a *DateRangeAggregation) Gt(from any) *DateRangeAggregation {
 	a.Ranges = append(a.Ranges, DateRangeAggregationEntry{From: from})
 	return a
 }
 
-func (a DateRangeAggregation) GtWithKey(key string, from any) DateRangeAggregation {
+func (a *DateRangeAggregation) GtWithKey(key string, from any) *DateRangeAggregation {
 	a.Ranges = append(a.Ranges, DateRangeAggregationEntry{Key: key, From: from})
 	return a
 }

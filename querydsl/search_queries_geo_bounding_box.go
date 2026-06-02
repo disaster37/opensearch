@@ -13,8 +13,62 @@ type GeoBoundingBoxQuery struct {
 	QueryName        string
 }
 
-func NewGeoBoundingBoxQuery(field string) GeoBoundingBoxQuery {
-	return GeoBoundingBoxQuery{Field: field}
+func NewGeoBoundingBoxQuery(field string) *GeoBoundingBoxQuery {
+	return &GeoBoundingBoxQuery{Field: field}
+}
+
+// WithTopLeft sets the top-left corner of the bounding box.
+func (q *GeoBoundingBoxQuery) WithTopLeft(v any) *GeoBoundingBoxQuery {
+	q.TopLeft = v
+	return q
+}
+
+// WithTopRight sets the top-right corner of the bounding box.
+func (q *GeoBoundingBoxQuery) WithTopRight(v any) *GeoBoundingBoxQuery {
+	q.TopRight = v
+	return q
+}
+
+// WithBottomLeft sets the bottom-left corner of the bounding box.
+func (q *GeoBoundingBoxQuery) WithBottomLeft(v any) *GeoBoundingBoxQuery {
+	q.BottomLeft = v
+	return q
+}
+
+// WithBottomRight sets the bottom-right corner of the bounding box.
+func (q *GeoBoundingBoxQuery) WithBottomRight(v any) *GeoBoundingBoxQuery {
+	q.BottomRight = v
+	return q
+}
+
+// WithWKT sets the bounding box as a WKT shape.
+func (q *GeoBoundingBoxQuery) WithWKT(wkt any) *GeoBoundingBoxQuery {
+	q.WKT = wkt
+	return q
+}
+
+// WithType sets the execution type of the geo bounding box query.
+func (q *GeoBoundingBoxQuery) WithType(t string) *GeoBoundingBoxQuery {
+	q.Type = t
+	return q
+}
+
+// WithValidationMethod sets the validation method for geo coordinates.
+func (q *GeoBoundingBoxQuery) WithValidationMethod(method string) *GeoBoundingBoxQuery {
+	q.ValidationMethod = method
+	return q
+}
+
+// WithIgnoreUnmapped sets whether to ignore unmapped fields.
+func (q *GeoBoundingBoxQuery) WithIgnoreUnmapped(ignore bool) *GeoBoundingBoxQuery {
+	q.IgnoreUnmapped = &ignore
+	return q
+}
+
+// WithQueryName sets the query name used for matched_filters per hit.
+func (q *GeoBoundingBoxQuery) WithQueryName(name string) *GeoBoundingBoxQuery {
+	q.QueryName = name
+	return q
 }
 
 func (q GeoBoundingBoxQuery) TopLeftCoords(top, left float64) GeoBoundingBoxQuery {

@@ -31,8 +31,8 @@ type DateHistogramAggregation struct {
 }
 
 // NewDateHistogramAggregation returns a zero-value DateHistogramAggregation.
-func NewDateHistogramAggregation() DateHistogramAggregation {
-	return DateHistogramAggregation{}
+func NewDateHistogramAggregation() *DateHistogramAggregation {
+	return &DateHistogramAggregation{}
 }
 
 func (a *DateHistogramAggregation) Field_(v string) *DateHistogramAggregation { a.Field = v; return a }

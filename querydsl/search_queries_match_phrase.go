@@ -25,8 +25,38 @@ type MatchPhraseQuery struct {
 }
 
 // NewMatchPhraseQuery creates a new MatchPhraseQuery for the given field and value.
-func NewMatchPhraseQuery(field string, value any) MatchPhraseQuery {
-	return MatchPhraseQuery{Field: field, Query: value}
+func NewMatchPhraseQuery(field string, value any) *MatchPhraseQuery {
+	return &MatchPhraseQuery{Field: field, Query: value}
+}
+
+// WithAnalyzer sets the analyzer used to analyze the query text.
+func (q *MatchPhraseQuery) WithAnalyzer(analyzer string) *MatchPhraseQuery {
+	q.Analyzer = analyzer
+	return q
+}
+
+// WithSlop sets the maximum number of positions allowed between matching tokens.
+func (q *MatchPhraseQuery) WithSlop(slop int) *MatchPhraseQuery {
+	q.Slop = &slop
+	return q
+}
+
+// WithBoost sets the boost factor for this query.
+func (q *MatchPhraseQuery) WithBoost(boost float64) *MatchPhraseQuery {
+	q.Boost = &boost
+	return q
+}
+
+// WithQueryName sets the query name for identification in search responses.
+func (q *MatchPhraseQuery) WithQueryName(queryName string) *MatchPhraseQuery {
+	q.QueryName = queryName
+	return q
+}
+
+// WithZeroTermsQuery sets the behavior when the analyzer removes all tokens ("none" or "all").
+func (q *MatchPhraseQuery) WithZeroTermsQuery(zeroTermsQuery string) *MatchPhraseQuery {
+	q.ZeroTermsQuery = zeroTermsQuery
+	return q
 }
 
 func (q MatchPhraseQuery) Source() (any, error) {

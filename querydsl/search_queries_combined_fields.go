@@ -27,8 +27,32 @@ type CombinedFieldsQuery struct {
 }
 
 // NewCombinedFieldsQuery creates a new CombinedFieldsQuery for the given text and fields.
-func NewCombinedFieldsQuery(text any, fields ...string) CombinedFieldsQuery {
-	return CombinedFieldsQuery{Query: text, Fields: fields, FieldBoosts: map[string]*float64{}}
+func NewCombinedFieldsQuery(text any, fields ...string) *CombinedFieldsQuery {
+	return &CombinedFieldsQuery{Query: text, Fields: fields, FieldBoosts: map[string]*float64{}}
+}
+
+// WithAutoGenerateSynonymsPhraseQuery sets whether synonyms are treated as phrase queries.
+func (q *CombinedFieldsQuery) WithAutoGenerateSynonymsPhraseQuery(v bool) *CombinedFieldsQuery {
+	q.AutoGenerateSynonymsPhraseQuery = &v
+	return q
+}
+
+// WithOperator sets the boolean operator used between terms (AND or OR).
+func (q *CombinedFieldsQuery) WithOperator(operator string) *CombinedFieldsQuery {
+	q.Operator = operator
+	return q
+}
+
+// WithMinimumShouldMatch sets the minimum number of optional clauses that must match.
+func (q *CombinedFieldsQuery) WithMinimumShouldMatch(v string) *CombinedFieldsQuery {
+	q.MinimumShouldMatch = v
+	return q
+}
+
+// WithZeroTermsQuery sets the behaviour when the analyzer removes all tokens (none or all).
+func (q *CombinedFieldsQuery) WithZeroTermsQuery(v string) *CombinedFieldsQuery {
+	q.ZeroTermsQuery = v
+	return q
 }
 
 func (q CombinedFieldsQuery) Source() (any, error) {

@@ -27,8 +27,32 @@ type WildcardQuery struct {
 }
 
 // NewWildcardQuery creates a WildcardQuery for the given field and pattern.
-func NewWildcardQuery(field, wildcard string) WildcardQuery {
-	return WildcardQuery{Field: field, wildcardInner: wildcardInner{Value: wildcard}}
+func NewWildcardQuery(field, wildcard string) *WildcardQuery {
+	return &WildcardQuery{Field: field, wildcardInner: wildcardInner{Value: wildcard}}
+}
+
+// WithBoost sets the boost factor for this query.
+func (q *WildcardQuery) WithBoost(boost float64) *WildcardQuery {
+	q.Boost = &boost
+	return q
+}
+
+// WithRewrite sets the rewrite method used to score wildcard matching terms.
+func (q *WildcardQuery) WithRewrite(rewrite string) *WildcardQuery {
+	q.Rewrite = rewrite
+	return q
+}
+
+// WithQueryName sets the query name for identification in search responses.
+func (q *WildcardQuery) WithQueryName(queryName string) *WildcardQuery {
+	q.QueryName = queryName
+	return q
+}
+
+// WithCaseInsensitive sets whether the wildcard match is case-insensitive.
+func (q *WildcardQuery) WithCaseInsensitive(caseInsensitive bool) *WildcardQuery {
+	q.CaseInsensitive = &caseInsensitive
+	return q
 }
 
 func (q WildcardQuery) Source() (any, error) {

@@ -24,8 +24,32 @@ type ParentIdQuery struct {
 }
 
 // NewParentIdQuery creates a ParentIdQuery for the given child type and parent ID.
-func NewParentIdQuery(typ, id string) ParentIdQuery {
-	return ParentIdQuery{Type: typ, ID: id}
+func NewParentIdQuery(typ, id string) *ParentIdQuery {
+	return &ParentIdQuery{Type: typ, ID: id}
+}
+
+// WithIgnoreUnmapped sets whether unmapped types are skipped instead of failing the query.
+func (q *ParentIdQuery) WithIgnoreUnmapped(ignoreUnmapped bool) *ParentIdQuery {
+	q.IgnoreUnmapped = &ignoreUnmapped
+	return q
+}
+
+// WithBoost sets the boost factor for the query.
+func (q *ParentIdQuery) WithBoost(boost float64) *ParentIdQuery {
+	q.Boost = &boost
+	return q
+}
+
+// WithQueryName sets the optional query name for identification in responses.
+func (q *ParentIdQuery) WithQueryName(queryName string) *ParentIdQuery {
+	q.QueryName = queryName
+	return q
+}
+
+// WithInnerHit sets the inner_hits configuration to return matched child document details.
+func (q *ParentIdQuery) WithInnerHit(innerHit *InnerHit) *ParentIdQuery {
+	q.InnerHit = innerHit
+	return q
 }
 
 func (q ParentIdQuery) Source() (any, error) {

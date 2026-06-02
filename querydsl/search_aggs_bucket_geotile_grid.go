@@ -16,31 +16,42 @@ type GeoTileGridAggregation struct {
 }
 
 // NewGeoTileGridAggregation creates a new GeoTileGridAggregation.
-func NewGeoTileGridAggregation() GeoTileGridAggregation {
-	return GeoTileGridAggregation{}
+func NewGeoTileGridAggregation() *GeoTileGridAggregation {
+	return &GeoTileGridAggregation{}
 }
 
-func (a GeoTileGridAggregation) WithPrecision(precision int) GeoTileGridAggregation {
+// WithField sets the geo_point field to aggregate on.
+func (a *GeoTileGridAggregation) WithField(field string) *GeoTileGridAggregation {
+	a.Field = field
+	return a
+}
+
+// WithPrecision sets the geotile zoom level.
+func (a *GeoTileGridAggregation) WithPrecision(precision int) *GeoTileGridAggregation {
 	a.Precision = &precision
 	return a
 }
 
-func (a GeoTileGridAggregation) WithSize(size int) GeoTileGridAggregation {
+// WithSize sets the maximum number of buckets to return.
+func (a *GeoTileGridAggregation) WithSize(size int) *GeoTileGridAggregation {
 	a.Size = &size
 	return a
 }
 
-func (a GeoTileGridAggregation) WithShardSize(shardSize int) GeoTileGridAggregation {
+// WithShardSize sets the maximum number of buckets to collect per shard.
+func (a *GeoTileGridAggregation) WithShardSize(shardSize int) *GeoTileGridAggregation {
 	a.ShardSize = &shardSize
 	return a
 }
 
-func (a GeoTileGridAggregation) WithBounds(bounds BoundingBox) GeoTileGridAggregation {
+// WithBounds restricts aggregation to the given bounding box.
+func (a *GeoTileGridAggregation) WithBounds(bounds BoundingBox) *GeoTileGridAggregation {
 	a.Bounds = &bounds
 	return a
 }
 
-func (a GeoTileGridAggregation) SubAggregation(name string, subAggregation Aggregation) GeoTileGridAggregation {
+// SubAggregation adds a sub-aggregation.
+func (a *GeoTileGridAggregation) SubAggregation(name string, subAggregation Aggregation) *GeoTileGridAggregation {
 	if a.SubAggs == nil {
 		a.SubAggs = make(map[string]Aggregation)
 	}
@@ -48,7 +59,8 @@ func (a GeoTileGridAggregation) SubAggregation(name string, subAggregation Aggre
 	return a
 }
 
-func (a GeoTileGridAggregation) WithMeta(metaData map[string]any) GeoTileGridAggregation {
+// WithMeta sets the meta data for the aggregation.
+func (a *GeoTileGridAggregation) WithMeta(metaData map[string]any) *GeoTileGridAggregation {
 	a.Meta = metaData
 	return a
 }

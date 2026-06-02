@@ -10,8 +10,20 @@ type DistanceFeatureQuery struct {
 	QueryName string
 }
 
-func NewDistanceFeatureQuery(field string, origin any, pivot string) DistanceFeatureQuery {
-	return DistanceFeatureQuery{Field: field, Origin: origin, Pivot: pivot}
+func NewDistanceFeatureQuery(field string, origin any, pivot string) *DistanceFeatureQuery {
+	return &DistanceFeatureQuery{Field: field, Origin: origin, Pivot: pivot}
+}
+
+// WithBoost sets the boost factor for this query.
+func (q *DistanceFeatureQuery) WithBoost(boost float64) *DistanceFeatureQuery {
+	q.Boost = &boost
+	return q
+}
+
+// WithQueryName sets the query name used for matched_filters per hit.
+func (q *DistanceFeatureQuery) WithQueryName(name string) *DistanceFeatureQuery {
+	q.QueryName = name
+	return q
 }
 
 func (q DistanceFeatureQuery) Source() (any, error) {

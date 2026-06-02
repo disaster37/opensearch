@@ -18,7 +18,28 @@ type NestedAggregation struct {
 }
 
 // NewNestedAggregation returns a zero-value NestedAggregation.
-func NewNestedAggregation() NestedAggregation { return NestedAggregation{} }
+func NewNestedAggregation() *NestedAggregation { return &NestedAggregation{} }
+
+// WithPath sets the nested object path.
+func (a *NestedAggregation) WithPath(path string) *NestedAggregation {
+	a.Path = path
+	return a
+}
+
+// WithSubAggregation adds a sub-aggregation.
+func (a *NestedAggregation) WithSubAggregation(name string, sub Aggregation) *NestedAggregation {
+	if a.SubAggs == nil {
+		a.SubAggs = map[string]Aggregation{}
+	}
+	a.SubAggs[name] = sub
+	return a
+}
+
+// WithMeta sets the meta data for the aggregation.
+func (a *NestedAggregation) WithMeta(meta map[string]any) *NestedAggregation {
+	a.Meta = meta
+	return a
+}
 
 func (a NestedAggregation) Source() (any, error) {
 	body := map[string]any{"path": a.Path}

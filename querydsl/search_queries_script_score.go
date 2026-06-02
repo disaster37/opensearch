@@ -8,8 +8,26 @@ type ScriptScoreQuery struct {
 	QueryName string
 }
 
-func NewScriptScoreQuery(query Query, script *Script) ScriptScoreQuery {
-	return ScriptScoreQuery{Query: query, Script: script}
+func NewScriptScoreQuery(query Query, script *Script) *ScriptScoreQuery {
+	return &ScriptScoreQuery{Query: query, Script: script}
+}
+
+// WithMinScore sets the minimum score threshold; documents below this score are excluded.
+func (q *ScriptScoreQuery) WithMinScore(minScore float64) *ScriptScoreQuery {
+	q.MinScore = &minScore
+	return q
+}
+
+// WithBoost sets the boost factor for the query.
+func (q *ScriptScoreQuery) WithBoost(boost float64) *ScriptScoreQuery {
+	q.Boost = &boost
+	return q
+}
+
+// WithQueryName sets the optional query name for identification in responses.
+func (q *ScriptScoreQuery) WithQueryName(queryName string) *ScriptScoreQuery {
+	q.QueryName = queryName
+	return q
 }
 
 func (q ScriptScoreQuery) Source() (any, error) {

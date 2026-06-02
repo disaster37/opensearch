@@ -15,7 +15,22 @@ type GlobalAggregation struct {
 }
 
 // NewGlobalAggregation returns a zero-value GlobalAggregation.
-func NewGlobalAggregation() GlobalAggregation { return GlobalAggregation{} }
+func NewGlobalAggregation() *GlobalAggregation { return &GlobalAggregation{} }
+
+// WithSubAggregation adds a sub-aggregation.
+func (a *GlobalAggregation) WithSubAggregation(name string, sub Aggregation) *GlobalAggregation {
+	if a.SubAggs == nil {
+		a.SubAggs = map[string]Aggregation{}
+	}
+	a.SubAggs[name] = sub
+	return a
+}
+
+// WithMeta sets the meta data for the aggregation.
+func (a *GlobalAggregation) WithMeta(meta map[string]any) *GlobalAggregation {
+	a.Meta = meta
+	return a
+}
 
 func (a GlobalAggregation) Source() (any, error) {
 	return sourceAgg("global", map[string]any{}, a.SubAggs, a.Meta, nil)

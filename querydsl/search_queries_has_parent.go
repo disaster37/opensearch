@@ -27,8 +27,38 @@ type HasParentQuery struct {
 }
 
 // NewHasParentQuery creates a HasParentQuery for the given parent type and inner query.
-func NewHasParentQuery(parentType string, query Query) HasParentQuery {
-	return HasParentQuery{ParentType: parentType, Query: query}
+func NewHasParentQuery(parentType string, query Query) *HasParentQuery {
+	return &HasParentQuery{ParentType: parentType, Query: query}
+}
+
+// WithBoost sets the boost factor for the query.
+func (q *HasParentQuery) WithBoost(boost float64) *HasParentQuery {
+	q.Boost = &boost
+	return q
+}
+
+// WithScore sets whether the parent document's relevance score is propagated to matching child documents.
+func (q *HasParentQuery) WithScore(score bool) *HasParentQuery {
+	q.Score = &score
+	return q
+}
+
+// WithQueryName sets the optional query name for identification in responses.
+func (q *HasParentQuery) WithQueryName(queryName string) *HasParentQuery {
+	q.QueryName = queryName
+	return q
+}
+
+// WithInnerHit sets the inner_hits configuration to return the matched parent document.
+func (q *HasParentQuery) WithInnerHit(innerHit *InnerHit) *HasParentQuery {
+	q.InnerHit = innerHit
+	return q
+}
+
+// WithIgnoreUnmapped sets whether unmapped parent types are skipped instead of failing the query.
+func (q *HasParentQuery) WithIgnoreUnmapped(ignoreUnmapped bool) *HasParentQuery {
+	q.IgnoreUnmapped = &ignoreUnmapped
+	return q
 }
 
 func (q HasParentQuery) Source() (any, error) {

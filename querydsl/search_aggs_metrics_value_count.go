@@ -16,7 +16,37 @@ type ValueCountAggregation struct {
 }
 
 // NewValueCountAggregation returns a new ValueCountAggregation with default settings.
-func NewValueCountAggregation() ValueCountAggregation { return ValueCountAggregation{} }
+func NewValueCountAggregation() *ValueCountAggregation { return &ValueCountAggregation{} }
+
+// WithField sets the field to count values on.
+func (a *ValueCountAggregation) WithField(field string) *ValueCountAggregation {
+	a.Field = field
+	return a
+}
+
+// WithScript sets the script used to compute per-document values.
+func (a *ValueCountAggregation) WithScript(script *Script) *ValueCountAggregation {
+	a.Script = script
+	return a
+}
+
+// WithFormat sets the numeric format for the output value.
+func (a *ValueCountAggregation) WithFormat(format string) *ValueCountAggregation {
+	a.Format = format
+	return a
+}
+
+// WithSubAggs sets the sub-aggregations.
+func (a *ValueCountAggregation) WithSubAggs(subAggs map[string]Aggregation) *ValueCountAggregation {
+	a.SubAggs = subAggs
+	return a
+}
+
+// WithMeta sets the meta data for the aggregation.
+func (a *ValueCountAggregation) WithMeta(meta map[string]any) *ValueCountAggregation {
+	a.Meta = meta
+	return a
+}
 
 func (a ValueCountAggregation) Source() (any, error) {
 	body := map[string]any{}

@@ -41,13 +41,103 @@ type SimpleQueryStringQuery struct {
 }
 
 // NewSimpleQueryStringQuery creates a new SimpleQueryStringQuery with the given text.
-func NewSimpleQueryStringQuery(text string) SimpleQueryStringQuery {
-	return SimpleQueryStringQuery{
+func NewSimpleQueryStringQuery(text string) *SimpleQueryStringQuery {
+	return &SimpleQueryStringQuery{
 		Query:              text,
 		FieldBoosts:        map[string]*float64{},
 		FuzzyPrefixLength:  -1,
 		FuzzyMaxExpansions: -1,
 	}
+}
+
+// WithAnalyzer sets the analyzer used to analyze the query text.
+func (q *SimpleQueryStringQuery) WithAnalyzer(analyzer string) *SimpleQueryStringQuery {
+	q.Analyzer = analyzer
+	return q
+}
+
+// WithQuoteFieldSuffix sets a suffix appended to quoted terms.
+func (q *SimpleQueryStringQuery) WithQuoteFieldSuffix(suffix string) *SimpleQueryStringQuery {
+	q.QuoteFieldSuffix = suffix
+	return q
+}
+
+// WithDefaultOperator sets the default boolean operator (AND or OR).
+func (q *SimpleQueryStringQuery) WithDefaultOperator(operator string) *SimpleQueryStringQuery {
+	q.DefaultOperator = operator
+	return q
+}
+
+// WithMinimumShouldMatch sets the minimum number of optional clauses that must match.
+func (q *SimpleQueryStringQuery) WithMinimumShouldMatch(v string) *SimpleQueryStringQuery {
+	q.MinimumShouldMatch = v
+	return q
+}
+
+// WithFlags sets the flags controlling which features of the simple query string syntax are enabled.
+func (q *SimpleQueryStringQuery) WithFlags(flags string) *SimpleQueryStringQuery {
+	q.Flags = flags
+	return q
+}
+
+// WithBoost sets the boost factor for this query.
+func (q *SimpleQueryStringQuery) WithBoost(boost float64) *SimpleQueryStringQuery {
+	q.Boost = &boost
+	return q
+}
+
+// WithLowercaseExpandedTerms sets whether expanded terms should be lowercased.
+func (q *SimpleQueryStringQuery) WithLowercaseExpandedTerms(v bool) *SimpleQueryStringQuery {
+	q.LowercaseExpandedTerms = &v
+	return q
+}
+
+// WithLenient sets whether format-based errors are ignored.
+func (q *SimpleQueryStringQuery) WithLenient(lenient bool) *SimpleQueryStringQuery {
+	q.Lenient = &lenient
+	return q
+}
+
+// WithAnalyzeWildcard sets whether wildcard and prefix queries should be analyzed.
+func (q *SimpleQueryStringQuery) WithAnalyzeWildcard(analyzeWildcard bool) *SimpleQueryStringQuery {
+	q.AnalyzeWildcard = &analyzeWildcard
+	return q
+}
+
+// WithLocale sets the locale for the query.
+func (q *SimpleQueryStringQuery) WithLocale(locale string) *SimpleQueryStringQuery {
+	q.Locale = locale
+	return q
+}
+
+// WithQueryName sets the query name used for matched_filters per hit.
+func (q *SimpleQueryStringQuery) WithQueryName(name string) *SimpleQueryStringQuery {
+	q.QueryName = name
+	return q
+}
+
+// WithAutoGenerateSynonymsPhraseQuery sets whether synonyms are treated as phrase queries.
+func (q *SimpleQueryStringQuery) WithAutoGenerateSynonymsPhraseQuery(v bool) *SimpleQueryStringQuery {
+	q.AutoGenerateSynonymsPhraseQuery = &v
+	return q
+}
+
+// WithFuzzyPrefixLength sets the number of beginning characters left unchanged for fuzzy matching.
+func (q *SimpleQueryStringQuery) WithFuzzyPrefixLength(v int) *SimpleQueryStringQuery {
+	q.FuzzyPrefixLength = v
+	return q
+}
+
+// WithFuzzyMaxExpansions sets the maximum number of terms for fuzzy matching expansion.
+func (q *SimpleQueryStringQuery) WithFuzzyMaxExpansions(v int) *SimpleQueryStringQuery {
+	q.FuzzyMaxExpansions = v
+	return q
+}
+
+// WithFuzzyTranspositions sets whether transpositions are counted as a single edit for fuzzy matching.
+func (q *SimpleQueryStringQuery) WithFuzzyTranspositions(v bool) *SimpleQueryStringQuery {
+	q.FuzzyTranspositions = &v
+	return q
 }
 
 func (q SimpleQueryStringQuery) fields() []string {

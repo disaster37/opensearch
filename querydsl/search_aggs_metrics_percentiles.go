@@ -23,8 +23,74 @@ type PercentilesAggregation struct {
 }
 
 // NewPercentilesAggregation returns a new PercentilesAggregation using the TDigest method.
-func NewPercentilesAggregation() PercentilesAggregation {
-	return PercentilesAggregation{Method: "tdigest"}
+func NewPercentilesAggregation() *PercentilesAggregation {
+	return &PercentilesAggregation{Method: "tdigest"}
+}
+
+// WithField sets the field to compute percentiles on.
+func (a *PercentilesAggregation) WithField(field string) *PercentilesAggregation {
+	a.Field = field
+	return a
+}
+
+// WithScript sets the script used to compute per-document values.
+func (a *PercentilesAggregation) WithScript(script *Script) *PercentilesAggregation {
+	a.Script = script
+	return a
+}
+
+// WithFormat sets the numeric format for the output values.
+func (a *PercentilesAggregation) WithFormat(format string) *PercentilesAggregation {
+	a.Format = format
+	return a
+}
+
+// WithMissing sets the value to use for documents missing the field.
+func (a *PercentilesAggregation) WithMissing(missing any) *PercentilesAggregation {
+	a.Missing = missing
+	return a
+}
+
+// WithPercentiles sets the percentile values to compute (e.g. [50, 95, 99]).
+func (a *PercentilesAggregation) WithPercentiles(percentiles []float64) *PercentilesAggregation {
+	a.Percentiles = percentiles
+	return a
+}
+
+// WithMethod sets the algorithm to use ("tdigest" or "hdr").
+func (a *PercentilesAggregation) WithMethod(method string) *PercentilesAggregation {
+	a.Method = method
+	return a
+}
+
+// WithCompression sets the compression factor for the TDigest algorithm.
+func (a *PercentilesAggregation) WithCompression(v float64) *PercentilesAggregation {
+	a.Compression = &v
+	return a
+}
+
+// WithNumberOfSignificantValueDigits sets the resolution for the HDR histogram algorithm.
+func (a *PercentilesAggregation) WithNumberOfSignificantValueDigits(v int) *PercentilesAggregation {
+	a.NumberOfSignificantValueDigits = &v
+	return a
+}
+
+// WithEstimator sets the estimator method string.
+func (a *PercentilesAggregation) WithEstimator(estimator string) *PercentilesAggregation {
+	a.Estimator = estimator
+	return a
+}
+
+// WithSubAggs sets the sub-aggregations.
+func (a *PercentilesAggregation) WithSubAggs(subAggs map[string]Aggregation) *PercentilesAggregation {
+	a.SubAggs = subAggs
+	return a
+}
+
+// WithMeta sets the meta data for the aggregation.
+func (a *PercentilesAggregation) WithMeta(meta map[string]any) *PercentilesAggregation {
+	a.Meta = meta
+	return a
 }
 
 func (a PercentilesAggregation) Source() (any, error) {

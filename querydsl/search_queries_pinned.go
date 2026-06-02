@@ -5,8 +5,20 @@ type PinnedQuery struct {
 	Organic Query
 }
 
-func NewPinnedQuery() PinnedQuery {
-	return PinnedQuery{}
+func NewPinnedQuery() *PinnedQuery {
+	return &PinnedQuery{}
+}
+
+// WithIDs sets the list of document IDs to pin at the top of results.
+func (q *PinnedQuery) WithIDs(ids ...string) *PinnedQuery {
+	q.IDs = ids
+	return q
+}
+
+// WithOrganic sets the organic query whose results follow the pinned documents.
+func (q *PinnedQuery) WithOrganic(organic Query) *PinnedQuery {
+	q.Organic = organic
+	return q
 }
 
 func (q PinnedQuery) Source() (any, error) {

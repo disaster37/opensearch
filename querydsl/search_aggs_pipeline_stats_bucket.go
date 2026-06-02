@@ -7,7 +7,31 @@ type StatsBucketAggregation struct {
 	Meta         map[string]any
 }
 
-func NewStatsBucketAggregation() StatsBucketAggregation { return StatsBucketAggregation{} }
+func NewStatsBucketAggregation() *StatsBucketAggregation { return &StatsBucketAggregation{} }
+
+// WithFormat sets the format for the stats bucket aggregation.
+func (a *StatsBucketAggregation) WithFormat(format string) *StatsBucketAggregation {
+	a.Format = format
+	return a
+}
+
+// WithGapPolicy sets the gap policy for the stats bucket aggregation.
+func (a *StatsBucketAggregation) WithGapPolicy(policy string) *StatsBucketAggregation {
+	a.GapPolicy = policy
+	return a
+}
+
+// WithBucketsPaths sets the buckets paths for the stats bucket aggregation.
+func (a *StatsBucketAggregation) WithBucketsPaths(paths ...string) *StatsBucketAggregation {
+	a.BucketsPaths = paths
+	return a
+}
+
+// WithMeta sets the meta for the stats bucket aggregation.
+func (a *StatsBucketAggregation) WithMeta(meta map[string]any) *StatsBucketAggregation {
+	a.Meta = meta
+	return a
+}
 
 func (a StatsBucketAggregation) Source() (any, error) {
 	body := map[string]any{}

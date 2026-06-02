@@ -8,8 +8,38 @@ type BucketSortAggregation struct {
 	Meta      map[string]any
 }
 
-func NewBucketSortAggregation() BucketSortAggregation {
-	return BucketSortAggregation{Size: -1}
+func NewBucketSortAggregation() *BucketSortAggregation {
+	return &BucketSortAggregation{Size: -1}
+}
+
+// WithSorters sets the sorters for the bucket sort aggregation.
+func (a *BucketSortAggregation) WithSorters(sorters ...Sorter) *BucketSortAggregation {
+	a.Sorters = sorters
+	return a
+}
+
+// WithFrom sets the from value for the bucket sort aggregation.
+func (a *BucketSortAggregation) WithFrom(from int) *BucketSortAggregation {
+	a.From = from
+	return a
+}
+
+// WithSize sets the size for the bucket sort aggregation.
+func (a *BucketSortAggregation) WithSize(size int) *BucketSortAggregation {
+	a.Size = size
+	return a
+}
+
+// WithGapPolicy sets the gap policy for the bucket sort aggregation.
+func (a *BucketSortAggregation) WithGapPolicy(policy string) *BucketSortAggregation {
+	a.GapPolicy = policy
+	return a
+}
+
+// WithMeta sets the meta for the bucket sort aggregation.
+func (a *BucketSortAggregation) WithMeta(meta map[string]any) *BucketSortAggregation {
+	a.Meta = meta
+	return a
 }
 
 func (a BucketSortAggregation) Source() (any, error) {

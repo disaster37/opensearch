@@ -28,8 +28,32 @@ type PrefixQuery struct {
 }
 
 // NewPrefixQuery creates a PrefixQuery for the given field and prefix value.
-func NewPrefixQuery(field, prefix string) PrefixQuery {
-	return PrefixQuery{Field: field, prefixInner: prefixInner{Value: prefix}}
+func NewPrefixQuery(field, prefix string) *PrefixQuery {
+	return &PrefixQuery{Field: field, prefixInner: prefixInner{Value: prefix}}
+}
+
+// WithBoost sets the boost factor for this query.
+func (q *PrefixQuery) WithBoost(boost float64) *PrefixQuery {
+	q.Boost = &boost
+	return q
+}
+
+// WithRewrite sets the rewrite method used to score prefix matching terms.
+func (q *PrefixQuery) WithRewrite(rewrite string) *PrefixQuery {
+	q.Rewrite = rewrite
+	return q
+}
+
+// WithCaseInsensitive sets whether the prefix match is case-insensitive.
+func (q *PrefixQuery) WithCaseInsensitive(caseInsensitive bool) *PrefixQuery {
+	q.CaseInsensitive = &caseInsensitive
+	return q
+}
+
+// WithQueryName sets the query name for identification in search responses.
+func (q *PrefixQuery) WithQueryName(queryName string) *PrefixQuery {
+	q.QueryName = queryName
+	return q
 }
 
 func (q PrefixQuery) Source() (any, error) {

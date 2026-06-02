@@ -519,46 +519,35 @@ func TestRangeQuery_Coverage(t *testing.T) {
 }
 
 func TestQueryStringQuery_Coverage(t *testing.T) {
-	allow := true
-	lower := false
-	posInc := true
-	analyzeWild := true
-	lenient := false
-	escape := false
 	boost := 1.5
-	fp := 2
-	fme := 50
-	ps := 3
-	maxDet := 10000
-	tie := 0.3
-	b := NewQueryStringQuery("(new york city) OR (big apple)")
-	b.DefaultField = "content"
-	b.Fields = []string{"title", "body"}
-	b.FieldBoosts = map[string]*float64{"title": &boost}
-	b.TieBreaker = &tie
-	b.DefaultOperator = "AND"
-	b.Analyzer = "standard"
-	b.QuoteAnalyzer = "whitespace"
-	b.MaxDeterminizedStates = &maxDet
-	b.AllowLeadingWildcard = &allow
-	b.LowercaseExpandedTerms = &lower
-	b.EnablePositionIncrements = &posInc
-	b.Fuzziness = "AUTO"
-	b.Boost = &boost
-	b.FuzzyPrefixLength = &fp
-	b.FuzzyMaxExpansions = &fme
-	b.FuzzyRewrite = "constant_score"
-	b.PhraseSlop = &ps
-	b.AnalyzeWildcard = &analyzeWild
-	b.Rewrite = "scoring_boolean"
-	b.MinimumShouldMatch = "1"
-	b.QuoteFieldSuffix = ".exact"
-	b.Lenient = &lenient
-	b.QueryName = "qs"
-	b.Locale = "en"
-	b.TimeZone = "UTC"
-	b.Escape = &escape
-	b.Type = "best_fields"
+	b := NewQueryStringQuery("(new york city) OR (big apple)").
+		WithDefaultField("content").
+		WithFieldBoost("title", &boost).
+		WithFields("body").
+		WithTieBreaker(0.3).
+		WithDefaultOperator("AND").
+		WithAnalyzer("standard").
+		WithQuoteAnalyzer("whitespace").
+		WithMaxDeterminizedStates(10000).
+		WithAllowLeadingWildcard(true).
+		WithLowercaseExpandedTerms(false).
+		WithEnablePositionIncrements(true).
+		WithFuzziness("AUTO").
+		WithBoost(1.5).
+		WithFuzzyPrefixLength(2).
+		WithFuzzyMaxExpansions(50).
+		WithFuzzyRewrite("constant_score").
+		WithPhraseSlop(3).
+		WithAnalyzeWildcard(true).
+		WithRewrite("scoring_boolean").
+		WithMinimumShouldMatch("1").
+		WithQuoteFieldSuffix(".exact").
+		WithLenient(false).
+		WithQueryName("qs").
+		WithLocale("en").
+		WithTimeZone("UTC").
+		WithEscape(false).
+		WithType("best_fields")
 	src, err := b.Source()
 	require.NoError(t, err)
 	m := src.(map[string]any)["query_string"].(map[string]any)

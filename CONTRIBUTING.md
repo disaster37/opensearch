@@ -114,8 +114,7 @@ git checkout -b fix/my-fix
 - **Service methods with 1–2 parameters** keep positional args. Validate required string/slice parameters at the top of the method with plain `fmt.Errorf` (not a typed error).
 - Error returns use stdlib `error` only. Wrap with `fmt.Errorf("...: %w", err)` when helpful. Never use `emperror.dev/errors`.
 - In service methods, use the three logging helpers in `api/errors.go`: `wrapNetworkError`, `logAndReturnError`, `wrapUnmarshalError`. They internally call `parseErrorResponse` and log context via `s.logger`. Do **not** call `parseErrorResponse` or `s.logger` directly in service methods. See §6.
-- Prefer **value type receivers** on simple builder structs (`TermQuery struct { Field string }`). Use pointer receivers only where chaining requires mutation in place (e.g. `BoolQuery`, `SearchSource`, `FunctionScoreQuery`) and document the choice in the godoc.
-- Avoid `*float64`/`*int` allocation in setters when callers will use literals. Struct-field assignment of value-type optional fields (e.g. `Boost *float64`) is fine, but do not add `SetX(v float64) *T { t.Boost = &v }` wrappers that heap-allocate.
+- Use **pointer receivers** on all query/agg builder structs so `With*` setters can mutate the struct in place and return `*T` for chaining. `With*` setters must allocate pointer fields (`*bool`, `*float64`, `*int`) internally — callers pass plain values.
 
 ### 2. `api/` — service implementations
 
@@ -230,19 +229,22 @@ func (s *DefaultSecurityService) GetRole(ctx context.Context, roleName string) (
 
 ### 3. `querydsl/` — queries and aggregations
 
-Query and aggregation builders are **struct-literal first**. This means users write:
+Query and aggregation builders use the **`With<FieldName>` chaining pattern**. `New<Type>()` returns a `*Type` and every optional field has a corresponding `With<FieldName>(value) *Type` setter that sets the field and returns the receiver, enabling method chaining:
 
 ```go
-q := querydsl.Term{Field: "status", Value: "ok"}
+q := querydsl.NewQueryStringQuery("(new york) OR (big apple)").
+    WithDefaultField("content").
+    WithBoost(1.5).
+    WithAnalyzer("standard")
 ```
 
-rather than:
+Struct-literal construction also remains valid and is still the most concise form when few fields are set:
 
 ```go
-q := querydsl.NewTermQuery("status", "ok")   // old pattern — do not reintroduce
+q := &querydsl.QueryStringQuery{Query: "(new york) OR (big apple)", DefaultField: "content"}
 ```
 
-For composable queries (Bool, FunctionScore, Interval) where clause accumulation is genuinely useful, keep a builder with pointer receiver. For all others, prefer value semantics.
+`With*` setters allocate pointer fields (`*bool`, `*float64`, `*int`) internally so callers never need to take an address of a literal. All `With*` methods use **pointer receivers** (`func (q *T) WithFoo(v V) *T`) so the chain stays on one allocation.
 
 **Query / aggregation file layout** (one type per file):
 
@@ -252,10 +254,12 @@ package querydsl
 // TermQuery matches documents where the field exactly equals value.
 //
 // JSON output shape:
-//     {"term": {"status": "published"}}
 //
-// For boosted or case-insensitive variants, set the pointer fields:
-//     Term{Field: "status", Value: "ok", Boost: ptr(1.5)}
+//	{"term": {"status": "published"}}
+//
+// Fields can be set via struct literal or the With* chaining methods:
+//
+//	NewTerm("status", "published").WithBoost(1.5)
 type Term struct {
     Field           string
     Value           any
@@ -264,8 +268,23 @@ type Term struct {
     QueryName       string
 }
 
-func NewTerm(field string, value any) Term {
-    return Term{Field: field, Value: value}
+func NewTerm(field string, value any) *Term {
+    return &Term{Field: field, Value: value}
+}
+
+func (q *Term) WithBoost(boost float64) *Term {
+    q.Boost = &boost
+    return q
+}
+
+func (q *Term) WithCaseInsensitive(v bool) *Term {
+    q.CaseInsensitive = &v
+    return q
+}
+
+func (q *Term) WithQueryName(name string) *Term {
+    q.QueryName = name
+    return q
 }
 
 func (q Term) Source() (any, error) {
@@ -308,7 +327,8 @@ func (a Avg) Source() (any, error) {
 **Checklist per query/agg file**:
 - [ ] Main type with exported fields + JSON tags where simple fields map to JSON keys
 - [ ] `Source() (any, error)` returning the OpenSearch JSON DSL shape
-- [ ] `NewXxx()` constructor returning a value (or pointer when builder pattern is intentional)
+- [ ] `NewXxx()` constructor returning `*T`
+- [ ] `With<FieldName>(value) *T` setter for every optional field, using pointer receivers
 - [ ] Uses `marshalStruct` / `sourceAgg` / `sourcePipeline` where appropriate — never hand-rolls the `sub-aggregations` map
 - [ ] godoc comment on the type with JSON DSL example
 
@@ -880,7 +900,7 @@ This section is addressed to LLM-based coding assistants (Kilo, Cursor, Copilot,
 ### While writing code
 
 - **Do NOT** reintroduce hand-rolled `map[string]any` serializers in `querydsl/` — use `marshalStruct`, `sourceAgg`, `sourcePipeline`.
-- **Do NOT** add builder-pattern setters to leaf query structs — use struct-literal construction with exported fields.
+- **DO** add `With<FieldName>(value) *T` setters to every query/agg struct so callers can chain them. `New<Type>()` must return `*Type`. All `With*` methods must use pointer receivers and return the receiver pointer.
 - **Do NOT** add new top-level dependencies. Runtime deps are fixed to `resty`, `logrus`, `otel`, `goccy/go-json`, and `validator/v10`. The only permitted test-only dependency is `github.com/stretchr/testify` — do not add Ginkgo, Gomega, httptest servers in non-test code, or any other test framework.
 - **Do NOT** import `encoding/json` — always use `json "github.com/goccy/go-json"`.
 - **Do NOT** use `emperror.dev/errors` or `easyjson` — both are forbidden.

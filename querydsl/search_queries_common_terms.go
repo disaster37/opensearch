@@ -32,8 +32,68 @@ type CommonTermsQuery struct {
 }
 
 // NewCommonTermsQuery creates a new CommonTermsQuery for the given field and text.
-func NewCommonTermsQuery(field string, text any) CommonTermsQuery {
-	return CommonTermsQuery{Field: field, Query: text}
+func NewCommonTermsQuery(field string, text any) *CommonTermsQuery {
+	return &CommonTermsQuery{Field: field, Query: text}
+}
+
+// WithCutoffFrequency sets the frequency threshold separating common from uncommon terms.
+func (q *CommonTermsQuery) WithCutoffFrequency(v float64) *CommonTermsQuery {
+	q.CutoffFrequency = &v
+	return q
+}
+
+// WithHighFreq sets the minimum score for high-frequency terms.
+func (q *CommonTermsQuery) WithHighFreq(v float64) *CommonTermsQuery {
+	q.HighFreq = &v
+	return q
+}
+
+// WithHighFreqOperator sets the boolean operator for high-frequency terms (AND or OR).
+func (q *CommonTermsQuery) WithHighFreqOperator(operator string) *CommonTermsQuery {
+	q.HighFreqOperator = operator
+	return q
+}
+
+// WithHighFreqMinimumShouldMatch sets the minimum should match for high-frequency terms.
+func (q *CommonTermsQuery) WithHighFreqMinimumShouldMatch(v string) *CommonTermsQuery {
+	q.HighFreqMinimumShouldMatch = v
+	return q
+}
+
+// WithLowFreq sets the minimum score for low-frequency terms.
+func (q *CommonTermsQuery) WithLowFreq(v float64) *CommonTermsQuery {
+	q.LowFreq = &v
+	return q
+}
+
+// WithLowFreqOperator sets the boolean operator for low-frequency terms (AND or OR).
+func (q *CommonTermsQuery) WithLowFreqOperator(operator string) *CommonTermsQuery {
+	q.LowFreqOperator = operator
+	return q
+}
+
+// WithLowFreqMinimumShouldMatch sets the minimum should match for low-frequency terms.
+func (q *CommonTermsQuery) WithLowFreqMinimumShouldMatch(v string) *CommonTermsQuery {
+	q.LowFreqMinimumShouldMatch = v
+	return q
+}
+
+// WithAnalyzer sets the analyzer used to analyze the query text.
+func (q *CommonTermsQuery) WithAnalyzer(analyzer string) *CommonTermsQuery {
+	q.Analyzer = analyzer
+	return q
+}
+
+// WithBoost sets the boost factor for this query.
+func (q *CommonTermsQuery) WithBoost(boost float64) *CommonTermsQuery {
+	q.Boost = &boost
+	return q
+}
+
+// WithQueryName sets the query name used for matched_filters per hit.
+func (q *CommonTermsQuery) WithQueryName(name string) *CommonTermsQuery {
+	q.QueryName = name
+	return q
 }
 
 func (q CommonTermsQuery) Source() (any, error) {

@@ -16,8 +16,20 @@ type MatchAllQuery struct {
 }
 
 // NewMatchAllQuery creates a MatchAllQuery that matches every document.
-func NewMatchAllQuery() MatchAllQuery {
-	return MatchAllQuery{}
+func NewMatchAllQuery() *MatchAllQuery {
+	return &MatchAllQuery{}
+}
+
+// WithBoost sets the boost factor for this query.
+func (q *MatchAllQuery) WithBoost(boost float64) *MatchAllQuery {
+	q.Boost = &boost
+	return q
+}
+
+// WithQueryName sets the query name for identification in search responses.
+func (q *MatchAllQuery) WithQueryName(queryName string) *MatchAllQuery {
+	q.QueryName = queryName
+	return q
 }
 
 func (q MatchAllQuery) Source() (any, error) {

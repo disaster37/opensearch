@@ -16,21 +16,60 @@ type AutoDateHistogramAggregation struct {
 	Meta            map[string]any         `json:"meta,omitempty"`
 }
 
-func NewAutoDateHistogramAggregation() AutoDateHistogramAggregation {
-	return AutoDateHistogramAggregation{}
+func NewAutoDateHistogramAggregation() *AutoDateHistogramAggregation {
+	return &AutoDateHistogramAggregation{}
 }
 
-func (a AutoDateHistogramAggregation) WithBuckets(buckets int) AutoDateHistogramAggregation {
+// WithField sets the field for the aggregation.
+func (a *AutoDateHistogramAggregation) WithField(field string) *AutoDateHistogramAggregation {
+	a.Field = field
+	return a
+}
+
+// WithScript sets the script for the aggregation.
+func (a *AutoDateHistogramAggregation) WithScript(script *Script) *AutoDateHistogramAggregation {
+	a.Script = script
+	return a
+}
+
+// WithMissing sets the missing value substituted for documents without a value.
+func (a *AutoDateHistogramAggregation) WithMissing(missing any) *AutoDateHistogramAggregation {
+	a.Missing = missing
+	return a
+}
+
+// WithBuckets sets the target number of buckets.
+func (a *AutoDateHistogramAggregation) WithBuckets(buckets int) *AutoDateHistogramAggregation {
 	a.Buckets = &buckets
 	return a
 }
 
-func (a AutoDateHistogramAggregation) WithMinDocCount(minDocCount int64) AutoDateHistogramAggregation {
+// WithMinDocCount sets the minimum document count threshold for a bucket to be returned.
+func (a *AutoDateHistogramAggregation) WithMinDocCount(minDocCount int64) *AutoDateHistogramAggregation {
 	a.MinDocCount = &minDocCount
 	return a
 }
 
-func (a AutoDateHistogramAggregation) SubAggregation(name string, subAggregation Aggregation) AutoDateHistogramAggregation {
+// WithTimeZone sets the time zone used for computing bucket boundaries.
+func (a *AutoDateHistogramAggregation) WithTimeZone(timeZone string) *AutoDateHistogramAggregation {
+	a.TimeZone = timeZone
+	return a
+}
+
+// WithFormat sets the date format for bucket keys.
+func (a *AutoDateHistogramAggregation) WithFormat(format string) *AutoDateHistogramAggregation {
+	a.Format = format
+	return a
+}
+
+// WithMinimumInterval sets the minimum interval for bucket sizing.
+func (a *AutoDateHistogramAggregation) WithMinimumInterval(minimumInterval string) *AutoDateHistogramAggregation {
+	a.MinimumInterval = minimumInterval
+	return a
+}
+
+// SubAggregation adds a sub-aggregation.
+func (a *AutoDateHistogramAggregation) SubAggregation(name string, subAggregation Aggregation) *AutoDateHistogramAggregation {
 	if a.SubAggs == nil {
 		a.SubAggs = make(map[string]Aggregation)
 	}
@@ -38,7 +77,8 @@ func (a AutoDateHistogramAggregation) SubAggregation(name string, subAggregation
 	return a
 }
 
-func (a AutoDateHistogramAggregation) WithMeta(metaData map[string]any) AutoDateHistogramAggregation {
+// WithMeta sets meta data for the aggregation.
+func (a *AutoDateHistogramAggregation) WithMeta(metaData map[string]any) *AutoDateHistogramAggregation {
 	a.Meta = metaData
 	return a
 }

@@ -190,6 +190,71 @@ func (q *MoreLikeThisQuery) QueryName(queryName string) *MoreLikeThisQuery {
 	return q
 }
 
+// WithInclude sets whether the input documents should also be included in the results.
+func (q *MoreLikeThisQuery) WithInclude(include bool) *MoreLikeThisQuery {
+	return q.Include(include)
+}
+
+// WithMinimumShouldMatch sets the minimum number of terms that must match.
+func (q *MoreLikeThisQuery) WithMinimumShouldMatch(v string) *MoreLikeThisQuery {
+	return q.MinimumShouldMatch(v)
+}
+
+// WithMinTermFreq sets the minimum term frequency below which terms are ignored.
+func (q *MoreLikeThisQuery) WithMinTermFreq(v int) *MoreLikeThisQuery {
+	return q.MinTermFreq(v)
+}
+
+// WithMaxQueryTerms sets the maximum number of query terms included in the generated query.
+func (q *MoreLikeThisQuery) WithMaxQueryTerms(v int) *MoreLikeThisQuery {
+	return q.MaxQueryTerms(v)
+}
+
+// WithMinDocFreq sets the minimum document frequency below which terms are ignored.
+func (q *MoreLikeThisQuery) WithMinDocFreq(v int) *MoreLikeThisQuery {
+	return q.MinDocFreq(v)
+}
+
+// WithMaxDocFreq sets the maximum document frequency above which terms are ignored.
+func (q *MoreLikeThisQuery) WithMaxDocFreq(v int) *MoreLikeThisQuery {
+	return q.MaxDocFreq(v)
+}
+
+// WithMinWordLength sets the minimum word length below which words are ignored.
+func (q *MoreLikeThisQuery) WithMinWordLength(v int) *MoreLikeThisQuery {
+	return q.MinWordLength(v)
+}
+
+// WithMaxWordLength sets the maximum word length above which words are ignored.
+func (q *MoreLikeThisQuery) WithMaxWordLength(v int) *MoreLikeThisQuery {
+	return q.MaxWordLength(v)
+}
+
+// WithBoostTerms sets the boost factor used when boosting terms.
+func (q *MoreLikeThisQuery) WithBoostTerms(v float64) *MoreLikeThisQuery {
+	return q.BoostTerms(v)
+}
+
+// WithBoost sets the boost for this query.
+func (q *MoreLikeThisQuery) WithBoost(boost float64) *MoreLikeThisQuery {
+	return q.Boost(boost)
+}
+
+// WithAnalyzer sets the analyzer used to analyze the text.
+func (q *MoreLikeThisQuery) WithAnalyzer(analyzer string) *MoreLikeThisQuery {
+	return q.Analyzer(analyzer)
+}
+
+// WithFailOnUnsupportedField sets whether to fail when this query is run against an unsupported field.
+func (q *MoreLikeThisQuery) WithFailOnUnsupportedField(fail bool) *MoreLikeThisQuery {
+	return q.FailOnUnsupportedField(fail)
+}
+
+// WithQueryName sets the query name for the filter.
+func (q *MoreLikeThisQuery) WithQueryName(name string) *MoreLikeThisQuery {
+	return q.QueryName(name)
+}
+
 // Source creates the source for the MLT query.
 // It may return an error if the caller forgot to specify any documents to
 // be "liked" in the MoreLikeThisQuery.

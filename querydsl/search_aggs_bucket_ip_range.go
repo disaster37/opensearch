@@ -15,12 +15,16 @@ type IPRangeAggregationEntry struct {
 	To   string
 }
 
-func NewIPRangeAggregation() IPRangeAggregation { return IPRangeAggregation{} }
+func NewIPRangeAggregation() *IPRangeAggregation { return &IPRangeAggregation{} }
 
-func (a IPRangeAggregation) WithField(v string) IPRangeAggregation { a.Field = v; return a }
-func (a IPRangeAggregation) WithKeyed(v bool) IPRangeAggregation   { a.Keyed = &v; return a }
+// WithField sets the IP field to aggregate on.
+func (a *IPRangeAggregation) WithField(v string) *IPRangeAggregation { a.Field = v; return a }
 
-func (a IPRangeAggregation) WithSubAggregation(name string, sub Aggregation) IPRangeAggregation {
+// WithKeyed sets whether buckets are returned as a keyed object.
+func (a *IPRangeAggregation) WithKeyed(v bool) *IPRangeAggregation { a.Keyed = &v; return a }
+
+// WithSubAggregation adds a sub-aggregation.
+func (a *IPRangeAggregation) WithSubAggregation(name string, sub Aggregation) *IPRangeAggregation {
 	if a.SubAggs == nil {
 		a.SubAggs = map[string]Aggregation{}
 	}
@@ -28,74 +32,75 @@ func (a IPRangeAggregation) WithSubAggregation(name string, sub Aggregation) IPR
 	return a
 }
 
-func (a IPRangeAggregation) WithMeta(v map[string]any) IPRangeAggregation { a.Meta = v; return a }
+// WithMeta sets the meta data for the aggregation.
+func (a *IPRangeAggregation) WithMeta(v map[string]any) *IPRangeAggregation { a.Meta = v; return a }
 
-func (a IPRangeAggregation) AddMaskRange(mask string) IPRangeAggregation {
+func (a *IPRangeAggregation) AddMaskRange(mask string) *IPRangeAggregation {
 	a.Entries = append(a.Entries, IPRangeAggregationEntry{Mask: mask})
 	return a
 }
 
-func (a IPRangeAggregation) AddMaskRangeWithKey(key, mask string) IPRangeAggregation {
+func (a *IPRangeAggregation) AddMaskRangeWithKey(key, mask string) *IPRangeAggregation {
 	a.Entries = append(a.Entries, IPRangeAggregationEntry{Key: key, Mask: mask})
 	return a
 }
 
-func (a IPRangeAggregation) AddRange(from, to string) IPRangeAggregation {
+func (a *IPRangeAggregation) AddRange(from, to string) *IPRangeAggregation {
 	a.Entries = append(a.Entries, IPRangeAggregationEntry{From: from, To: to})
 	return a
 }
 
-func (a IPRangeAggregation) AddRangeWithKey(key, from, to string) IPRangeAggregation {
+func (a *IPRangeAggregation) AddRangeWithKey(key, from, to string) *IPRangeAggregation {
 	a.Entries = append(a.Entries, IPRangeAggregationEntry{Key: key, From: from, To: to})
 	return a
 }
 
-func (a IPRangeAggregation) AddUnboundedTo(from string) IPRangeAggregation {
+func (a *IPRangeAggregation) AddUnboundedTo(from string) *IPRangeAggregation {
 	a.Entries = append(a.Entries, IPRangeAggregationEntry{From: from})
 	return a
 }
 
-func (a IPRangeAggregation) AddUnboundedToWithKey(key, from string) IPRangeAggregation {
+func (a *IPRangeAggregation) AddUnboundedToWithKey(key, from string) *IPRangeAggregation {
 	a.Entries = append(a.Entries, IPRangeAggregationEntry{Key: key, From: from})
 	return a
 }
 
-func (a IPRangeAggregation) AddUnboundedFrom(to string) IPRangeAggregation {
+func (a *IPRangeAggregation) AddUnboundedFrom(to string) *IPRangeAggregation {
 	a.Entries = append(a.Entries, IPRangeAggregationEntry{To: to})
 	return a
 }
 
-func (a IPRangeAggregation) AddUnboundedFromWithKey(key, to string) IPRangeAggregation {
+func (a *IPRangeAggregation) AddUnboundedFromWithKey(key, to string) *IPRangeAggregation {
 	a.Entries = append(a.Entries, IPRangeAggregationEntry{Key: key, To: to})
 	return a
 }
 
-func (a IPRangeAggregation) Lt(to string) IPRangeAggregation {
+func (a *IPRangeAggregation) Lt(to string) *IPRangeAggregation {
 	a.Entries = append(a.Entries, IPRangeAggregationEntry{To: to})
 	return a
 }
 
-func (a IPRangeAggregation) LtWithKey(key, to string) IPRangeAggregation {
+func (a *IPRangeAggregation) LtWithKey(key, to string) *IPRangeAggregation {
 	a.Entries = append(a.Entries, IPRangeAggregationEntry{Key: key, To: to})
 	return a
 }
 
-func (a IPRangeAggregation) Between(from, to string) IPRangeAggregation {
+func (a *IPRangeAggregation) Between(from, to string) *IPRangeAggregation {
 	a.Entries = append(a.Entries, IPRangeAggregationEntry{From: from, To: to})
 	return a
 }
 
-func (a IPRangeAggregation) BetweenWithKey(key, from, to string) IPRangeAggregation {
+func (a *IPRangeAggregation) BetweenWithKey(key, from, to string) *IPRangeAggregation {
 	a.Entries = append(a.Entries, IPRangeAggregationEntry{Key: key, From: from, To: to})
 	return a
 }
 
-func (a IPRangeAggregation) Gt(from string) IPRangeAggregation {
+func (a *IPRangeAggregation) Gt(from string) *IPRangeAggregation {
 	a.Entries = append(a.Entries, IPRangeAggregationEntry{From: from})
 	return a
 }
 
-func (a IPRangeAggregation) GtWithKey(key, from string) IPRangeAggregation {
+func (a *IPRangeAggregation) GtWithKey(key, from string) *IPRangeAggregation {
 	a.Entries = append(a.Entries, IPRangeAggregationEntry{Key: key, From: from})
 	return a
 }

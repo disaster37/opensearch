@@ -17,11 +17,48 @@ type SignificantTermsAggregation struct {
 	IncludeExclude   *TermsAggregationIncludeExclude `json:"-"`
 }
 
-func NewSignificantTermsAggregation() SignificantTermsAggregation {
-	return SignificantTermsAggregation{}
+func NewSignificantTermsAggregation() *SignificantTermsAggregation {
+	return &SignificantTermsAggregation{}
 }
 
-func (a SignificantTermsAggregation) SubAggregation(name string, subAggregation Aggregation) SignificantTermsAggregation {
+// WithField sets the field to run significant terms on.
+func (a *SignificantTermsAggregation) WithField(field string) *SignificantTermsAggregation {
+	a.FieldVal = field
+	return a
+}
+
+// WithMinDocCount sets the minimum document count threshold.
+func (a *SignificantTermsAggregation) WithMinDocCount(minDocCount int) *SignificantTermsAggregation {
+	a.MinDocCount = &minDocCount
+	return a
+}
+
+// WithShardMinDocCount sets the shard-level minimum document count threshold.
+func (a *SignificantTermsAggregation) WithShardMinDocCount(shardMinDocCount int) *SignificantTermsAggregation {
+	a.ShardMinDocCount = &shardMinDocCount
+	return a
+}
+
+// WithRequiredSize sets the number of significant terms to return.
+func (a *SignificantTermsAggregation) WithRequiredSize(requiredSize int) *SignificantTermsAggregation {
+	a.RequiredSize = &requiredSize
+	return a
+}
+
+// WithShardSize sets the number of significant terms to fetch per shard.
+func (a *SignificantTermsAggregation) WithShardSize(shardSize int) *SignificantTermsAggregation {
+	a.ShardSize = &shardSize
+	return a
+}
+
+// WithExecutionHint sets the execution hint for the aggregation.
+func (a *SignificantTermsAggregation) WithExecutionHint(hint string) *SignificantTermsAggregation {
+	a.ExecutionHint = hint
+	return a
+}
+
+// SubAggregation adds a sub-aggregation.
+func (a *SignificantTermsAggregation) SubAggregation(name string, subAggregation Aggregation) *SignificantTermsAggregation {
 	if a.SubAggs == nil {
 		a.SubAggs = make(map[string]Aggregation)
 	}
@@ -29,22 +66,26 @@ func (a SignificantTermsAggregation) SubAggregation(name string, subAggregation 
 	return a
 }
 
-func (a SignificantTermsAggregation) WithMeta(metaData map[string]any) SignificantTermsAggregation {
+// WithMeta sets meta data for the aggregation.
+func (a *SignificantTermsAggregation) WithMeta(metaData map[string]any) *SignificantTermsAggregation {
 	a.Meta = metaData
 	return a
 }
 
-func (a SignificantTermsAggregation) BackgroundFilter(filter Query) SignificantTermsAggregation {
+// BackgroundFilter sets a background filter query.
+func (a *SignificantTermsAggregation) BackgroundFilter(filter Query) *SignificantTermsAggregation {
 	a.Filter = filter
 	return a
 }
 
-func (a SignificantTermsAggregation) SignificanceHeuristic(heuristic SignificanceHeuristic) SignificantTermsAggregation {
+// SignificanceHeuristic sets the significance heuristic.
+func (a *SignificantTermsAggregation) SignificanceHeuristic(heuristic SignificanceHeuristic) *SignificantTermsAggregation {
 	a.Heuristic = heuristic
 	return a
 }
 
-func (a SignificantTermsAggregation) Include(regexp string) SignificantTermsAggregation {
+// Include sets a regexp pattern for included term values.
+func (a *SignificantTermsAggregation) Include(regexp string) *SignificantTermsAggregation {
 	if a.IncludeExclude == nil {
 		a.IncludeExclude = &TermsAggregationIncludeExclude{}
 	}
@@ -52,7 +93,8 @@ func (a SignificantTermsAggregation) Include(regexp string) SignificantTermsAggr
 	return a
 }
 
-func (a SignificantTermsAggregation) IncludeValues(values ...any) SignificantTermsAggregation {
+// IncludeValues sets an explicit list of values to include.
+func (a *SignificantTermsAggregation) IncludeValues(values ...any) *SignificantTermsAggregation {
 	if a.IncludeExclude == nil {
 		a.IncludeExclude = &TermsAggregationIncludeExclude{}
 	}
@@ -60,7 +102,8 @@ func (a SignificantTermsAggregation) IncludeValues(values ...any) SignificantTer
 	return a
 }
 
-func (a SignificantTermsAggregation) Exclude(regexp string) SignificantTermsAggregation {
+// Exclude sets a regexp pattern for excluded term values.
+func (a *SignificantTermsAggregation) Exclude(regexp string) *SignificantTermsAggregation {
 	if a.IncludeExclude == nil {
 		a.IncludeExclude = &TermsAggregationIncludeExclude{}
 	}
@@ -68,7 +111,8 @@ func (a SignificantTermsAggregation) Exclude(regexp string) SignificantTermsAggr
 	return a
 }
 
-func (a SignificantTermsAggregation) ExcludeValues(values ...any) SignificantTermsAggregation {
+// ExcludeValues sets an explicit list of values to exclude.
+func (a *SignificantTermsAggregation) ExcludeValues(values ...any) *SignificantTermsAggregation {
 	if a.IncludeExclude == nil {
 		a.IncludeExclude = &TermsAggregationIncludeExclude{}
 	}
@@ -76,7 +120,8 @@ func (a SignificantTermsAggregation) ExcludeValues(values ...any) SignificantTer
 	return a
 }
 
-func (a SignificantTermsAggregation) Partition(p int) SignificantTermsAggregation {
+// Partition sets the partition number for partitioned term filtering.
+func (a *SignificantTermsAggregation) Partition(p int) *SignificantTermsAggregation {
 	if a.IncludeExclude == nil {
 		a.IncludeExclude = &TermsAggregationIncludeExclude{}
 	}
@@ -84,7 +129,8 @@ func (a SignificantTermsAggregation) Partition(p int) SignificantTermsAggregatio
 	return a
 }
 
-func (a SignificantTermsAggregation) NumPartitions(n int) SignificantTermsAggregation {
+// NumPartitions sets the total number of partitions for partitioned term filtering.
+func (a *SignificantTermsAggregation) NumPartitions(n int) *SignificantTermsAggregation {
 	if a.IncludeExclude == nil {
 		a.IncludeExclude = &TermsAggregationIncludeExclude{}
 	}
@@ -92,7 +138,8 @@ func (a SignificantTermsAggregation) NumPartitions(n int) SignificantTermsAggreg
 	return a
 }
 
-func (a SignificantTermsAggregation) SetIncludeExclude(includeExclude *TermsAggregationIncludeExclude) SignificantTermsAggregation {
+// SetIncludeExclude sets the include/exclude filter directly.
+func (a *SignificantTermsAggregation) SetIncludeExclude(includeExclude *TermsAggregationIncludeExclude) *SignificantTermsAggregation {
 	a.IncludeExclude = includeExclude
 	return a
 }
@@ -160,8 +207,20 @@ type ChiSquareSignificanceHeuristic struct {
 	IncludeNegativesVal     *bool
 }
 
-func NewChiSquareSignificanceHeuristic() ChiSquareSignificanceHeuristic {
-	return ChiSquareSignificanceHeuristic{}
+func NewChiSquareSignificanceHeuristic() *ChiSquareSignificanceHeuristic {
+	return &ChiSquareSignificanceHeuristic{}
+}
+
+// WithBackgroundIsSuperset sets whether the background corpus is a superset of the foreground.
+func (sh *ChiSquareSignificanceHeuristic) WithBackgroundIsSuperset(v bool) *ChiSquareSignificanceHeuristic {
+	sh.BackgroundIsSupersetVal = &v
+	return sh
+}
+
+// WithIncludeNegatives sets whether to include terms with negative scores.
+func (sh *ChiSquareSignificanceHeuristic) WithIncludeNegatives(v bool) *ChiSquareSignificanceHeuristic {
+	sh.IncludeNegativesVal = &v
+	return sh
 }
 
 func (sh ChiSquareSignificanceHeuristic) Name() string {
@@ -187,8 +246,14 @@ type GNDSignificanceHeuristic struct {
 	BackgroundIsSupersetVal *bool
 }
 
-func NewGNDSignificanceHeuristic() GNDSignificanceHeuristic {
-	return GNDSignificanceHeuristic{}
+func NewGNDSignificanceHeuristic() *GNDSignificanceHeuristic {
+	return &GNDSignificanceHeuristic{}
+}
+
+// WithBackgroundIsSuperset sets whether the background corpus is a superset of the foreground.
+func (sh *GNDSignificanceHeuristic) WithBackgroundIsSuperset(v bool) *GNDSignificanceHeuristic {
+	sh.BackgroundIsSupersetVal = &v
+	return sh
 }
 
 func (sh GNDSignificanceHeuristic) Name() string {
@@ -208,8 +273,8 @@ func (sh GNDSignificanceHeuristic) Source() (any, error) {
 // JLHScoreSignificanceHeuristic implements the JLH score.
 type JLHScoreSignificanceHeuristic struct{}
 
-func NewJLHScoreSignificanceHeuristic() JLHScoreSignificanceHeuristic {
-	return JLHScoreSignificanceHeuristic{}
+func NewJLHScoreSignificanceHeuristic() *JLHScoreSignificanceHeuristic {
+	return &JLHScoreSignificanceHeuristic{}
 }
 
 func (sh JLHScoreSignificanceHeuristic) Name() string {
@@ -230,8 +295,20 @@ type MutualInformationSignificanceHeuristic struct {
 	IncludeNegativesVal     *bool
 }
 
-func NewMutualInformationSignificanceHeuristic() MutualInformationSignificanceHeuristic {
-	return MutualInformationSignificanceHeuristic{}
+func NewMutualInformationSignificanceHeuristic() *MutualInformationSignificanceHeuristic {
+	return &MutualInformationSignificanceHeuristic{}
+}
+
+// WithBackgroundIsSuperset sets whether the background corpus is a superset of the foreground.
+func (sh *MutualInformationSignificanceHeuristic) WithBackgroundIsSuperset(v bool) *MutualInformationSignificanceHeuristic {
+	sh.BackgroundIsSupersetVal = &v
+	return sh
+}
+
+// WithIncludeNegatives sets whether to include terms with negative scores.
+func (sh *MutualInformationSignificanceHeuristic) WithIncludeNegatives(v bool) *MutualInformationSignificanceHeuristic {
+	sh.IncludeNegativesVal = &v
+	return sh
 }
 
 func (sh MutualInformationSignificanceHeuristic) Name() string {
@@ -254,8 +331,8 @@ func (sh MutualInformationSignificanceHeuristic) Source() (any, error) {
 // PercentageScoreSignificanceHeuristic implements the percentage score algorithm.
 type PercentageScoreSignificanceHeuristic struct{}
 
-func NewPercentageScoreSignificanceHeuristic() PercentageScoreSignificanceHeuristic {
-	return PercentageScoreSignificanceHeuristic{}
+func NewPercentageScoreSignificanceHeuristic() *PercentageScoreSignificanceHeuristic {
+	return &PercentageScoreSignificanceHeuristic{}
 }
 
 func (sh PercentageScoreSignificanceHeuristic) Name() string {
@@ -274,8 +351,14 @@ type ScriptSignificanceHeuristic struct {
 	ScriptVal *Script
 }
 
-func NewScriptSignificanceHeuristic() ScriptSignificanceHeuristic {
-	return ScriptSignificanceHeuristic{}
+func NewScriptSignificanceHeuristic() *ScriptSignificanceHeuristic {
+	return &ScriptSignificanceHeuristic{}
+}
+
+// WithScript sets the script for the heuristic.
+func (sh *ScriptSignificanceHeuristic) WithScript(script *Script) *ScriptSignificanceHeuristic {
+	sh.ScriptVal = script
+	return sh
 }
 
 func (sh ScriptSignificanceHeuristic) Name() string {

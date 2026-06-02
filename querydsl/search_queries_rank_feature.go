@@ -7,8 +7,26 @@ type RankFeatureQuery struct {
 	QueryName     string
 }
 
-func NewRankFeatureQuery(field string) RankFeatureQuery {
-	return RankFeatureQuery{Field: field}
+func NewRankFeatureQuery(field string) *RankFeatureQuery {
+	return &RankFeatureQuery{Field: field}
+}
+
+// WithScoreFunction sets the score function used to compute the rank feature score.
+func (q *RankFeatureQuery) WithScoreFunction(fn RankFeatureScoreFunction) *RankFeatureQuery {
+	q.ScoreFunction = fn
+	return q
+}
+
+// WithBoost sets the boost factor for this query.
+func (q *RankFeatureQuery) WithBoost(boost float64) *RankFeatureQuery {
+	q.Boost = &boost
+	return q
+}
+
+// WithQueryName sets the query name used for matched_filters per hit.
+func (q *RankFeatureQuery) WithQueryName(name string) *RankFeatureQuery {
+	q.QueryName = name
+	return q
 }
 
 func (q RankFeatureQuery) Source() (any, error) {

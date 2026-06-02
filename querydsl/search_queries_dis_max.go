@@ -25,8 +25,32 @@ type DisMaxQuery struct {
 }
 
 // NewDisMaxQuery creates a new empty DisMaxQuery.
-func NewDisMaxQuery() DisMaxQuery {
-	return DisMaxQuery{}
+func NewDisMaxQuery() *DisMaxQuery {
+	return &DisMaxQuery{}
+}
+
+// WithQueries sets the list of sub-queries for the dis_max query.
+func (q *DisMaxQuery) WithQueries(queries ...Query) *DisMaxQuery {
+	q.Queries = queries
+	return q
+}
+
+// WithBoost sets the boost factor for the query.
+func (q *DisMaxQuery) WithBoost(boost float64) *DisMaxQuery {
+	q.Boost = &boost
+	return q
+}
+
+// WithTieBreaker sets the tie_breaker factor used to blend scores from multiple matching sub-queries.
+func (q *DisMaxQuery) WithTieBreaker(tieBreaker float64) *DisMaxQuery {
+	q.TieBreaker = &tieBreaker
+	return q
+}
+
+// WithQueryName sets the optional query name for identification in responses.
+func (q *DisMaxQuery) WithQueryName(queryName string) *DisMaxQuery {
+	q.QueryName = queryName
+	return q
 }
 
 func (q DisMaxQuery) Source() (any, error) {

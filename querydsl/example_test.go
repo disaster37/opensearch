@@ -222,7 +222,7 @@ func ExampleDateHistogramAggregation() {
 
 func ExampleRangeAggregation() {
 	keyed := true
-	agg := querydsl.RangeAggregation{
+	agg := &querydsl.RangeAggregation{
 		FieldVal: "price",
 		Keyed:    &keyed,
 	}

@@ -22,8 +22,38 @@ type RangeQuery struct {
 
 // NewRangeQuery creates a RangeQuery for the given field with inclusive
 // lower and upper bounds by default (include_lower=true, include_upper=true).
-func NewRangeQuery(field string) RangeQuery {
-	return RangeQuery{Field: field, IncludeLower: true, IncludeUpper: true}
+func NewRangeQuery(field string) *RangeQuery {
+	return &RangeQuery{Field: field, IncludeLower: true, IncludeUpper: true}
+}
+
+// WithTimeZone sets the time zone for date range queries.
+func (q *RangeQuery) WithTimeZone(timeZone string) *RangeQuery {
+	q.TimeZone = timeZone
+	return q
+}
+
+// WithBoost sets the boost factor for this query.
+func (q *RangeQuery) WithBoost(boost float64) *RangeQuery {
+	q.Boost = &boost
+	return q
+}
+
+// WithQueryName sets the query name used for matched_filters per hit.
+func (q *RangeQuery) WithQueryName(name string) *RangeQuery {
+	q.QueryName = name
+	return q
+}
+
+// WithFormat sets the date format for date range values.
+func (q *RangeQuery) WithFormat(format string) *RangeQuery {
+	q.Format = format
+	return q
+}
+
+// WithRelation sets the relation used for range field queries (INTERSECTS, CONTAINS, WITHIN).
+func (q *RangeQuery) WithRelation(relation string) *RangeQuery {
+	q.Relation = relation
+	return q
 }
 
 // Gt sets the lower bound of the range to be exclusive (from, exclusive).

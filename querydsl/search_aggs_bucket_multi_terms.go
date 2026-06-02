@@ -16,23 +16,26 @@ type MultiTermsAggregation struct {
 	OrderData             []MultiTermsOrder      `json:"-"`
 }
 
-func NewMultiTermsAggregation() MultiTermsAggregation {
-	return MultiTermsAggregation{}
+func NewMultiTermsAggregation() *MultiTermsAggregation {
+	return &MultiTermsAggregation{}
 }
 
-func (a MultiTermsAggregation) Terms(fields ...string) MultiTermsAggregation {
+// Terms adds field names as simple multi-terms.
+func (a *MultiTermsAggregation) Terms(fields ...string) *MultiTermsAggregation {
 	for _, field := range fields {
 		a.MultiTermsData = append(a.MultiTermsData, MultiTerm{Field: field})
 	}
 	return a
 }
 
-func (a MultiTermsAggregation) MultiTerms(multiTerms ...MultiTerm) MultiTermsAggregation {
+// MultiTerms appends MultiTerm entries to the aggregation.
+func (a *MultiTermsAggregation) MultiTerms(multiTerms ...MultiTerm) *MultiTermsAggregation {
 	a.MultiTermsData = append(a.MultiTermsData, multiTerms...)
 	return a
 }
 
-func (a MultiTermsAggregation) SubAggregation(name string, subAggregation Aggregation) MultiTermsAggregation {
+// SubAggregation adds a sub-aggregation.
+func (a *MultiTermsAggregation) SubAggregation(name string, subAggregation Aggregation) *MultiTermsAggregation {
 	if a.SubAggs == nil {
 		a.SubAggs = make(map[string]Aggregation)
 	}
@@ -40,78 +43,94 @@ func (a MultiTermsAggregation) SubAggregation(name string, subAggregation Aggreg
 	return a
 }
 
-func (a MultiTermsAggregation) WithMeta(metaData map[string]any) MultiTermsAggregation {
+// WithMeta sets meta data for the aggregation.
+func (a *MultiTermsAggregation) WithMeta(metaData map[string]any) *MultiTermsAggregation {
 	a.Meta = metaData
 	return a
 }
 
-func (a MultiTermsAggregation) WithSize(size int) MultiTermsAggregation {
+// WithSize sets the number of term buckets to return.
+func (a *MultiTermsAggregation) WithSize(size int) *MultiTermsAggregation {
 	a.Size = &size
 	return a
 }
 
-func (a MultiTermsAggregation) WithShardSize(shardSize int) MultiTermsAggregation {
+// WithShardSize sets the number of term buckets to fetch per shard.
+func (a *MultiTermsAggregation) WithShardSize(shardSize int) *MultiTermsAggregation {
 	a.ShardSize = &shardSize
 	return a
 }
 
-func (a MultiTermsAggregation) WithMinDocCount(minDocCount int) MultiTermsAggregation {
+// WithMinDocCount sets the minimum document count for a bucket to be included.
+func (a *MultiTermsAggregation) WithMinDocCount(minDocCount int) *MultiTermsAggregation {
 	a.MinDocCount = &minDocCount
 	return a
 }
 
-func (a MultiTermsAggregation) WithShardMinDocCount(shardMinDocCount int) MultiTermsAggregation {
+// WithShardMinDocCount sets the minimum shard document count for a bucket to be included.
+func (a *MultiTermsAggregation) WithShardMinDocCount(shardMinDocCount int) *MultiTermsAggregation {
 	a.ShardMinDocCount = &shardMinDocCount
 	return a
 }
 
-func (a MultiTermsAggregation) Order(order string, asc bool) MultiTermsAggregation {
+// Order appends an ordering criterion.
+func (a *MultiTermsAggregation) Order(order string, asc bool) *MultiTermsAggregation {
 	a.OrderData = append(a.OrderData, MultiTermsOrder{Field: order, Ascending: asc})
 	return a
 }
 
-func (a MultiTermsAggregation) OrderByCount(asc bool) MultiTermsAggregation {
+// OrderByCount orders buckets by document count.
+func (a *MultiTermsAggregation) OrderByCount(asc bool) *MultiTermsAggregation {
 	a.OrderData = append(a.OrderData, MultiTermsOrder{Field: "_count", Ascending: asc})
 	return a
 }
 
-func (a MultiTermsAggregation) OrderByCountAsc() MultiTermsAggregation {
+// OrderByCountAsc orders buckets by document count ascending.
+func (a *MultiTermsAggregation) OrderByCountAsc() *MultiTermsAggregation {
 	return a.OrderByCount(true)
 }
 
-func (a MultiTermsAggregation) OrderByCountDesc() MultiTermsAggregation {
+// OrderByCountDesc orders buckets by document count descending.
+func (a *MultiTermsAggregation) OrderByCountDesc() *MultiTermsAggregation {
 	return a.OrderByCount(false)
 }
 
-func (a MultiTermsAggregation) OrderByKey(asc bool) MultiTermsAggregation {
+// OrderByKey orders buckets by key.
+func (a *MultiTermsAggregation) OrderByKey(asc bool) *MultiTermsAggregation {
 	a.OrderData = append(a.OrderData, MultiTermsOrder{Field: "_key", Ascending: asc})
 	return a
 }
 
-func (a MultiTermsAggregation) OrderByKeyAsc() MultiTermsAggregation {
+// OrderByKeyAsc orders buckets by key ascending.
+func (a *MultiTermsAggregation) OrderByKeyAsc() *MultiTermsAggregation {
 	return a.OrderByKey(true)
 }
 
-func (a MultiTermsAggregation) OrderByKeyDesc() MultiTermsAggregation {
+// OrderByKeyDesc orders buckets by key descending.
+func (a *MultiTermsAggregation) OrderByKeyDesc() *MultiTermsAggregation {
 	return a.OrderByKey(false)
 }
 
-func (a MultiTermsAggregation) OrderByAggregation(aggName string, asc bool) MultiTermsAggregation {
+// OrderByAggregation orders by a sub-aggregation metric.
+func (a *MultiTermsAggregation) OrderByAggregation(aggName string, asc bool) *MultiTermsAggregation {
 	a.OrderData = append(a.OrderData, MultiTermsOrder{Field: aggName, Ascending: asc})
 	return a
 }
 
-func (a MultiTermsAggregation) OrderByAggregationAndMetric(aggName, metric string, asc bool) MultiTermsAggregation {
+// OrderByAggregationAndMetric orders by a sub-aggregation metric path.
+func (a *MultiTermsAggregation) OrderByAggregationAndMetric(aggName, metric string, asc bool) *MultiTermsAggregation {
 	a.OrderData = append(a.OrderData, MultiTermsOrder{Field: aggName + "." + metric, Ascending: asc})
 	return a
 }
 
-func (a MultiTermsAggregation) WithCollectionMode(collectionMode string) MultiTermsAggregation {
+// WithCollectionMode sets the collection mode (breadth_first or depth_first).
+func (a *MultiTermsAggregation) WithCollectionMode(collectionMode string) *MultiTermsAggregation {
 	a.CollectionMode = collectionMode
 	return a
 }
 
-func (a MultiTermsAggregation) WithShowTermDocCountError(showTermDocCountError bool) MultiTermsAggregation {
+// WithShowTermDocCountError sets whether per-bucket doc count errors are shown.
+func (a *MultiTermsAggregation) WithShowTermDocCountError(showTermDocCountError bool) *MultiTermsAggregation {
 	a.ShowTermDocCountError = &showTermDocCountError
 	return a
 }

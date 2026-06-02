@@ -15,8 +15,20 @@ type IdsQuery struct {
 
 // NewIdsQuery creates an IdsQuery that matches documents whose _id is one
 // of the provided string values.
-func NewIdsQuery(values ...string) IdsQuery {
-	return IdsQuery{Values: values}
+func NewIdsQuery(values ...string) *IdsQuery {
+	return &IdsQuery{Values: values}
+}
+
+// WithBoost sets the boost factor for this query.
+func (q *IdsQuery) WithBoost(boost float64) *IdsQuery {
+	q.Boost = &boost
+	return q
+}
+
+// WithQueryName sets the query name for identification in search responses.
+func (q *IdsQuery) WithQueryName(queryName string) *IdsQuery {
+	q.QueryName = queryName
+	return q
 }
 
 func (q IdsQuery) Source() (any, error) {

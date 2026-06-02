@@ -5,8 +5,14 @@ type ScriptQuery struct {
 	QueryName string
 }
 
-func NewScriptQuery(script *Script) ScriptQuery {
-	return ScriptQuery{Script: script}
+func NewScriptQuery(script *Script) *ScriptQuery {
+	return &ScriptQuery{Script: script}
+}
+
+// WithQueryName sets the optional query name for identification in responses.
+func (q *ScriptQuery) WithQueryName(queryName string) *ScriptQuery {
+	q.QueryName = queryName
+	return q
 }
 
 func (q ScriptQuery) Source() (any, error) {

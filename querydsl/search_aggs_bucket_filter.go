@@ -16,7 +16,28 @@ type FilterAggregation struct {
 }
 
 // NewFilterAggregation returns a zero-value FilterAggregation.
-func NewFilterAggregation() FilterAggregation { return FilterAggregation{} }
+func NewFilterAggregation() *FilterAggregation { return &FilterAggregation{} }
+
+// WithFilter sets the query filter for this aggregation.
+func (a *FilterAggregation) WithFilter(filter Query) *FilterAggregation {
+	a.Filter = filter
+	return a
+}
+
+// WithSubAggregation adds a sub-aggregation.
+func (a *FilterAggregation) WithSubAggregation(name string, sub Aggregation) *FilterAggregation {
+	if a.SubAggs == nil {
+		a.SubAggs = map[string]Aggregation{}
+	}
+	a.SubAggs[name] = sub
+	return a
+}
+
+// WithMeta sets the meta data for the aggregation.
+func (a *FilterAggregation) WithMeta(meta map[string]any) *FilterAggregation {
+	a.Meta = meta
+	return a
+}
 
 func (a FilterAggregation) Source() (any, error) {
 	src, err := a.Filter.Source()

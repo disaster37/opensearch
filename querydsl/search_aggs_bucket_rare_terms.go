@@ -10,7 +10,52 @@ type RareTermsAggregation struct {
 	Meta           map[string]any
 }
 
-func NewRareTermsAggregation() RareTermsAggregation { return RareTermsAggregation{} }
+func NewRareTermsAggregation() *RareTermsAggregation { return &RareTermsAggregation{} }
+
+// WithField sets the field to aggregate on.
+func (a *RareTermsAggregation) WithField(field string) *RareTermsAggregation {
+	a.Field = field
+	return a
+}
+
+// WithMaxDocCount sets the maximum document count for a term to be considered "rare".
+func (a *RareTermsAggregation) WithMaxDocCount(maxDocCount int) *RareTermsAggregation {
+	a.MaxDocCount = &maxDocCount
+	return a
+}
+
+// WithPrecision sets the precision of the internal CuckooFilters.
+func (a *RareTermsAggregation) WithPrecision(precision float64) *RareTermsAggregation {
+	a.Precision = &precision
+	return a
+}
+
+// WithMissing sets the value used for documents without the field.
+func (a *RareTermsAggregation) WithMissing(missing any) *RareTermsAggregation {
+	a.Missing = missing
+	return a
+}
+
+// WithIncludeExclude sets the include/exclude filter for term values.
+func (a *RareTermsAggregation) WithIncludeExclude(ie *TermsAggregationIncludeExclude) *RareTermsAggregation {
+	a.IncludeExclude = ie
+	return a
+}
+
+// WithSubAggregation adds a sub-aggregation.
+func (a *RareTermsAggregation) WithSubAggregation(name string, sub Aggregation) *RareTermsAggregation {
+	if a.SubAggs == nil {
+		a.SubAggs = map[string]Aggregation{}
+	}
+	a.SubAggs[name] = sub
+	return a
+}
+
+// WithMeta sets the meta data for the aggregation.
+func (a *RareTermsAggregation) WithMeta(meta map[string]any) *RareTermsAggregation {
+	a.Meta = meta
+	return a
+}
 
 func (a RareTermsAggregation) Source() (any, error) {
 	body := map[string]any{}

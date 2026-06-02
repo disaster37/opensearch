@@ -21,8 +21,20 @@ type SpanFirstQuery struct {
 
 // NewSpanFirstQuery creates a SpanFirstQuery wrapping the given inner span
 // query with the specified maximum end position.
-func NewSpanFirstQuery(query Query, end int) SpanFirstQuery {
-	return SpanFirstQuery{Match: query, End: end}
+func NewSpanFirstQuery(query Query, end int) *SpanFirstQuery {
+	return &SpanFirstQuery{Match: query, End: end}
+}
+
+// WithBoost sets the boost factor for this query.
+func (q *SpanFirstQuery) WithBoost(boost float64) *SpanFirstQuery {
+	q.Boost = &boost
+	return q
+}
+
+// WithQueryName sets the query name used for matched_filters per hit.
+func (q *SpanFirstQuery) WithQueryName(name string) *SpanFirstQuery {
+	q.QueryName = name
+	return q
 }
 
 func (q SpanFirstQuery) Source() (any, error) {

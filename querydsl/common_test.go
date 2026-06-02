@@ -1900,20 +1900,26 @@ func TestPinnedQuery_Source(t *testing.T) {
 }
 
 func TestQueryStringQuery_Source(t *testing.T) {
-	alw := true
-	lenient := true
-	escape := true
-	q := NewQueryStringQuery("(new york city) OR (big apple)")
-	q = QueryStringQuery{
-		Query: q.Query, DefaultField: "content", DefaultOperator: "AND",
-		Analyzer: "standard", QuoteAnalyzer: "whitespace", QuoteFieldSuffix: ".exact",
-		AllowLeadingWildcard: &alw, LowercaseExpandedTerms: &alw,
-		EnablePositionIncrements: &alw, AnalyzeWildcard: &alw, Locale: "en",
-		Fuzziness: "AUTO", FuzzyRewrite: "constant_score",
-		Rewrite: "constant_score", MinimumShouldMatch: "1",
-		Lenient: &lenient, QueryName: "q", TimeZone: "UTC",
-		Escape: &escape, Type: "best_fields",
-	}
+	q := NewQueryStringQuery("(new york city) OR (big apple)").
+		WithDefaultField("content").
+		WithDefaultOperator("AND").
+		WithAnalyzer("standard").
+		WithQuoteAnalyzer("whitespace").
+		WithQuoteFieldSuffix(".exact").
+		WithAllowLeadingWildcard(true).
+		WithLowercaseExpandedTerms(true).
+		WithEnablePositionIncrements(true).
+		WithAnalyzeWildcard(true).
+		WithLocale("en").
+		WithFuzziness("AUTO").
+		WithFuzzyRewrite("constant_score").
+		WithRewrite("constant_score").
+		WithMinimumShouldMatch("1").
+		WithLenient(true).
+		WithQueryName("q").
+		WithTimeZone("UTC").
+		WithEscape(true).
+		WithType("best_fields")
 	src, err := q.Source()
 	require.NoError(t, err)
 	m := src.(map[string]any)
@@ -2000,7 +2006,7 @@ func TestSimpleQueryStringQuery_Source(t *testing.T) {
 	lenient := true
 	fuzzyTrans := true
 	q := NewSimpleQueryStringQuery(`"fried eggs" +(eggplant | potato) -frittata`)
-	q = SimpleQueryStringQuery{
+	q = &SimpleQueryStringQuery{
 		Query: q.Query, Analyzer: "standard", DefaultOperator: "AND",
 		Fields: []string{"title", "body"}, FieldBoosts: map[string]*float64{},
 		MinimumShouldMatch: "1", Flags: "ALL", Lenient: &lenient,
@@ -2461,7 +2467,7 @@ func TestRangeAggregation_Source(t *testing.T) {
 		Lt(10).LtWithKey("k", 20).
 		Between(10, 20).BetweenWithKey("k", 30, 40).
 		Gt(50).GtWithKey("k", 60)
-	a = RangeAggregation{FieldVal: a.FieldVal, Ranges: a.Ranges, Keyed: &keyed, Unmapped: &keyed, Missing: 0}
+	a = &RangeAggregation{FieldVal: a.FieldVal, Ranges: a.Ranges, Keyed: &keyed, Unmapped: &keyed, Missing: 0}
 	src, err := a.Source()
 	require.NoError(t, err)
 	m := src.(map[string]any)
@@ -2488,14 +2494,13 @@ func TestDateRangeAggregation_Source(t *testing.T) {
 
 func TestHistogramAggregation_Source(t *testing.T) {
 	a := NewHistogramAggregation()
-	ap := &a
-	ap = ap.Field_("price").Interval_(50).MinDocCount_(1).Offset_(5).
+	a = a.Field_("price").Interval_(50).MinDocCount_(1).Offset_(5).
 		ExtendedBounds(0, 500).ExtendedBoundsMin(0).ExtendedBoundsMax(500).
 		OrderByCountAsc().OrderByCountDesc().OrderByKeyAsc().OrderByKeyDesc().
 		OrderByAggregation("agg", true).OrderByAggregationAndMetric("agg", "metric", true).
 		SubAggregation("avg_price", AvgAggregation{Field: "price"}).
 		Meta_(map[string]any{"x": "y"}).Missing_(0)
-	src, err := ap.Source()
+	src, err := a.Source()
 	require.NoError(t, err)
 	m := src.(map[string]any)
 	assert.Contains(t, m, "histogram")
@@ -2503,8 +2508,7 @@ func TestHistogramAggregation_Source(t *testing.T) {
 
 func TestDateHistogramAggregation_Source(t *testing.T) {
 	a := NewDateHistogramAggregation()
-	ap := &a
-	ap = ap.Field_("timestamp").CalendarInterval_("month").FixedInterval_("1d").Interval_("1d").
+	a = a.Field_("timestamp").CalendarInterval_("month").FixedInterval_("1d").Interval_("1d").
 		TimeZone_("UTC").Format_("yyyy-MM-dd").Offset_("+01:00").
 		MinDocCount_(1).Keyed_(true).
 		ExtendedBounds("2024-01-01", "2024-12-31").
@@ -2512,7 +2516,7 @@ func TestDateHistogramAggregation_Source(t *testing.T) {
 		OrderByAggregation("agg", true).OrderByAggregationAndMetric("agg", "m", true).
 		SubAggregation("sub", NewAvgAggregation()).Meta_(nil).Missing_("2024-01-01").
 		Script_(nil)
-	src, err := ap.Source()
+	src, err := a.Source()
 	require.NoError(t, err)
 	m := src.(map[string]any)
 	assert.Contains(t, m, "date_histogram")
@@ -2523,7 +2527,7 @@ func TestAutoDateHistogramAggregation_Source(t *testing.T) {
 		WithBuckets(10).WithMinDocCount(1).
 		SubAggregation("sub", NewAvgAggregation()).
 		WithMeta(map[string]any{"x": "y"})
-	a = AutoDateHistogramAggregation{Field: a.Field, Buckets: a.Buckets, MinDocCount: a.MinDocCount, SubAggs: a.SubAggs, Meta: a.Meta, Format: "yyyy-MM", MinimumInterval: "month", TimeZone: "UTC"}
+	a = &AutoDateHistogramAggregation{Field: a.Field, Buckets: a.Buckets, MinDocCount: a.MinDocCount, SubAggs: a.SubAggs, Meta: a.Meta, Format: "yyyy-MM", MinimumInterval: "month", TimeZone: "UTC"}
 	src, err := a.Source()
 	require.NoError(t, err)
 	m := src.(map[string]any)
@@ -2559,7 +2563,7 @@ func TestGeoDistanceAggregation_Source(t *testing.T) {
 		AddUnboundedFrom(100.0).AddUnboundedFromWithKey("close", 100.0).
 		Between(50, 100).BetweenWithKey("mid", "50km", "100km").
 		SubAggregation("sub", NewAvgAggregation())
-	a = GeoDistanceAggregation{Field: "location", Unit: "km", DistanceType: "arc", Origin: "40.0,-74.0", Ranges: a.Ranges, SubAggs: a.SubAggs}
+	a = &GeoDistanceAggregation{Field: "location", Unit: "km", DistanceType: "arc", Origin: "40.0,-74.0", Ranges: a.Ranges, SubAggs: a.SubAggs}
 	src, err := a.Source()
 	require.NoError(t, err)
 	m := src.(map[string]any)
@@ -2585,7 +2589,7 @@ func TestGeoTileGridAggregation_Source(t *testing.T) {
 
 	t.Run("valid", func(t *testing.T) {
 		a := NewGeoTileGridAggregation().WithPrecision(14).WithSize(10).WithShardSize(100).WithBounds(BoundingBox{TopLeft: *GeoPointFromLatLon(90, -180), BottomRight: *GeoPointFromLatLon(-90, 180)}).WithMeta(nil)
-		a = GeoTileGridAggregation{Field: "location", Precision: a.Precision, Size: a.Size, ShardSize: a.ShardSize, Bounds: a.Bounds}
+		a = &GeoTileGridAggregation{Field: "location", Precision: a.Precision, Size: a.Size, ShardSize: a.ShardSize, Bounds: a.Bounds}
 		a.SubAggregation("sub", NewAvgAggregation())
 		src, err := a.Source()
 		require.NoError(t, err)
@@ -2634,7 +2638,7 @@ func TestSignificantTermsAggregation_Source(t *testing.T) {
 		SignificanceHeuristic(NewJLHScoreSignificanceHeuristic()).
 		SubAggregation("sub", NewAvgAggregation()).
 		WithMeta(map[string]any{"x": "y"})
-	a = SignificantTermsAggregation{FieldVal: "text", RequiredSize: ptr(20), ShardSize: ptr(100), MinDocCount: ptr(5), ShardMinDocCount: ptr(10), ExecutionHint: "map", SubAggs: a.SubAggs, Meta: a.Meta, Filter: a.Filter, Heuristic: a.Heuristic, IncludeExclude: a.IncludeExclude}
+	a = &SignificantTermsAggregation{FieldVal: "text", RequiredSize: ptr(20), ShardSize: ptr(100), MinDocCount: ptr(5), ShardMinDocCount: ptr(10), ExecutionHint: "map", SubAggs: a.SubAggs, Meta: a.Meta, Filter: a.Filter, Heuristic: a.Heuristic, IncludeExclude: a.IncludeExclude}
 	src, err := a.Source()
 	require.NoError(t, err)
 	m := src.(map[string]any)
@@ -2696,7 +2700,7 @@ func TestSignificantTextAggregation_Source(t *testing.T) {
 		MinDocCount(5).ShardMinDocCount(10).WithSize(20).WithShardSize(100).
 		SubAggregation("sub", NewAvgAggregation()).
 		WithMeta(map[string]any{"x": "y"})
-	a = SignificantTextAggregation{FieldVal: "body", Filter: a.Filter, Heuristic: a.Heuristic, IncludeExclude: a.IncludeExclude, SubAggs: a.SubAggs, Meta: a.Meta, BucketCountThresholds: a.BucketCountThresholds}
+	a = &SignificantTextAggregation{FieldVal: "body", Filter: a.Filter, Heuristic: a.Heuristic, IncludeExclude: a.IncludeExclude, SubAggs: a.SubAggs, Meta: a.Meta, BucketCountThresholds: a.BucketCountThresholds}
 	src, err := a.Source()
 	require.NoError(t, err)
 	m := src.(map[string]any)

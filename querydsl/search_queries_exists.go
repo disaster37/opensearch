@@ -16,8 +16,14 @@ type ExistsQuery struct {
 
 // NewExistsQuery creates an ExistsQuery that matches documents having at
 // least one non-null value in the given field.
-func NewExistsQuery(field string) ExistsQuery {
-	return ExistsQuery{Field: field}
+func NewExistsQuery(field string) *ExistsQuery {
+	return &ExistsQuery{Field: field}
+}
+
+// WithQueryName sets the query name for identification in search responses.
+func (q *ExistsQuery) WithQueryName(queryName string) *ExistsQuery {
+	q.QueryName = queryName
+	return q
 }
 
 func (q ExistsQuery) Source() (any, error) {

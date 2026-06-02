@@ -12,8 +12,14 @@ type MatchNoneQuery struct {
 }
 
 // NewMatchNoneQuery creates a MatchNoneQuery that matches no documents.
-func NewMatchNoneQuery() MatchNoneQuery {
-	return MatchNoneQuery{}
+func NewMatchNoneQuery() *MatchNoneQuery {
+	return &MatchNoneQuery{}
+}
+
+// WithQueryName sets the query name for identification in search responses.
+func (q *MatchNoneQuery) WithQueryName(queryName string) *MatchNoneQuery {
+	q.QueryName = queryName
+	return q
 }
 
 func (q MatchNoneQuery) Source() (any, error) {

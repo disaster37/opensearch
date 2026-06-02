@@ -12,11 +12,42 @@ type GeoHashGridAggregation struct {
 	Meta         map[string]any         `json:"meta,omitempty"`
 }
 
-func NewGeoHashGridAggregation() GeoHashGridAggregation {
-	return GeoHashGridAggregation{}
+func NewGeoHashGridAggregation() *GeoHashGridAggregation {
+	return &GeoHashGridAggregation{}
 }
 
-func (a GeoHashGridAggregation) SubAggregation(name string, subAggregation Aggregation) GeoHashGridAggregation {
+// WithField sets the geo_point field to aggregate on.
+func (a *GeoHashGridAggregation) WithField(field string) *GeoHashGridAggregation {
+	a.GeoHashField = field
+	return a
+}
+
+// WithPrecision sets the geohash precision level.
+func (a *GeoHashGridAggregation) WithPrecision(precision any) *GeoHashGridAggregation {
+	a.Precision = precision
+	return a
+}
+
+// WithSize sets the maximum number of buckets to return.
+func (a *GeoHashGridAggregation) WithSize(size int) *GeoHashGridAggregation {
+	a.Size = &size
+	return a
+}
+
+// WithShardSize sets the maximum number of buckets to collect per shard.
+func (a *GeoHashGridAggregation) WithShardSize(shardSize int) *GeoHashGridAggregation {
+	a.ShardSize = &shardSize
+	return a
+}
+
+// WithMeta sets the meta data for the aggregation.
+func (a *GeoHashGridAggregation) WithMeta(meta map[string]any) *GeoHashGridAggregation {
+	a.Meta = meta
+	return a
+}
+
+// SubAggregation adds a sub-aggregation.
+func (a *GeoHashGridAggregation) SubAggregation(name string, subAggregation Aggregation) *GeoHashGridAggregation {
 	if a.SubAggs == nil {
 		a.SubAggs = make(map[string]Aggregation)
 	}
