@@ -167,6 +167,11 @@ func New(cfg *Config, logger *logrus.Entry) (Client, error) {
 		return nil
 	})
 
+	// Pu client on debug if logger is set to debug level or lower.
+	if logger.Logger.IsLevelEnabled(logrus.DebugLevel) {
+		c.SetDebug(true)
+	}
+
 	return &DefaultClient{
 		client:      c,
 		logger:      logger,

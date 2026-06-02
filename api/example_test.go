@@ -384,6 +384,95 @@ func ExampleSearchService_CreatePIT() {
 	// SearchService.CreatePIT(ctx, *CreatePITRequest)
 }
 
+// Example_searchWithPIT demonstrates how to paginate through all
+// documents in an index using a Point In Time (PIT) context and search_after.
+//
+// The pattern is:
+//  1. Create a PIT for the target index.
+//  2. Defer a call to DeletePIT so the PIT is released when the function returns.
+//  3. Issue successive Search requests using the PIT id and search_after, advancing
+//     the cursor with the sort values of the last hit, until no hits are returned.
+func Example_searchWithPIT() {
+	ctx := context.Background()
+
+	var searchSvc api.SearchService
+	if searchSvc == nil {
+		fmt.Println("SearchService.SearchWithPIT(ctx, *SearchRequest)")
+		return
+	}
+
+	// 1. Create a PIT that stays alive for 2 minutes.
+	pitResp, err := searchSvc.CreatePIT(ctx, &api.CreatePITRequest{
+		Indices:   []string{"my-index"},
+		KeepAlive: "2m",
+	})
+	if err != nil {
+		log.Fatal(err)
+	}
+	pitId := pitResp.PitId
+
+	// 2. Defer deletion of the PIT so cluster resources are freed even on early return.
+	defer func() {
+		_, _ = searchSvc.DeletePIT(ctx, &api.DeletePITRequest{
+			PitIds: []string{pitId},
+		})
+	}()
+
+	// 3. Iterate using search_after until no more hits arrive.
+	const pageSize = 100
+	var searchAfter []any // nil on first request
+	totalDocs := 0
+
+	for {
+		body := map[string]any{
+			// Attach the PIT to the request body instead of specifying an index.
+			"pit": map[string]any{
+				"id":         pitId,
+				"keep_alive": "2m", // extend the PIT on every page
+			},
+			"query": map[string]any{
+				"match_all": map[string]any{},
+			},
+			// A tie-breaker sort is required for deterministic search_after pagination.
+			// "_shard_doc" is a synthetic field available in PIT searches.
+			"sort": []map[string]any{
+				{"@timestamp": map[string]any{"order": "asc"}},
+				{"_shard_doc": map[string]any{"order": "asc"}},
+			},
+			"size": pageSize,
+		}
+
+		if searchAfter != nil {
+			body["search_after"] = searchAfter
+		}
+
+		result, err := searchSvc.Search(ctx, &api.SearchRequest{
+			// No Indices field – the index is encoded in the PIT id.
+			Body: body,
+		})
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		hits := result.Hits.Hits
+		if len(hits) == 0 {
+			break // all pages consumed
+		}
+
+		for _, hit := range hits {
+			_ = hit // process each document here
+			totalDocs++
+		}
+
+		// Advance the cursor to the sort values of the last hit on this page.
+		searchAfter = hits[len(hits)-1].Sort
+	}
+
+	fmt.Printf("iterated %d documents via PIT pagination\n", totalDocs)
+	// Output:
+	// SearchService.SearchWithPIT(ctx, *SearchRequest)
+}
+
 func ExampleSearchService_SearchTemplate() {
 	ctx := context.Background()
 
