@@ -72,6 +72,74 @@ func (r *SearchRequest) HasIndices() bool {
 	return len(r.indices) > 0
 }
 
+// Indices returns the list of indices set on this request.
+func (r *SearchRequest) Indices() []string {
+	return r.indices
+}
+
+// URLParams returns request-level parameters suitable for use as URL query
+// parameters (e.g. search_type, scroll, routing, preference, etc.).
+// Only non-empty values are included.
+func (r *SearchRequest) URLParams() map[string]string {
+	params := make(map[string]string)
+	if r.searchType != "" {
+		params["search_type"] = r.searchType
+	}
+	if r.routing != nil && *r.routing != "" {
+		params["routing"] = *r.routing
+	}
+	if r.preference != nil && *r.preference != "" {
+		params["preference"] = *r.preference
+	}
+	if r.scroll != "" {
+		params["scroll"] = r.scroll
+	}
+	if r.expandWildcards != "" {
+		params["expand_wildcards"] = r.expandWildcards
+	}
+	if r.requestCache != nil {
+		if *r.requestCache {
+			params["request_cache"] = "true"
+		} else {
+			params["request_cache"] = "false"
+		}
+	}
+	if r.ignoreUnavailable != nil {
+		if *r.ignoreUnavailable {
+			params["ignore_unavailable"] = "true"
+		} else {
+			params["ignore_unavailable"] = "false"
+		}
+	}
+	if r.allowNoIndices != nil {
+		if *r.allowNoIndices {
+			params["allow_no_indices"] = "true"
+		} else {
+			params["allow_no_indices"] = "false"
+		}
+	}
+	if r.allowPartialSearchResults != nil {
+		if *r.allowPartialSearchResults {
+			params["allow_partial_search_results"] = "true"
+		} else {
+			params["allow_partial_search_results"] = "false"
+		}
+	}
+	if r.batchedReduceSize != nil {
+		params["batched_reduce_size"] = itoa(*r.batchedReduceSize)
+	}
+	if r.maxConcurrentShardRequests != nil {
+		params["max_concurrent_shard_requests"] = itoa(*r.maxConcurrentShardRequests)
+	}
+	if r.preFilterShardSize != nil {
+		params["pre_filter_shard_size"] = itoa(*r.preFilterShardSize)
+	}
+	if len(params) == 0 {
+		return nil
+	}
+	return params
+}
+
 // Type specifies one or more types to be used.
 //
 // Deprecated: Types are in the process of being removed. Instead of using a type, prefer to

@@ -3,9 +3,18 @@ package api
 import (
 	"fmt"
 
+	json "github.com/goccy/go-json"
+
+	"github.com/disaster37/opensearch/v4/querydsl"
 	"github.com/disaster37/opensearch/v4/types"
 	"github.com/go-playground/validator/v10"
 )
+
+// rawBody wraps a JSON string as json.RawMessage so that resty does not
+// double-encode it when setting the request body.
+func rawBody(s string) json.RawMessage {
+	return json.RawMessage(s)
+}
 
 var validate = validator.New(validator.WithRequiredStructEnabled())
 
@@ -62,6 +71,33 @@ type SearchRequest struct {
 	Indices []string
 	Body    any
 	Params  map[string]string
+}
+
+// NewSearchRequest creates a SearchRequest from a *querydsl.SearchRequest.
+// It calls Body() on the querydsl request to serialize the query DSL and
+// uses the result as the request body. This allows building search requests
+// using the fluent querydsl builder API:
+//
+//	req, err := api.NewSearchRequest(
+//	    querydsl.NewSearchRequest().
+//	        Index("my-index").
+//	        Query(querydsl.MatchAll{}).
+//	        Size(10),
+//	)
+//	if err != nil {
+//	    return err
+//	}
+//	result, err := client.Search().Search(ctx, req)
+func NewSearchRequest(r *querydsl.SearchRequest) (*SearchRequest, error) {
+	body, err := r.Body()
+	if err != nil {
+		return nil, fmt.Errorf("search request body: %w", err)
+	}
+	return &SearchRequest{
+		Indices: r.Indices(),
+		Body:    rawBody(body),
+		Params:  r.URLParams(),
+	}, nil
 }
 
 type ScrollRequest struct {

@@ -1,11 +1,20 @@
 package api
 
 import (
+	"fmt"
 	"testing"
 
+	"github.com/disaster37/opensearch/v4/querydsl"
 	"github.com/disaster37/opensearch/v4/types"
 	"github.com/stretchr/testify/assert"
 )
+
+// mockQueryError implements querydsl.Query and always returns an error from Source().
+type mockQueryError struct{}
+
+func (m mockQueryError) Source() (any, error) {
+	return nil, fmt.Errorf("mock query error")
+}
 
 func TestIndexRequest_Validate(t *testing.T) {
 	t.Run("valid", func(t *testing.T) {
@@ -440,4 +449,61 @@ func TestIsmPutPolicyRequest_Validate_WithVersion(t *testing.T) {
 		Version:    &types.DocumentVersion{SeqNo: &seqNo, PrimaryTerm: &primaryTerm},
 	}
 	assert.NoError(t, req.Validate())
+}
+
+func TestNewSearchRequest(t *testing.T) {
+	t.Run("simple query", func(t *testing.T) {
+		qr := querydsl.NewSearchRequest().
+			Index("my-index").
+			Query(querydsl.NewMatchAllQuery()).
+			Size(10)
+
+		req, err := NewSearchRequest(qr)
+		assert.NoError(t, err)
+		assert.Equal(t, []string{"my-index"}, req.Indices)
+		assert.NotNil(t, req.Body)
+		assert.Nil(t, req.Params)
+	})
+
+	t.Run("multiple indices", func(t *testing.T) {
+		qr := querydsl.NewSearchRequest().
+			Index("idx1", "idx2").
+			Query(querydsl.NewMatchAllQuery())
+
+		req, err := NewSearchRequest(qr)
+		assert.NoError(t, err)
+		assert.Equal(t, []string{"idx1", "idx2"}, req.Indices)
+	})
+
+	t.Run("with url params", func(t *testing.T) {
+		qr := querydsl.NewSearchRequest().
+			Index("my-index").
+			SearchType("dfs_query_then_fetch").
+			Routing("r1").
+			Scroll("5m").
+			Query(querydsl.NewMatchAllQuery())
+
+		req, err := NewSearchRequest(qr)
+		assert.NoError(t, err)
+		assert.Equal(t, "dfs_query_then_fetch", req.Params["search_type"])
+		assert.Equal(t, "r1", req.Params["routing"])
+		assert.Equal(t, "5m", req.Params["scroll"])
+	})
+
+	t.Run("no indices", func(t *testing.T) {
+		qr := querydsl.NewSearchRequest().Query(querydsl.NewMatchAllQuery())
+
+		req, err := NewSearchRequest(qr)
+		assert.NoError(t, err)
+		assert.Empty(t, req.Indices)
+	})
+
+	t.Run("error from body", func(t *testing.T) {
+		qr := querydsl.NewSearchRequest().
+			Query(mockQueryError{})
+
+		_, err := NewSearchRequest(qr)
+		assert.Error(t, err)
+		assert.Contains(t, err.Error(), "search request body")
+	})
 }

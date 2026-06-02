@@ -1033,6 +1033,61 @@ func TestSearchRequest_more_methods(t *testing.T) {
 	assert.NotEmpty(t, body)
 }
 
+func TestSearchRequest_Indices(t *testing.T) {
+	t.Run("empty", func(t *testing.T) {
+		req := NewSearchRequest()
+		assert.Empty(t, req.Indices())
+	})
+
+	t.Run("with indices", func(t *testing.T) {
+		req := NewSearchRequest().Index("a", "b")
+		assert.Equal(t, []string{"a", "b"}, req.Indices())
+	})
+}
+
+func TestSearchRequest_URLParams(t *testing.T) {
+	t.Run("empty", func(t *testing.T) {
+		req := NewSearchRequest()
+		assert.Nil(t, req.URLParams())
+	})
+
+	t.Run("with params", func(t *testing.T) {
+		req := NewSearchRequest().
+			SearchTypeDfsQueryThenFetch().
+			Routing("r1").
+			Preference("_local").
+			Scroll("5m").
+			ExpandWildcards("open").
+			RequestCache(true).
+			IgnoreUnavailable(true).
+			AllowNoIndices(false).
+			AllowPartialSearchResults(true).
+			BatchedReduceSize(32).
+			MaxConcurrentShardRequests(4).
+			PreFilterShardSize(64)
+
+		params := req.URLParams()
+		assert.Equal(t, "dfs_query_then_fetch", params["search_type"])
+		assert.Equal(t, "r1", params["routing"])
+		assert.Equal(t, "_local", params["preference"])
+		assert.Equal(t, "5m", params["scroll"])
+		assert.Equal(t, "open", params["expand_wildcards"])
+		assert.Equal(t, "true", params["request_cache"])
+		assert.Equal(t, "true", params["ignore_unavailable"])
+		assert.Equal(t, "false", params["allow_no_indices"])
+		assert.Equal(t, "true", params["allow_partial_search_results"])
+		assert.Equal(t, "32", params["batched_reduce_size"])
+		assert.Equal(t, "4", params["max_concurrent_shard_requests"])
+		assert.Equal(t, "64", params["pre_filter_shard_size"])
+	})
+
+	t.Run("false booleans", func(t *testing.T) {
+		req := NewSearchRequest().RequestCache(false)
+		params := req.URLParams()
+		assert.Equal(t, "false", params["request_cache"])
+	})
+}
+
 func TestSearchSource_hasSort(t *testing.T) {
 	ss := NewSearchSource()
 	assert.False(t, ss.hasSort())
