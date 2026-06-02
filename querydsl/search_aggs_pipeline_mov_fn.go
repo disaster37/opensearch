@@ -284,12 +284,12 @@ func (m HoltWintersMovAvgModel) Settings() map[string]any {
 
 type LinearMovAvgModel struct{}
 
-func NewLinearMovAvgModel() *LinearMovAvgModel        { return &LinearMovAvgModel{} }
-func (m LinearMovAvgModel) Name() string              { return "linear" }
-func (m LinearMovAvgModel) Settings() map[string]any  { return nil }
+func NewLinearMovAvgModel() *LinearMovAvgModel       { return &LinearMovAvgModel{} }
+func (m LinearMovAvgModel) Name() string             { return "linear" }
+func (m LinearMovAvgModel) Settings() map[string]any { return nil }
 
 type SimpleMovAvgModel struct{}
 
-func NewSimpleMovAvgModel() *SimpleMovAvgModel        { return &SimpleMovAvgModel{} }
-func (m SimpleMovAvgModel) Name() string              { return "simple" }
-func (m SimpleMovAvgModel) Settings() map[string]any  { return nil }
+func NewSimpleMovAvgModel() *SimpleMovAvgModel       { return &SimpleMovAvgModel{} }
+func (m SimpleMovAvgModel) Name() string             { return "simple" }
+func (m SimpleMovAvgModel) Settings() map[string]any { return nil }
