@@ -57,19 +57,20 @@ func DefaultRetryConditions() []resty.RetryConditionFunc {
 // Includes default conditions plus additional OpenSearch-specific scenarios.
 func PITSearchRetryConditions() []resty.RetryConditionFunc {
 	defaultConds := DefaultRetryConditions()
-	return append(defaultConds, 
+	return append(
+		defaultConds,
 		// Retry on OpenSearch-specific errors that may be transient
 		func(res *resty.Response, err error) bool {
 			if res == nil {
 				return false
 			}
 			// Check for specific OpenSearch error types in response body
-			// Common transient errors: "search_phase_execution_exception", 
+			// Common transient errors: "search_phase_execution_exception",
 			// "too_many_buckets_exception", "circuit_breaking_exception"
 			body := string(res.Body())
 			return strings.Contains(body, "search_phase_execution_exception") ||
-				   strings.Contains(body, "too_many_buckets_exception") ||
-				   strings.Contains(body, "circuit_breaking_exception")
+				strings.Contains(body, "too_many_buckets_exception") ||
+				strings.Contains(body, "circuit_breaking_exception")
 		},
 	)
 }
@@ -263,15 +264,15 @@ func New(cfg *Config, logger *logrus.Entry) (Client, error) {
 	// Configure retry settings if specified
 	if cfg.RetryCount > 0 {
 		c.SetRetryCount(cfg.RetryCount)
-		
+
 		if cfg.RetryWaitTime > 0 {
 			c.SetRetryWaitTime(cfg.RetryWaitTime)
 		}
-		
+
 		if cfg.RetryMaxWaitTime > 0 {
 			c.SetRetryMaxWaitTime(cfg.RetryMaxWaitTime)
 		}
-		
+
 		if len(cfg.RetryConditions) > 0 {
 			for _, condition := range cfg.RetryConditions {
 				c.AddRetryCondition(condition)
