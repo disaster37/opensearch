@@ -412,6 +412,10 @@ func (r *SearchRequest) SortBy(sorter ...Sorter) *SearchRequest {
 
 // SearchAfter sets the sort values that indicates which docs this
 // request should "search after".
+//
+// NOTE: When using SearchAfter with a PointInTime (PIT), you MUST include
+// "_shard_doc" as the final sort field to ensure deterministic pagination
+// and prevent missing or duplicating documents due to sort ties.
 func (r *SearchRequest) SearchAfter(sortValues ...any) *SearchRequest {
 	r.searchSource = r.searchSource.SearchAfter(sortValues...)
 	return r
@@ -489,6 +493,9 @@ func (r *SearchRequest) Collapse(collapse *CollapseBuilder) *SearchRequest {
 
 // PointInTime specifies an optional PointInTime to be used in the context
 // of this search.
+//
+// NOTE: When using a PointInTime (PIT) with SearchAfter pagination, you MUST
+// include "_shard_doc" as the final sort field to ensure deterministic results.
 func (s *SearchRequest) PointInTime(pointInTime *PointInTime) *SearchRequest {
 	s.searchSource = s.searchSource.PointInTime(pointInTime)
 	return s

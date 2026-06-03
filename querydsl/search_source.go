@@ -197,9 +197,13 @@ func (s *SearchSource) TrackTotalHits(trackTotalHits any) *SearchSource {
 // SearchAfter allows a different form of pagination by using a live cursor,
 // using the results of the previous page to help the retrieval of the next.
 //
+// NOTE: When using SearchAfter with a PointInTime (PIT), you MUST include
+// "_shard_doc" as the final sort field to ensure deterministic pagination
+// and prevent missing or duplicating documents due to sort ties.
+//
 // See https://www.opensearch.co/guide/en/opensearchsearch/reference/7.0/search-request-search-after.html
 func (s *SearchSource) SearchAfter(sortValues ...any) *SearchSource {
-	s.searchAfterSortValues = append(s.searchAfterSortValues, sortValues...)
+	s.searchAfterSortValues = sortValues
 	return s
 }
 
@@ -410,6 +414,9 @@ func (s *SearchSource) Collapse(collapse *CollapseBuilder) *SearchSource {
 
 // PointInTime specifies an optional PointInTime to be used in the context
 // of this search.
+//
+// NOTE: When using a PointInTime (PIT) with SearchAfter pagination, you MUST
+// include "_shard_doc" as the final sort field to ensure deterministic results.
 func (s *SearchSource) PointInTime(pointInTime *PointInTime) *SearchSource {
 	s.pointInTime = pointInTime
 	return s
