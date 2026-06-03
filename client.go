@@ -3,6 +3,7 @@ package opensearch
 import (
 	"crypto/tls"
 	"crypto/x509"
+	"strings"
 	"time"
 
 	"github.com/disaster37/opensearch/v4/api"
@@ -10,6 +11,68 @@ import (
 	"github.com/go-resty/resty/v2"
 	"github.com/sirupsen/logrus"
 )
+
+// DefaultRetryConditions returns the default retry conditions that handle:
+// - Network errors (no response received)
+// - 429 Too Many Requests status code
+// - 5xx server error status codes (excluding 501 Not Implemented)
+//
+// These conditions are automatically applied when RetryCount > 0, but you can
+// use this function to build custom retry logic that includes the defaults.
+func DefaultRetryConditions() []resty.RetryConditionFunc {
+	return []resty.RetryConditionFunc{
+		func(res *resty.Response, err error) bool {
+			if res == nil {
+				// Retry on network/transport errors including connection reset
+				if err != nil {
+					errStr := err.Error()
+					// Common network errors that should be retried
+					networkErrors := []string{
+						"connection reset by peer",
+						"connection refused",
+						"timeout",
+						"i/o timeout",
+						"network is unreachable",
+						"broken pipe",
+						"EOF",
+					}
+					for _, netErr := range networkErrors {
+						if strings.Contains(strings.ToLower(errStr), netErr) {
+							return true
+						}
+					}
+					// Also retry on any other non-nil error when no response
+					return true
+				}
+				return false
+			}
+			status := res.StatusCode()
+			return status == 429 || (status >= 500 && status != 501)
+		},
+	}
+}
+
+// PITSearchRetryConditions returns retry conditions specifically optimized for
+// Point-in-Time (PIT) search queries and other long-running OpenSearch operations.
+// Includes default conditions plus additional OpenSearch-specific scenarios.
+func PITSearchRetryConditions() []resty.RetryConditionFunc {
+	defaultConds := DefaultRetryConditions()
+	return append(defaultConds, 
+		// Retry on OpenSearch-specific errors that may be transient
+		func(res *resty.Response, err error) bool {
+			if res == nil {
+				return false
+			}
+			// Check for specific OpenSearch error types in response body
+			// Common transient errors: "search_phase_execution_exception", 
+			// "too_many_buckets_exception", "circuit_breaking_exception"
+			body := string(res.Body())
+			return strings.Contains(body, "search_phase_execution_exception") ||
+				   strings.Contains(body, "too_many_buckets_exception") ||
+				   strings.Contains(body, "circuit_breaking_exception")
+		},
+	)
+}
 
 // Client is the main entry point for all OpenSearch operations.
 //
@@ -75,6 +138,23 @@ type Config struct {
 
 	// Timeout is the HTTP request timeout. Zero means no timeout.
 	Timeout time.Duration
+
+	// RetryCount is the maximum number of retry attempts for failed requests.
+	// Default is 0 (no retries). Set to a positive integer to enable retries.
+	RetryCount int
+
+	// RetryWaitTime is the minimum wait time between retry attempts.
+	// Default is 100ms if not specified.
+	RetryWaitTime time.Duration
+
+	// RetryMaxWaitTime is the maximum wait time between retry attempts.
+	// Default is 2s if not specified.
+	RetryMaxWaitTime time.Duration
+
+	// RetryConditions are custom functions that determine if a request should be retried.
+	// By default, resty retries on network errors, 429 Too Many Requests, and 5xx server errors.
+	// Add custom conditions to extend the default behavior.
+	RetryConditions []resty.RetryConditionFunc
 }
 
 // DefaultClient is the default [Client] implementation returned by [New].
@@ -112,12 +192,16 @@ type DefaultClient struct {
 // The returned client builds a resty HTTP client internally, applies TLS and
 // authentication from cfg, and instantiates all 18 service interfaces.
 //
-// Example:
+// Example with retry configuration for long-running queries (like Point-in-Time searches):
 //
 //	client, err := opensearch.New(&opensearch.Config{
 //	    URL:      "https://localhost:9200",
 //	    Username: "admin",
 //	    Password: "admin",
+//	    RetryCount: 3,
+//	    RetryWaitTime: 500 * time.Millisecond,
+//	    RetryMaxWaitTime: 5 * time.Second,
+//	    RetryConditions: opensearch.PITSearchRetryConditions(),
 //	}, logrus.NewEntry(logrus.StandardLogger()))
 func New(cfg *Config, logger *logrus.Entry) (Client, error) {
 	c := resty.New()
@@ -174,6 +258,25 @@ func New(cfg *Config, logger *logrus.Entry) (Client, error) {
 	// Pu client on debug if logger is set to debug level or lower.
 	if logger.Logger.IsLevelEnabled(logrus.DebugLevel) {
 		c.SetDebug(true)
+	}
+
+	// Configure retry settings if specified
+	if cfg.RetryCount > 0 {
+		c.SetRetryCount(cfg.RetryCount)
+		
+		if cfg.RetryWaitTime > 0 {
+			c.SetRetryWaitTime(cfg.RetryWaitTime)
+		}
+		
+		if cfg.RetryMaxWaitTime > 0 {
+			c.SetRetryMaxWaitTime(cfg.RetryMaxWaitTime)
+		}
+		
+		if len(cfg.RetryConditions) > 0 {
+			for _, condition := range cfg.RetryConditions {
+				c.AddRetryCondition(condition)
+			}
+		}
 	}
 
 	return &DefaultClient{
