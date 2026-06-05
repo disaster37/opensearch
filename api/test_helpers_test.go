@@ -49,3 +49,6 @@ func badJSONServer() *httptest.Server {
 		_, _ = fmt.Fprint(w, `not json at all`)
 	}))
 }
+
+func ptrInt(n int) *int       { return &n }
+func ptrInt64(n int64) *int64 { return &n }

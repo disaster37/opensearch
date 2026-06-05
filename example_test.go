@@ -88,9 +88,9 @@ func ExampleDocumentVersion() {
 			Index: "my-index",
 			Id:    "doc-1",
 			Body:  newSource,
-			Params: map[string]string{
-				"if_seq_no":       fmt.Sprintf("%d", *doc.SeqNo),
-				"if_primary_term": fmt.Sprintf("%d", *doc.PrimaryTerm),
+			Params: &api.UpdateParams{
+				IfSeqNo:       doc.SeqNo,
+				IfPrimaryTerm: doc.PrimaryTerm,
 			},
 		},
 	)

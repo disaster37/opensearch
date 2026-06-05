@@ -485,9 +485,9 @@ func TestNewSearchRequest(t *testing.T) {
 
 		req, err := NewSearchRequest(qr)
 		assert.NoError(t, err)
-		assert.Equal(t, "dfs_query_then_fetch", req.Params["search_type"])
-		assert.Equal(t, "r1", req.Params["routing"])
-		assert.Equal(t, "5m", req.Params["scroll"])
+		assert.Equal(t, "dfs_query_then_fetch", req.Params.SearchType)
+		assert.Equal(t, "r1", req.Params.Routing)
+		assert.Equal(t, "5m", req.Params.Scroll)
 	})
 
 	t.Run("no indices", func(t *testing.T) {

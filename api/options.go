@@ -2,6 +2,7 @@ package api
 
 import (
 	"fmt"
+	"strconv"
 
 	json "github.com/goccy/go-json"
 
@@ -25,11 +26,501 @@ func validationError(err error) error {
 	return nil
 }
 
+type IndexParams struct {
+	Refresh       string
+	Routing       string
+	Timeout       string
+	Version       int64
+	VersionType   string
+	IfSeqNo       *int64
+	IfPrimaryTerm *int64
+	Pipeline      string
+	RequireAlias  bool
+}
+
+func (p *IndexParams) ToMap() map[string]string {
+	if p == nil {
+		return nil
+	}
+	m := make(map[string]string)
+	if p.Refresh != "" {
+		m["refresh"] = p.Refresh
+	}
+	if p.Routing != "" {
+		m["routing"] = p.Routing
+	}
+	if p.Timeout != "" {
+		m["timeout"] = p.Timeout
+	}
+	if p.Version != 0 {
+		m["version"] = strconv.FormatInt(p.Version, 10)
+	}
+	if p.VersionType != "" {
+		m["version_type"] = p.VersionType
+	}
+	if p.IfSeqNo != nil {
+		m["if_seq_no"] = strconv.FormatInt(*p.IfSeqNo, 10)
+	}
+	if p.IfPrimaryTerm != nil {
+		m["if_primary_term"] = strconv.FormatInt(*p.IfPrimaryTerm, 10)
+	}
+	if p.Pipeline != "" {
+		m["pipeline"] = p.Pipeline
+	}
+	if p.RequireAlias {
+		m["require_alias"] = "true"
+	}
+	if len(m) == 0 {
+		return nil
+	}
+	return m
+}
+
+type GetParams struct {
+	Routing        string
+	Preference     string
+	Realtime       bool
+	Refresh        bool
+	Source         string
+	SourceExcludes string
+	SourceIncludes string
+	StoredFields   string
+	Version        *int64
+	VersionType    string
+	IfSeqNo        *int64
+	IfPrimaryTerm  *int64
+}
+
+func (p *GetParams) ToMap() map[string]string {
+	if p == nil {
+		return nil
+	}
+	m := make(map[string]string)
+	if p.Routing != "" {
+		m["routing"] = p.Routing
+	}
+	if p.Preference != "" {
+		m["preference"] = p.Preference
+	}
+	if p.Realtime {
+		m["realtime"] = "true"
+	}
+	if p.Refresh {
+		m["refresh"] = "true"
+	}
+	if p.Source != "" {
+		m["_source"] = p.Source
+	}
+	if p.SourceExcludes != "" {
+		m["_source_excludes"] = p.SourceExcludes
+	}
+	if p.SourceIncludes != "" {
+		m["_source_includes"] = p.SourceIncludes
+	}
+	if p.StoredFields != "" {
+		m["stored_fields"] = p.StoredFields
+	}
+	if p.Version != nil {
+		m["version"] = strconv.FormatInt(*p.Version, 10)
+	}
+	if p.VersionType != "" {
+		m["version_type"] = p.VersionType
+	}
+	if p.IfSeqNo != nil {
+		m["if_seq_no"] = strconv.FormatInt(*p.IfSeqNo, 10)
+	}
+	if p.IfPrimaryTerm != nil {
+		m["if_primary_term"] = strconv.FormatInt(*p.IfPrimaryTerm, 10)
+	}
+	if len(m) == 0 {
+		return nil
+	}
+	return m
+}
+
+type DeleteParams struct {
+	Refresh       string
+	Routing       string
+	Timeout       string
+	Version       *int64
+	VersionType   string
+	IfSeqNo       *int64
+	IfPrimaryTerm *int64
+}
+
+func (p *DeleteParams) ToMap() map[string]string {
+	if p == nil {
+		return nil
+	}
+	m := make(map[string]string)
+	if p.Refresh != "" {
+		m["refresh"] = p.Refresh
+	}
+	if p.Routing != "" {
+		m["routing"] = p.Routing
+	}
+	if p.Timeout != "" {
+		m["timeout"] = p.Timeout
+	}
+	if p.Version != nil {
+		m["version"] = strconv.FormatInt(*p.Version, 10)
+	}
+	if p.VersionType != "" {
+		m["version_type"] = p.VersionType
+	}
+	if p.IfSeqNo != nil {
+		m["if_seq_no"] = strconv.FormatInt(*p.IfSeqNo, 10)
+	}
+	if p.IfPrimaryTerm != nil {
+		m["if_primary_term"] = strconv.FormatInt(*p.IfPrimaryTerm, 10)
+	}
+	if len(m) == 0 {
+		return nil
+	}
+	return m
+}
+
+type UpdateParams struct {
+	Refresh         string
+	Routing         string
+	Timeout         string
+	RetryOnConflict *int
+	Source          string
+	SourceExcludes  string
+	SourceIncludes  string
+	IfSeqNo         *int64
+	IfPrimaryTerm   *int64
+	RequireAlias    bool
+}
+
+func (p *UpdateParams) ToMap() map[string]string {
+	if p == nil {
+		return nil
+	}
+	m := make(map[string]string)
+	if p.Refresh != "" {
+		m["refresh"] = p.Refresh
+	}
+	if p.Routing != "" {
+		m["routing"] = p.Routing
+	}
+	if p.Timeout != "" {
+		m["timeout"] = p.Timeout
+	}
+	if p.RetryOnConflict != nil {
+		m["retry_on_conflict"] = strconv.Itoa(*p.RetryOnConflict)
+	}
+	if p.Source != "" {
+		m["_source"] = p.Source
+	}
+	if p.SourceExcludes != "" {
+		m["_source_excludes"] = p.SourceExcludes
+	}
+	if p.SourceIncludes != "" {
+		m["_source_includes"] = p.SourceIncludes
+	}
+	if p.IfSeqNo != nil {
+		m["if_seq_no"] = strconv.FormatInt(*p.IfSeqNo, 10)
+	}
+	if p.IfPrimaryTerm != nil {
+		m["if_primary_term"] = strconv.FormatInt(*p.IfPrimaryTerm, 10)
+	}
+	if p.RequireAlias {
+		m["require_alias"] = "true"
+	}
+	if len(m) == 0 {
+		return nil
+	}
+	return m
+}
+
+type SearchParams struct {
+	SearchType                 string
+	Routing                    string
+	Preference                 string
+	RequestCache               bool
+	Scroll                     string
+	AllowPartialSearchResults  bool
+	BatchedReduceSize          *int
+	MaxConcurrentShardRequests *int
+	PreFilterShardSize         *int
+	RestTotalHitsAsInt         bool
+	TypedKeys                  bool
+	IgnoreUnavailable          bool
+	AllowNoIndices             bool
+	ExpandWildcards            string
+	CcsMinimizeRoundtrips      bool
+	Explain                    bool
+	Size                       *int
+	From                       *int
+	Timeout                    string
+	TrackTotalHits             string
+}
+
+func (p *SearchParams) ToMap() map[string]string {
+	if p == nil {
+		return nil
+	}
+	m := make(map[string]string)
+	if p.SearchType != "" {
+		m["search_type"] = p.SearchType
+	}
+	if p.Routing != "" {
+		m["routing"] = p.Routing
+	}
+	if p.Preference != "" {
+		m["preference"] = p.Preference
+	}
+	if p.RequestCache {
+		m["request_cache"] = "true"
+	}
+	if p.Scroll != "" {
+		m["scroll"] = p.Scroll
+	}
+	if p.AllowPartialSearchResults {
+		m["allow_partial_search_results"] = "true"
+	}
+	if p.BatchedReduceSize != nil {
+		m["batched_reduce_size"] = strconv.Itoa(*p.BatchedReduceSize)
+	}
+	if p.MaxConcurrentShardRequests != nil {
+		m["max_concurrent_shard_requests"] = strconv.Itoa(*p.MaxConcurrentShardRequests)
+	}
+	if p.PreFilterShardSize != nil {
+		m["pre_filter_shard_size"] = strconv.Itoa(*p.PreFilterShardSize)
+	}
+	if p.RestTotalHitsAsInt {
+		m["rest_total_hits_as_int"] = "true"
+	}
+	if p.TypedKeys {
+		m["typed_keys"] = "true"
+	}
+	if p.IgnoreUnavailable {
+		m["ignore_unavailable"] = "true"
+	}
+	if p.AllowNoIndices {
+		m["allow_no_indices"] = "true"
+	}
+	if p.ExpandWildcards != "" {
+		m["expand_wildcards"] = p.ExpandWildcards
+	}
+	if p.CcsMinimizeRoundtrips {
+		m["ccs_minimize_roundtrips"] = "true"
+	}
+	if p.Explain {
+		m["explain"] = "true"
+	}
+	if p.Size != nil {
+		m["size"] = strconv.Itoa(*p.Size)
+	}
+	if p.From != nil {
+		m["from"] = strconv.Itoa(*p.From)
+	}
+	if p.Timeout != "" {
+		m["timeout"] = p.Timeout
+	}
+	if p.TrackTotalHits != "" {
+		m["track_total_hits"] = p.TrackTotalHits
+	}
+	if len(m) == 0 {
+		return nil
+	}
+	return m
+}
+
+type SearchTemplateParams struct {
+	SearchType            string
+	Routing               string
+	Preference            string
+	RequestCache          bool
+	Scroll                string
+	IgnoreUnavailable     bool
+	AllowNoIndices        bool
+	ExpandWildcards       string
+	Explain               bool
+	Profile               bool
+	TypedKeys             bool
+	RestTotalHitsAsInt    bool
+	CcsMinimizeRoundtrips bool
+}
+
+func (p *SearchTemplateParams) ToMap() map[string]string {
+	if p == nil {
+		return nil
+	}
+	m := make(map[string]string)
+	if p.SearchType != "" {
+		m["search_type"] = p.SearchType
+	}
+	if p.Routing != "" {
+		m["routing"] = p.Routing
+	}
+	if p.Preference != "" {
+		m["preference"] = p.Preference
+	}
+	if p.RequestCache {
+		m["request_cache"] = "true"
+	}
+	if p.Scroll != "" {
+		m["scroll"] = p.Scroll
+	}
+	if p.IgnoreUnavailable {
+		m["ignore_unavailable"] = "true"
+	}
+	if p.AllowNoIndices {
+		m["allow_no_indices"] = "true"
+	}
+	if p.ExpandWildcards != "" {
+		m["expand_wildcards"] = p.ExpandWildcards
+	}
+	if p.Explain {
+		m["explain"] = "true"
+	}
+	if p.Profile {
+		m["profile"] = "true"
+	}
+	if p.TypedKeys {
+		m["typed_keys"] = "true"
+	}
+	if p.RestTotalHitsAsInt {
+		m["rest_total_hits_as_int"] = "true"
+	}
+	if p.CcsMinimizeRoundtrips {
+		m["ccs_minimize_roundtrips"] = "true"
+	}
+	if len(m) == 0 {
+		return nil
+	}
+	return m
+}
+
+type MultiSearchTemplateParams struct {
+	SearchType                 string
+	MaxConcurrentSearches      *int
+	TypedKeys                  bool
+	RestTotalHitsAsInt         bool
+	PreFilterShardSize         *int
+	MaxConcurrentShardRequests *int
+	CcsMinimizeRoundtrips      bool
+}
+
+func (p *MultiSearchTemplateParams) ToMap() map[string]string {
+	if p == nil {
+		return nil
+	}
+	m := make(map[string]string)
+	if p.SearchType != "" {
+		m["search_type"] = p.SearchType
+	}
+	if p.MaxConcurrentSearches != nil {
+		m["max_concurrent_searches"] = strconv.Itoa(*p.MaxConcurrentSearches)
+	}
+	if p.TypedKeys {
+		m["typed_keys"] = "true"
+	}
+	if p.RestTotalHitsAsInt {
+		m["rest_total_hits_as_int"] = "true"
+	}
+	if p.PreFilterShardSize != nil {
+		m["pre_filter_shard_size"] = strconv.Itoa(*p.PreFilterShardSize)
+	}
+	if p.MaxConcurrentShardRequests != nil {
+		m["max_concurrent_shard_requests"] = strconv.Itoa(*p.MaxConcurrentShardRequests)
+	}
+	if p.CcsMinimizeRoundtrips {
+		m["ccs_minimize_roundtrips"] = "true"
+	}
+	if len(m) == 0 {
+		return nil
+	}
+	return m
+}
+
+type RankEvalParams struct {
+	SearchType        string
+	Routing           string
+	Preference        string
+	RequestCache      bool
+	IgnoreUnavailable bool
+	AllowNoIndices    bool
+	ExpandWildcards   string
+}
+
+func (p *RankEvalParams) ToMap() map[string]string {
+	if p == nil {
+		return nil
+	}
+	m := make(map[string]string)
+	if p.SearchType != "" {
+		m["search_type"] = p.SearchType
+	}
+	if p.Routing != "" {
+		m["routing"] = p.Routing
+	}
+	if p.Preference != "" {
+		m["preference"] = p.Preference
+	}
+	if p.RequestCache {
+		m["request_cache"] = "true"
+	}
+	if p.IgnoreUnavailable {
+		m["ignore_unavailable"] = "true"
+	}
+	if p.AllowNoIndices {
+		m["allow_no_indices"] = "true"
+	}
+	if p.ExpandWildcards != "" {
+		m["expand_wildcards"] = p.ExpandWildcards
+	}
+	if len(m) == 0 {
+		return nil
+	}
+	return m
+}
+
+type CreatePITParams struct {
+	Routing                 string
+	Preference              string
+	IgnoreUnavailable       bool
+	AllowNoIndices          bool
+	ExpandWildcards         string
+	AllowPartialPitCreation bool
+}
+
+func (p *CreatePITParams) ToMap() map[string]string {
+	if p == nil {
+		return nil
+	}
+	m := make(map[string]string)
+	if p.Routing != "" {
+		m["routing"] = p.Routing
+	}
+	if p.Preference != "" {
+		m["preference"] = p.Preference
+	}
+	if p.IgnoreUnavailable {
+		m["ignore_unavailable"] = "true"
+	}
+	if p.AllowNoIndices {
+		m["allow_no_indices"] = "true"
+	}
+	if p.ExpandWildcards != "" {
+		m["expand_wildcards"] = p.ExpandWildcards
+	}
+	if p.AllowPartialPitCreation {
+		m["allow_partial_pit_creation"] = "true"
+	}
+	if len(m) == 0 {
+		return nil
+	}
+	return m
+}
+
 type IndexRequest struct {
 	Index  string `validate:"required"`
 	Id     string
 	Body   any
-	Params map[string]string
+	Params *IndexParams
 }
 
 func (r *IndexRequest) Validate() error {
@@ -39,7 +530,7 @@ func (r *IndexRequest) Validate() error {
 type GetRequest struct {
 	Index  string `validate:"required"`
 	Id     string `validate:"required"`
-	Params map[string]string
+	Params *GetParams
 }
 
 func (r *GetRequest) Validate() error {
@@ -49,7 +540,7 @@ func (r *GetRequest) Validate() error {
 type DeleteRequest struct {
 	Index  string `validate:"required"`
 	Id     string `validate:"required"`
-	Params map[string]string
+	Params *DeleteParams
 }
 
 func (r *DeleteRequest) Validate() error {
@@ -60,7 +551,7 @@ type UpdateRequest struct {
 	Index  string `validate:"required"`
 	Id     string `validate:"required"`
 	Body   any
-	Params map[string]string
+	Params *UpdateParams
 }
 
 func (r *UpdateRequest) Validate() error {
@@ -70,7 +561,7 @@ func (r *UpdateRequest) Validate() error {
 type SearchRequest struct {
 	Indices []string
 	Body    any
-	Params  map[string]string
+	Params  *SearchParams
 }
 
 // NewSearchRequest creates a SearchRequest from a *querydsl.SearchRequest.
@@ -93,11 +584,85 @@ func NewSearchRequest(r *querydsl.SearchRequest) (*SearchRequest, error) {
 	if err != nil {
 		return nil, fmt.Errorf("search request body: %w", err)
 	}
+	params := searchParamsFromURLParams(r.URLParams())
 	return &SearchRequest{
 		Indices: r.Indices(),
 		Body:    rawBody(body),
-		Params:  r.URLParams(),
+		Params:  params,
 	}, nil
+}
+
+func searchParamsFromURLParams(urlParams map[string]string) *SearchParams {
+	if len(urlParams) == 0 {
+		return nil
+	}
+	p := &SearchParams{}
+	if v, ok := urlParams["search_type"]; ok {
+		p.SearchType = v
+	}
+	if v, ok := urlParams["routing"]; ok {
+		p.Routing = v
+	}
+	if v, ok := urlParams["preference"]; ok {
+		p.Preference = v
+	}
+	if v, ok := urlParams["request_cache"]; ok {
+		p.RequestCache = v == "true"
+	}
+	if v, ok := urlParams["scroll"]; ok {
+		p.Scroll = v
+	}
+	if v, ok := urlParams["allow_partial_search_results"]; ok {
+		p.AllowPartialSearchResults = v == "true"
+	}
+	if v, ok := urlParams["batched_reduce_size"]; ok {
+		n, _ := strconv.Atoi(v)
+		p.BatchedReduceSize = &n
+	}
+	if v, ok := urlParams["max_concurrent_shard_requests"]; ok {
+		n, _ := strconv.Atoi(v)
+		p.MaxConcurrentShardRequests = &n
+	}
+	if v, ok := urlParams["pre_filter_shard_size"]; ok {
+		n, _ := strconv.Atoi(v)
+		p.PreFilterShardSize = &n
+	}
+	if v, ok := urlParams["rest_total_hits_as_int"]; ok {
+		p.RestTotalHitsAsInt = v == "true"
+	}
+	if v, ok := urlParams["typed_keys"]; ok {
+		p.TypedKeys = v == "true"
+	}
+	if v, ok := urlParams["ignore_unavailable"]; ok {
+		p.IgnoreUnavailable = v == "true"
+	}
+	if v, ok := urlParams["allow_no_indices"]; ok {
+		p.AllowNoIndices = v == "true"
+	}
+	if v, ok := urlParams["expand_wildcards"]; ok {
+		p.ExpandWildcards = v
+	}
+	if v, ok := urlParams["ccs_minimize_roundtrips"]; ok {
+		p.CcsMinimizeRoundtrips = v == "true"
+	}
+	if v, ok := urlParams["explain"]; ok {
+		p.Explain = v == "true"
+	}
+	if v, ok := urlParams["size"]; ok {
+		n, _ := strconv.Atoi(v)
+		p.Size = &n
+	}
+	if v, ok := urlParams["from"]; ok {
+		n, _ := strconv.Atoi(v)
+		p.From = &n
+	}
+	if v, ok := urlParams["timeout"]; ok {
+		p.Timeout = v
+	}
+	if v, ok := urlParams["track_total_hits"]; ok {
+		p.TrackTotalHits = v
+	}
+	return p
 }
 
 type ScrollRequest struct {
@@ -374,7 +939,7 @@ type CreateRequest struct {
 	Index  string `validate:"required"`
 	Id     string `validate:"required"`
 	Body   any    `validate:"required"`
-	Params map[string]string
+	Params *IndexParams
 }
 
 func (r *CreateRequest) Validate() error {
@@ -393,7 +958,7 @@ func (r *RethrottleRequest) Validate() error {
 type SearchTemplateRequest struct {
 	Indices []string
 	Body    any `validate:"required"`
-	Params  map[string]string
+	Params  *SearchTemplateParams
 }
 
 func (r *SearchTemplateRequest) Validate() error {
@@ -403,7 +968,7 @@ func (r *SearchTemplateRequest) Validate() error {
 type MultiSearchTemplateRequest struct {
 	Indices []string
 	Body    any `validate:"required"`
-	Params  map[string]string
+	Params  *MultiSearchTemplateParams
 }
 
 func (r *MultiSearchTemplateRequest) Validate() error {
@@ -418,7 +983,7 @@ type RenderSearchTemplateRequest struct {
 type RankEvalRequest struct {
 	Indices []string
 	Body    any `validate:"required"`
-	Params  map[string]string
+	Params  *RankEvalParams
 }
 
 func (r *RankEvalRequest) Validate() error {
@@ -428,7 +993,7 @@ func (r *RankEvalRequest) Validate() error {
 type CreatePITRequest struct {
 	Indices   []string `validate:"required,min=1"`
 	KeepAlive string   `validate:"required"`
-	Params    map[string]string
+	Params    *CreatePITParams
 }
 
 func (r *CreatePITRequest) Validate() error {

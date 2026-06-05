@@ -61,7 +61,7 @@ func (s *DefaultDocumentService) Index(ctx context.Context, req *IndexRequest) (
 	}
 
 	r := s.client.R().SetContext(ctx).SetBody(req.Body)
-	for k, v := range req.Params {
+	for k, v := range req.Params.ToMap() {
 		r.SetQueryParam(k, v)
 	}
 
@@ -87,7 +87,7 @@ func (s *DefaultDocumentService) Get(ctx context.Context, req *GetRequest) (*Get
 	}
 
 	path := fmt.Sprintf("/%s/_doc/%s", req.Index, req.Id)
-	resp, err := s.client.R().SetContext(ctx).SetQueryParams(req.Params).Get(path)
+	resp, err := s.client.R().SetContext(ctx).SetQueryParams(req.Params.ToMap()).Get(path)
 	if err != nil {
 		return nil, wrapNetworkError(s.logger, err)
 	}
@@ -143,7 +143,7 @@ func (s *DefaultDocumentService) Delete(ctx context.Context, req *DeleteRequest)
 	}
 
 	path := fmt.Sprintf("/%s/_doc/%s", req.Index, req.Id)
-	resp, err := s.client.R().SetContext(ctx).SetQueryParams(req.Params).Delete(path)
+	resp, err := s.client.R().SetContext(ctx).SetQueryParams(req.Params.ToMap()).Delete(path)
 	if err != nil {
 		return nil, wrapNetworkError(s.logger, err)
 	}
@@ -188,7 +188,7 @@ func (s *DefaultDocumentService) Update(ctx context.Context, req *UpdateRequest)
 	}
 
 	path := fmt.Sprintf("/%s/_update/%s", req.Index, req.Id)
-	resp, err := s.client.R().SetContext(ctx).SetBody(req.Body).SetQueryParams(req.Params).Post(path)
+	resp, err := s.client.R().SetContext(ctx).SetBody(req.Body).SetQueryParams(req.Params.ToMap()).Post(path)
 	if err != nil {
 		return nil, wrapNetworkError(s.logger, err)
 	}
@@ -389,7 +389,7 @@ func (s *DefaultDocumentService) Create(ctx context.Context, req *CreateRequest)
 	path := fmt.Sprintf("/%s/_create/%s", req.Index, req.Id)
 
 	r := s.client.R().SetContext(ctx).SetBody(req.Body)
-	for k, v := range req.Params {
+	for k, v := range req.Params.ToMap() {
 		r.SetQueryParam(k, v)
 	}
 

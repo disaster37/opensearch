@@ -41,7 +41,7 @@ func TestUnitSearchServiceSearch(t *testing.T) {
 	})
 
 	t.Run("success with params", func(t *testing.T) {
-		resp, err := svc.Search(ctx, &SearchRequest{Indices: []string{"idx1"}, Body: map[string]any{}, Params: map[string]string{"size": "10"}})
+		resp, err := svc.Search(ctx, &SearchRequest{Indices: []string{"idx1"}, Body: map[string]any{}, Params: &SearchParams{Size: ptrInt(10)}})
 		require.NoError(t, err)
 		require.NotNil(t, resp)
 	})
@@ -707,7 +707,7 @@ func TestUnitSearchServiceSearchTemplate(t *testing.T) {
 	})
 
 	t.Run("success with params", func(t *testing.T) {
-		resp, err := svc.SearchTemplate(ctx, &SearchTemplateRequest{Indices: []string{"idx1"}, Body: map[string]any{"id": "t"}, Params: map[string]string{"search_type": "query_then_fetch"}})
+		resp, err := svc.SearchTemplate(ctx, &SearchTemplateRequest{Indices: []string{"idx1"}, Body: map[string]any{"id": "t"}, Params: &SearchTemplateParams{SearchType: "query_then_fetch"}})
 		require.NoError(t, err)
 		require.NotNil(t, resp)
 	})
@@ -749,7 +749,7 @@ func TestUnitSearchServiceMultiSearchTemplate(t *testing.T) {
 	})
 
 	t.Run("success with params", func(t *testing.T) {
-		resp, err := svc.MultiSearchTemplate(ctx, &MultiSearchTemplateRequest{Body: []any{}, Params: map[string]string{"search_type": "query_then_fetch"}})
+		resp, err := svc.MultiSearchTemplate(ctx, &MultiSearchTemplateRequest{Body: []any{}, Params: &MultiSearchTemplateParams{SearchType: "query_then_fetch"}})
 		require.NoError(t, err)
 		require.NotNil(t, resp)
 	})
@@ -827,7 +827,7 @@ func TestUnitSearchServiceRankEval(t *testing.T) {
 	})
 
 	t.Run("success with params", func(t *testing.T) {
-		resp, err := svc.RankEval(ctx, &RankEvalRequest{Body: map[string]any{}, Params: map[string]string{"search_type": "query_then_fetch"}})
+		resp, err := svc.RankEval(ctx, &RankEvalRequest{Body: map[string]any{}, Params: &RankEvalParams{SearchType: "query_then_fetch"}})
 		require.NoError(t, err)
 		require.NotNil(t, resp)
 	})
@@ -881,7 +881,7 @@ func TestUnitSearchServicePIT(t *testing.T) {
 	})
 
 	t.Run("CreatePIT success with params", func(t *testing.T) {
-		resp, err := svc.CreatePIT(ctx, &CreatePITRequest{Indices: []string{"idx1"}, KeepAlive: "5m", Params: map[string]string{"allow_partial_pit_creation": "true"}})
+		resp, err := svc.CreatePIT(ctx, &CreatePITRequest{Indices: []string{"idx1"}, KeepAlive: "5m", Params: &CreatePITParams{AllowPartialPitCreation: true}})
 		require.NoError(t, err)
 		require.NotNil(t, resp)
 	})

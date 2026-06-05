@@ -52,7 +52,7 @@ func (s *DefaultSearchService) Search(ctx context.Context, req *SearchRequest) (
 	}
 
 	r := s.client.R().SetContext(ctx).SetBody(req.Body)
-	for k, v := range req.Params {
+	for k, v := range req.Params.ToMap() {
 		r.SetQueryParam(k, v)
 	}
 
@@ -272,7 +272,7 @@ func (s *DefaultSearchService) SearchTemplate(ctx context.Context, req *SearchTe
 	}
 
 	r := s.client.R().SetContext(ctx).SetBody(req.Body)
-	for k, v := range req.Params {
+	for k, v := range req.Params.ToMap() {
 		r.SetQueryParam(k, v)
 	}
 
@@ -307,7 +307,7 @@ func (s *DefaultSearchService) MultiSearchTemplate(ctx context.Context, req *Mul
 		SetContext(ctx).
 		SetBody(req.Body).
 		SetHeader("Content-Type", "application/x-ndjson")
-	for k, v := range req.Params {
+	for k, v := range req.Params.ToMap() {
 		r.SetQueryParam(k, v)
 	}
 
@@ -367,7 +367,7 @@ func (s *DefaultSearchService) RankEval(ctx context.Context, req *RankEvalReques
 	}
 
 	r := s.client.R().SetContext(ctx).SetBody(req.Body)
-	for k, v := range req.Params {
+	for k, v := range req.Params.ToMap() {
 		r.SetQueryParam(k, v)
 	}
 
@@ -394,7 +394,7 @@ func (s *DefaultSearchService) CreatePIT(ctx context.Context, req *CreatePITRequ
 	path := fmt.Sprintf("/%s/_search/point_in_time", strings.Join(req.Indices, ","))
 
 	r := s.client.R().SetContext(ctx).SetQueryParam("keep_alive", req.KeepAlive)
-	for k, v := range req.Params {
+	for k, v := range req.Params.ToMap() {
 		r.SetQueryParam(k, v)
 	}
 

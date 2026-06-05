@@ -126,7 +126,7 @@ func TestSearchService_ScrollAndClearScroll(t *testing.T) {
 			"size":  2,
 			"query": map[string]any{"match_all": map[string]any{}},
 		},
-		Params: map[string]string{"scroll": "1m"},
+		Params: &api.SearchParams{Scroll: "1m"},
 	})
 	require.NoError(t, err)
 	assert.NotNil(t, initialResult)

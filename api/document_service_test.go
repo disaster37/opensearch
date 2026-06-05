@@ -56,7 +56,7 @@ func TestUnitDocumentServiceIndex(t *testing.T) {
 	})
 
 	t.Run("success with params and ID", func(t *testing.T) {
-		resp, err := svc.Index(ctx, &IndexRequest{Index: "myindex", Id: "1", Body: map[string]any{"field": "value"}, Params: map[string]string{"refresh": "true"}})
+		resp, err := svc.Index(ctx, &IndexRequest{Index: "myindex", Id: "1", Body: map[string]any{"field": "value"}, Params: &IndexParams{Refresh: "true"}})
 		require.NoError(t, err)
 		require.NotNil(t, resp)
 	})
@@ -103,7 +103,7 @@ func TestUnitDocumentServiceGet(t *testing.T) {
 	})
 
 	t.Run("success with params", func(t *testing.T) {
-		resp, err := svc.Get(ctx, &GetRequest{Index: "myindex", Id: "1", Params: map[string]string{"_source": "true"}})
+		resp, err := svc.Get(ctx, &GetRequest{Index: "myindex", Id: "1", Params: &GetParams{Source: "true"}})
 		require.NoError(t, err)
 		require.NotNil(t, resp)
 	})
@@ -280,7 +280,7 @@ func TestUnitDocumentServiceUpdate(t *testing.T) {
 
 	t.Run("success with params", func(t *testing.T) {
 		body := map[string]any{"doc": map[string]any{"field": "updated"}}
-		resp, err := svc.Update(ctx, &UpdateRequest{Index: "myindex", Id: "1", Body: body, Params: map[string]string{"refresh": "true"}})
+		resp, err := svc.Update(ctx, &UpdateRequest{Index: "myindex", Id: "1", Body: body, Params: &UpdateParams{Refresh: "true"}})
 		require.NoError(t, err)
 		require.NotNil(t, resp)
 	})
@@ -1002,7 +1002,7 @@ func TestUnitDocumentServiceCreate(t *testing.T) {
 	})
 
 	t.Run("success with params", func(t *testing.T) {
-		resp, err := svc.Create(ctx, &CreateRequest{Index: "myindex", Id: "1", Body: map[string]any{"field": "value"}, Params: map[string]string{"refresh": "true"}})
+		resp, err := svc.Create(ctx, &CreateRequest{Index: "myindex", Id: "1", Body: map[string]any{"field": "value"}, Params: &IndexParams{Refresh: "true"}})
 		require.NoError(t, err)
 		require.NotNil(t, resp)
 	})

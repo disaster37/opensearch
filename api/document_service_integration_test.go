@@ -25,7 +25,7 @@ func indexTestDoc(t *testing.T, client interface{ Document() api.DocumentService
 		Index:  testDocIndex,
 		Id:     id,
 		Body:   body,
-		Params: map[string]string{"refresh": "true"},
+		Params: &api.IndexParams{Refresh: "true"},
 	})
 	require.NoError(t, err)
 }
@@ -42,7 +42,7 @@ func TestDocumentService_Index(t *testing.T) {
 		Index:  testDocIndex,
 		Id:     "doc-1",
 		Body:   map[string]any{"title": "test document"},
-		Params: map[string]string{"refresh": "true"},
+		Params: &api.IndexParams{Refresh: "true"},
 	})
 	require.NoError(t, err)
 	assert.NotNil(t, resp)
@@ -56,7 +56,7 @@ func TestDocumentService_Index(t *testing.T) {
 		Index:  testDocIndex,
 		Id:     "doc-1",
 		Body:   map[string]any{"title": "updated document"},
-		Params: map[string]string{"refresh": "true"},
+		Params: &api.IndexParams{Refresh: "true"},
 	})
 	require.NoError(t, err)
 	assert.Equal(t, "updated", resp2.Result)
@@ -142,7 +142,7 @@ func TestDocumentService_Delete(t *testing.T) {
 	resp, err := doc.Delete(ctx, &api.DeleteRequest{
 		Index:  testDocIndex,
 		Id:     "del-1",
-		Params: map[string]string{"refresh": "true"},
+		Params: &api.DeleteParams{Refresh: "true"},
 	})
 	require.NoError(t, err)
 	assert.NotNil(t, resp)
@@ -194,7 +194,7 @@ func TestDocumentService_Update(t *testing.T) {
 		Body: map[string]any{
 			"doc": map[string]any{"title": "updated", "count": 2},
 		},
-		Params: map[string]string{"refresh": "true"},
+		Params: &api.UpdateParams{Refresh: "true"},
 	})
 	require.NoError(t, err)
 	assert.NotNil(t, resp)
@@ -296,7 +296,7 @@ func TestDocumentService_Exists(t *testing.T) {
 	_, err = doc.Delete(ctx, &api.DeleteRequest{
 		Index:  testDocIndex,
 		Id:     "exists-1",
-		Params: map[string]string{"refresh": "true"},
+		Params: &api.DeleteParams{Refresh: "true"},
 	})
 	require.NoError(t, err)
 

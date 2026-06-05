@@ -138,14 +138,37 @@ The struct pattern eliminates parameter confusion at call sites, groups semantic
 
 ```go
 type IndexRequest struct {
-    Index  string            `validate:"required"`
-    Id     string
-    Body   any
-    Params map[string]string
+	Index  string       `validate:"required"`
+	Id     string
+	Body   any
+	Params *IndexParams
+}
+
+type IndexParams struct {
+	Refresh       string
+	Routing       string
+	Timeout       string
+	Version       int64
+	VersionType   string
+	IfSeqNo       int64
+	IfPrimaryTerm int64
+	Pipeline      string
+	RequireAlias  bool
+}
+
+func (p *IndexParams) ToMap() map[string]string {
+	if p == nil {
+		return nil
+	}
+	m := make(map[string]string)
+	if p.Refresh != "" { m["refresh"] = p.Refresh }
+	// ... other fields
+	if len(m) == 0 { return nil }
+	return m
 }
 
 func (r *IndexRequest) Validate() error {
-    return validationError(validate.Struct(r))
+	return validationError(validate.Struct(r))
 }
 ```
 
@@ -172,10 +195,10 @@ func (s *DefaultDocumentService) Index(ctx context.Context, req *IndexRequest) (
         method = "POST"
     }
 
-    r := s.client.R().SetContext(ctx).SetBody(req.Body)
-    for k, v := range req.Params {
-        r.SetQueryParam(k, v)
-    }
+r := s.client.R().SetContext(ctx).SetBody(req.Body)
+	for k, v := range req.Params.ToMap() {
+		r.SetQueryParam(k, v)
+	}
 
     resp, err := r.Execute(method, path)
     if err != nil {
@@ -777,7 +800,7 @@ func TestSearchService_Count(t *testing.T) {
         _, err := client.Document().Index(ctx, &api.IndexRequest{
             Index: index, Id: id,
             Body:   map[string]any{"title": "hello"},
-            Params: map[string]string{"refresh": "true"},
+            Params: &api.IndexParams{Refresh: "true"},
         })
         require.NoError(t, err)
     }
@@ -908,6 +931,7 @@ This section is addressed to LLM-based coding assistants (Kilo, Cursor, Copilot,
 - **Do NOT** put service methods in the root package — they belong in `api/`.
 - **Do NOT** use uritemplates — they were deleted. URLs are built with `fmt.Sprintf`.
 - **Do NOT** use positional params for service methods with 3+ args after `ctx` — use a request struct in `api/options.go`.
+- **Do NOT** use `map[string]string` for request params — use typed `{RequestType}Params` structs with a `ToMap()` method defined in `api/options.go`.
 - **Do NOT** use `validator/v10` outside of `api/options.go`.
 - **Do NOT** store a `*logrus.Entry` in a service and never call it — every service method must log on error paths.
 - **Do NOT** call `s.logger.Error(...)` directly in service methods — use the three helpers in `api/errors.go`.
@@ -954,12 +978,12 @@ If your change introduces, changes, or deprecates a pattern documented in this f
 ### Common pitfalls
 
 - `client.Cluster().Health(ctx, nil)` — **no** third `waitForStatus` parameter; pass that via query string params if needed.
-- `client.Document().Update(ctx, &api.UpdateRequest{...})` — the method uses a struct param; optimistic concurrency is done via the `Params` map (`if_seq_no` / `if_primary_term`), not a top-level `DocumentVersion` argument.
-- `client.Document().Index(ctx, &api.IndexRequest{Index: "...", Id: "...", Body: ...})` — all document CRUD operations with 3+ params use request structs from `api/options.go`.
+- `client.Document().Update(ctx, &api.UpdateRequest{...})` — the method uses a struct param; optimistic concurrency is done via typed params (`UpdateParams{IfSeqNo: ..., IfPrimaryTerm: ...}`), not a raw `Params` map.
+- `client.Document().Index(ctx, &api.IndexRequest{Index: "...", Id: "...", Body: ..., Params: &IndexParams{Refresh: "true"}})` — all document CRUD operations with 3+ params use request structs from `api/options.go`. Use typed `*{Type}Params` for query parameters.
 - `client.Document().Bulk(ctx, index, body)` — body is **NDJSON as a string**, not `[]byte` or structured data. Bulk has only 2 params after `ctx` so it stays positional.
 - Response types live in `querydsl/` (e.g. `SearchResult`, `MultiSearchResult`, `CountResponse`), not `api/`. The `api/` package imports them.
 - Type aliases in `common.go` make `opensearch.AcknowledgedResponse` resolve to `types.AcknowledgedResponse`. Don't redefine them in root.
-- Request parameter structs live in `api/options.go`, not in `{group}_model.go`. Model/response structs stay in `{group}_model.go`.
+- Request parameter structs live in `api/options.go` — each `{RequestType}` has a corresponding `{RequestType}Params` struct with a `ToMap() map[string]string` method. Never use `map[string]string` directly for params.
 
 ---
 
