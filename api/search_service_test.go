@@ -707,7 +707,7 @@ func TestUnitSearchServiceSearchTemplate(t *testing.T) {
 	})
 
 	t.Run("success with params", func(t *testing.T) {
-		resp, err := svc.SearchTemplate(ctx, &SearchTemplateRequest{Indices: []string{"idx1"}, Body: map[string]any{"id": "t"}, Params: &SearchTemplateParams{SearchType: "query_then_fetch"}})
+		resp, err := svc.SearchTemplate(ctx, &SearchTemplateRequest{Indices: []string{"idx1"}, Body: map[string]any{"id": "t"}, Params: &SearchTemplateParams{SearchType: SearchTypeQueryThenFetch}})
 		require.NoError(t, err)
 		require.NotNil(t, resp)
 	})
@@ -749,7 +749,7 @@ func TestUnitSearchServiceMultiSearchTemplate(t *testing.T) {
 	})
 
 	t.Run("success with params", func(t *testing.T) {
-		resp, err := svc.MultiSearchTemplate(ctx, &MultiSearchTemplateRequest{Body: []any{}, Params: &MultiSearchTemplateParams{SearchType: "query_then_fetch"}})
+		resp, err := svc.MultiSearchTemplate(ctx, &MultiSearchTemplateRequest{Body: []any{}, Params: &MultiSearchTemplateParams{SearchType: SearchTypeQueryThenFetch}})
 		require.NoError(t, err)
 		require.NotNil(t, resp)
 	})
@@ -827,7 +827,7 @@ func TestUnitSearchServiceRankEval(t *testing.T) {
 	})
 
 	t.Run("success with params", func(t *testing.T) {
-		resp, err := svc.RankEval(ctx, &RankEvalRequest{Body: map[string]any{}, Params: &RankEvalParams{SearchType: "query_then_fetch"}})
+		resp, err := svc.RankEval(ctx, &RankEvalRequest{Body: map[string]any{}, Params: &RankEvalParams{SearchType: SearchTypeQueryThenFetch}})
 		require.NoError(t, err)
 		require.NotNil(t, resp)
 	})

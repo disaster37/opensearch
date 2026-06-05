@@ -137,7 +137,7 @@ func TestIndicesService_Rollover(t *testing.T) {
 		Index:  idx,
 		Id:     "roll-doc-1",
 		Body:   map[string]any{"data": "rollover"},
-		Params: &api.IndexParams{Refresh: "true"},
+		Params: &api.IndexParams{Refresh: api.RefreshTrue},
 	})
 	require.NoError(t, err)
 

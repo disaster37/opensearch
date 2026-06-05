@@ -145,13 +145,13 @@ type IndexRequest struct {
 }
 
 type IndexParams struct {
-	Refresh       string
+	Refresh       Refresh
 	Routing       string
 	Timeout       string
 	Version       int64
-	VersionType   string
-	IfSeqNo       int64
-	IfPrimaryTerm int64
+	VersionType   VersionType
+	IfSeqNo       *int64
+	IfPrimaryTerm *int64
 	Pipeline      string
 	RequireAlias  bool
 }
@@ -172,11 +172,37 @@ func (r *IndexRequest) Validate() error {
 }
 ```
 
-Rules for request structs:
-- Define them in `api/options.go`, not in `{group}_model.go`.
-- Required fields get `validate:"required"`. Optional fields (slices, `any`, maps, pointers) get no tag.
-- The struct must have a `Validate() error` method that calls the shared `validate` instance.
-- Name the struct `{MethodName}Request` (e.g. `IndexRequest`, `SearchRequest`, `PutMappingRequest`).
+#### Typed string constants for enum fields
+
+When a query parameter accepts only a fixed set of string values (an enum), define a custom string type with named constants in `api/param_types.go`. This gives users compile-time safety and IDE autocompletion instead of raw string literals.
+
+```go
+// api/param_types.go
+type Refresh string
+
+const (
+	RefreshTrue    Refresh = "true"
+	RefreshFalse   Refresh = "false"
+	RefreshWaitFor Refresh = "wait_for"
+)
+```
+
+Use the typed constant in the Params struct:
+
+```go
+type IndexParams struct {
+	Refresh       Refresh     // was: string
+	VersionType   VersionType // was: string
+	// ...
+}
+```
+
+Rules:
+- Define one file `api/param_types.go` with all typed constants for the `api/` package.
+- Use `type Foo string` + `const` block for pure enums (fixed set of values).
+- Use plain `const FooBar = "foo_bar"` for semi-enum values that can be combined (e.g. comma-separated `ExpandWildcards: "open,closed"`).
+- Keep `string` type for fields that accept mixed types (e.g. `TrackTotalHits` which accepts both booleans and integers).
+- ToMap() methods need no changes — typed strings compare against `""` identically to plain strings.
 
 #### Service method recipe: struct params
 
@@ -800,7 +826,7 @@ func TestSearchService_Count(t *testing.T) {
         _, err := client.Document().Index(ctx, &api.IndexRequest{
             Index: index, Id: id,
             Body:   map[string]any{"title": "hello"},
-            Params: &api.IndexParams{Refresh: "true"},
+            Params: &api.IndexParams{Refresh: api.RefreshTrue},
         })
         require.NoError(t, err)
     }
@@ -932,6 +958,7 @@ This section is addressed to LLM-based coding assistants (Kilo, Cursor, Copilot,
 - **Do NOT** use uritemplates — they were deleted. URLs are built with `fmt.Sprintf`.
 - **Do NOT** use positional params for service methods with 3+ args after `ctx` — use a request struct in `api/options.go`.
 - **Do NOT** use `map[string]string` for request params — use typed `{RequestType}Params` structs with a `ToMap()` method defined in `api/options.go`.
+- **Do NOT** use raw string literals for enum-limited query parameters — define a typed string constant in `api/param_types.go` and use it in the corresponding `{Type}Params` struct.
 - **Do NOT** use `validator/v10` outside of `api/options.go`.
 - **Do NOT** store a `*logrus.Entry` in a service and never call it — every service method must log on error paths.
 - **Do NOT** call `s.logger.Error(...)` directly in service methods — use the three helpers in `api/errors.go`.
@@ -979,7 +1006,7 @@ If your change introduces, changes, or deprecates a pattern documented in this f
 
 - `client.Cluster().Health(ctx, nil)` — **no** third `waitForStatus` parameter; pass that via query string params if needed.
 - `client.Document().Update(ctx, &api.UpdateRequest{...})` — the method uses a struct param; optimistic concurrency is done via typed params (`UpdateParams{IfSeqNo: ..., IfPrimaryTerm: ...}`), not a raw `Params` map.
-- `client.Document().Index(ctx, &api.IndexRequest{Index: "...", Id: "...", Body: ..., Params: &IndexParams{Refresh: "true"}})` — all document CRUD operations with 3+ params use request structs from `api/options.go`. Use typed `*{Type}Params` for query parameters.
+- `client.Document().Index(ctx, &api.IndexRequest{Index: "...", Id: "...", Body: ..., Params: &IndexParams{Refresh: api.RefreshTrue}})` — all document CRUD operations with 3+ params use request structs from `api/options.go`. Use typed `*{Type}Params` for query parameters.
 - `client.Document().Bulk(ctx, index, body)` — body is **NDJSON as a string**, not `[]byte` or structured data. Bulk has only 2 params after `ctx` so it stays positional.
 - Response types live in `querydsl/` (e.g. `SearchResult`, `MultiSearchResult`, `CountResponse`), not `api/`. The `api/` package imports them.
 - Type aliases in `common.go` make `opensearch.AcknowledgedResponse` resolve to `types.AcknowledgedResponse`. Don't redefine them in root.

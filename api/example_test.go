@@ -33,7 +33,7 @@ func ExampleDocumentService_Index() {
 		Id:    "doc-1",
 		Body:  doc,
 		Params: &api.IndexParams{
-			Refresh: "true",
+			Refresh: api.RefreshTrue,
 		},
 	})
 	if err != nil {
@@ -351,7 +351,7 @@ func ExampleDocumentService_Create() {
 		Index:  "my-index",
 		Id:     "strictly-unique-id",
 		Body:   doc,
-		Params: &api.IndexParams{Refresh: "true"},
+		Params: &api.IndexParams{Refresh: api.RefreshTrue},
 	})
 	if err != nil {
 		log.Fatal(err)

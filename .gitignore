@@ -25,6 +25,7 @@ _testmain.go
 
 /.vscode/
 /.idea/
+/.kilo/
 /data
 *.test
 /generator

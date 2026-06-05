@@ -485,7 +485,7 @@ func TestNewSearchRequest(t *testing.T) {
 
 		req, err := NewSearchRequest(qr)
 		assert.NoError(t, err)
-		assert.Equal(t, "dfs_query_then_fetch", req.Params.SearchType)
+		assert.Equal(t, SearchTypeDfsQueryThenFetch, req.Params.SearchType)
 		assert.Equal(t, "r1", req.Params.Routing)
 		assert.Equal(t, "5m", req.Params.Scroll)
 	})

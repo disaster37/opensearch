@@ -27,11 +27,11 @@ func validationError(err error) error {
 }
 
 type IndexParams struct {
-	Refresh       string
+	Refresh       Refresh
 	Routing       string
 	Timeout       string
 	Version       int64
-	VersionType   string
+	VersionType   VersionType
 	IfSeqNo       *int64
 	IfPrimaryTerm *int64
 	Pipeline      string
@@ -44,7 +44,7 @@ func (p *IndexParams) ToMap() map[string]string {
 	}
 	m := make(map[string]string)
 	if p.Refresh != "" {
-		m["refresh"] = p.Refresh
+		m["refresh"] = string(p.Refresh)
 	}
 	if p.Routing != "" {
 		m["routing"] = p.Routing
@@ -56,7 +56,7 @@ func (p *IndexParams) ToMap() map[string]string {
 		m["version"] = strconv.FormatInt(p.Version, 10)
 	}
 	if p.VersionType != "" {
-		m["version_type"] = p.VersionType
+		m["version_type"] = string(p.VersionType)
 	}
 	if p.IfSeqNo != nil {
 		m["if_seq_no"] = strconv.FormatInt(*p.IfSeqNo, 10)
@@ -86,7 +86,7 @@ type GetParams struct {
 	SourceIncludes string
 	StoredFields   string
 	Version        *int64
-	VersionType    string
+	VersionType    VersionType
 	IfSeqNo        *int64
 	IfPrimaryTerm  *int64
 }
@@ -124,7 +124,7 @@ func (p *GetParams) ToMap() map[string]string {
 		m["version"] = strconv.FormatInt(*p.Version, 10)
 	}
 	if p.VersionType != "" {
-		m["version_type"] = p.VersionType
+		m["version_type"] = string(p.VersionType)
 	}
 	if p.IfSeqNo != nil {
 		m["if_seq_no"] = strconv.FormatInt(*p.IfSeqNo, 10)
@@ -139,11 +139,11 @@ func (p *GetParams) ToMap() map[string]string {
 }
 
 type DeleteParams struct {
-	Refresh       string
+	Refresh       Refresh
 	Routing       string
 	Timeout       string
 	Version       *int64
-	VersionType   string
+	VersionType   VersionType
 	IfSeqNo       *int64
 	IfPrimaryTerm *int64
 }
@@ -154,7 +154,7 @@ func (p *DeleteParams) ToMap() map[string]string {
 	}
 	m := make(map[string]string)
 	if p.Refresh != "" {
-		m["refresh"] = p.Refresh
+		m["refresh"] = string(p.Refresh)
 	}
 	if p.Routing != "" {
 		m["routing"] = p.Routing
@@ -166,7 +166,7 @@ func (p *DeleteParams) ToMap() map[string]string {
 		m["version"] = strconv.FormatInt(*p.Version, 10)
 	}
 	if p.VersionType != "" {
-		m["version_type"] = p.VersionType
+		m["version_type"] = string(p.VersionType)
 	}
 	if p.IfSeqNo != nil {
 		m["if_seq_no"] = strconv.FormatInt(*p.IfSeqNo, 10)
@@ -181,7 +181,7 @@ func (p *DeleteParams) ToMap() map[string]string {
 }
 
 type UpdateParams struct {
-	Refresh         string
+	Refresh         Refresh
 	Routing         string
 	Timeout         string
 	RetryOnConflict *int
@@ -199,7 +199,7 @@ func (p *UpdateParams) ToMap() map[string]string {
 	}
 	m := make(map[string]string)
 	if p.Refresh != "" {
-		m["refresh"] = p.Refresh
+		m["refresh"] = string(p.Refresh)
 	}
 	if p.Routing != "" {
 		m["routing"] = p.Routing
@@ -235,7 +235,7 @@ func (p *UpdateParams) ToMap() map[string]string {
 }
 
 type SearchParams struct {
-	SearchType                 string
+	SearchType                 SearchType
 	Routing                    string
 	Preference                 string
 	RequestCache               bool
@@ -263,7 +263,7 @@ func (p *SearchParams) ToMap() map[string]string {
 	}
 	m := make(map[string]string)
 	if p.SearchType != "" {
-		m["search_type"] = p.SearchType
+		m["search_type"] = string(p.SearchType)
 	}
 	if p.Routing != "" {
 		m["routing"] = p.Routing
@@ -329,7 +329,7 @@ func (p *SearchParams) ToMap() map[string]string {
 }
 
 type SearchTemplateParams struct {
-	SearchType            string
+	SearchType            SearchType
 	Routing               string
 	Preference            string
 	RequestCache          bool
@@ -350,7 +350,7 @@ func (p *SearchTemplateParams) ToMap() map[string]string {
 	}
 	m := make(map[string]string)
 	if p.SearchType != "" {
-		m["search_type"] = p.SearchType
+		m["search_type"] = string(p.SearchType)
 	}
 	if p.Routing != "" {
 		m["routing"] = p.Routing
@@ -395,7 +395,7 @@ func (p *SearchTemplateParams) ToMap() map[string]string {
 }
 
 type MultiSearchTemplateParams struct {
-	SearchType                 string
+	SearchType                 SearchType
 	MaxConcurrentSearches      *int
 	TypedKeys                  bool
 	RestTotalHitsAsInt         bool
@@ -410,7 +410,7 @@ func (p *MultiSearchTemplateParams) ToMap() map[string]string {
 	}
 	m := make(map[string]string)
 	if p.SearchType != "" {
-		m["search_type"] = p.SearchType
+		m["search_type"] = string(p.SearchType)
 	}
 	if p.MaxConcurrentSearches != nil {
 		m["max_concurrent_searches"] = strconv.Itoa(*p.MaxConcurrentSearches)
@@ -437,7 +437,7 @@ func (p *MultiSearchTemplateParams) ToMap() map[string]string {
 }
 
 type RankEvalParams struct {
-	SearchType        string
+	SearchType        SearchType
 	Routing           string
 	Preference        string
 	RequestCache      bool
@@ -452,7 +452,7 @@ func (p *RankEvalParams) ToMap() map[string]string {
 	}
 	m := make(map[string]string)
 	if p.SearchType != "" {
-		m["search_type"] = p.SearchType
+		m["search_type"] = string(p.SearchType)
 	}
 	if p.Routing != "" {
 		m["routing"] = p.Routing
@@ -598,7 +598,7 @@ func searchParamsFromURLParams(urlParams map[string]string) *SearchParams {
 	}
 	p := &SearchParams{}
 	if v, ok := urlParams["search_type"]; ok {
-		p.SearchType = v
+		p.SearchType = SearchType(v)
 	}
 	if v, ok := urlParams["routing"]; ok {
 		p.Routing = v
