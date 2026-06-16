@@ -27,13 +27,14 @@ type IndicesOpenService struct {
 	filterPath []string    // list of filters used to reduce the response
 	headers    http.Header // custom request-level HTTP headers
 
-	index               string
-	timeout             string
-	masterTimeout       string
-	ignoreUnavailable   *bool
-	allowNoIndices      *bool
-	expandWildcards     string
-	waitForActiveShards string
+	index                 string
+	timeout               string
+	masterTimeout         string
+	clusterManagerTimeout string
+	ignoreUnavailable     *bool
+	allowNoIndices        *bool
+	expandWildcards       string
+	waitForActiveShards   string
 }
 
 // NewIndicesOpenService creates and initializes a new IndicesOpenService.
@@ -99,6 +100,13 @@ func (s *IndicesOpenService) MasterTimeout(masterTimeout string) *IndicesOpenSer
 	return s
 }
 
+// ClusterManagerTimeout specifies the timeout for connection to the
+// cluster manager node. Preferred over the deprecated MasterTimeout.
+func (s *IndicesOpenService) ClusterManagerTimeout(clusterManagerTimeout string) *IndicesOpenService {
+	s.clusterManagerTimeout = clusterManagerTimeout
+	return s
+}
+
 // IgnoreUnavailable indicates whether specified concrete indices should
 // be ignored when unavailable (missing or closed).
 func (s *IndicesOpenService) IgnoreUnavailable(ignoreUnavailable bool) *IndicesOpenService {
@@ -158,6 +166,9 @@ func (s *IndicesOpenService) buildURL() (string, url.Values, error) {
 	}
 	if s.masterTimeout != "" {
 		params.Set("master_timeout", s.masterTimeout)
+	}
+	if s.clusterManagerTimeout != "" {
+		params.Set("cluster_manager_timeout", s.clusterManagerTimeout)
 	}
 	if s.ignoreUnavailable != nil {
 		params.Set("ignore_unavailable", fmt.Sprintf("%v", *s.ignoreUnavailable))
