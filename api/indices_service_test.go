@@ -222,8 +222,17 @@ func TestUnitIndicesServiceExists(t *testing.T) {
 func TestUnitIndicesServiceOpen(t *testing.T) {
 	respJSON := `{"acknowledged":true,"shards_acknowledged":true}`
 
+	var capturedQuery map[string]string
 	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		if r.Method == http.MethodPost && r.URL.Path == "/myindex/_open" {
+			q := r.URL.Query()
+			m := make(map[string]string, len(q))
+			for k, v := range q {
+				if len(v) > 0 {
+					m[k] = v[0]
+				}
+			}
+			capturedQuery = m
 			w.WriteHeader(200)
 			_, _ = fmt.Fprint(w, respJSON)
 			return
@@ -237,6 +246,27 @@ func TestUnitIndicesServiceOpen(t *testing.T) {
 
 	t.Run("success", func(t *testing.T) {
 		resp, err := svc.Open(ctx, "myindex")
+		require.NoError(t, err)
+		require.NotNil(t, resp)
+	})
+
+	t.Run("success with params", func(t *testing.T) {
+		ignoreUnavailable := true
+		resp, err := svc.Open(ctx, "myindex", &IndicesOpenParams{
+			WaitForActiveShards:   "all",
+			ClusterManagerTimeout: "30s",
+			IgnoreUnavailable:     &ignoreUnavailable,
+		})
+		require.NoError(t, err)
+		require.NotNil(t, resp)
+		assert.Equal(t, "all", capturedQuery["wait_for_active_shards"])
+		assert.Equal(t, "30s", capturedQuery["cluster_manager_timeout"])
+		assert.Equal(t, "true", capturedQuery["ignore_unavailable"])
+		assert.True(t, resp.ShardsAcknowledged)
+	})
+
+	t.Run("success with nil params", func(t *testing.T) {
+		resp, err := svc.Open(ctx, "myindex", nil)
 		require.NoError(t, err)
 		require.NotNil(t, resp)
 	})

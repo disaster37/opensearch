@@ -478,6 +478,66 @@ func (p *RankEvalParams) ToMap() map[string]string {
 	return m
 }
 
+// IndicesOpenParams holds the optional query parameters for the Open Index API.
+//
+// See https://opensearch.org/docs/latest/api-reference/index-apis/open-index/
+type IndicesOpenParams struct {
+	// WaitForActiveShards specifies the number of active shards that must be
+	// available before the request returns. Use "all" or an integer string.
+	WaitForActiveShards string
+	// ClusterManagerTimeout is the preferred timeout for cluster-manager operations.
+	ClusterManagerTimeout string
+	// MasterTimeout is a deprecated alias for ClusterManagerTimeout.
+	//
+	// Deprecated: use ClusterManagerTimeout.
+	MasterTimeout string
+	// Timeout is the operation timeout.
+	Timeout string
+	// ExpandWildcards controls which index name expressions are resolved to
+	// concrete indices. Use the ExpandWildcard* constants in param_types.go.
+	ExpandWildcards string
+	// IgnoreUnavailable, when true, missing or closed indices are not returned
+	// as an error.
+	IgnoreUnavailable *bool
+	// AllowNoIndices, when true, a wildcard expression that resolves to no
+	// indices is not returned as an error.
+	AllowNoIndices *bool
+}
+
+// ToMap converts IndicesOpenParams to a query-parameter map for resty
+// SetQueryParams. Returns nil if no params are set.
+func (p *IndicesOpenParams) ToMap() map[string]string {
+	if p == nil {
+		return nil
+	}
+	m := make(map[string]string)
+	if p.WaitForActiveShards != "" {
+		m["wait_for_active_shards"] = p.WaitForActiveShards
+	}
+	if p.ClusterManagerTimeout != "" {
+		m["cluster_manager_timeout"] = p.ClusterManagerTimeout
+	}
+	if p.MasterTimeout != "" {
+		m["master_timeout"] = p.MasterTimeout
+	}
+	if p.Timeout != "" {
+		m["timeout"] = p.Timeout
+	}
+	if p.ExpandWildcards != "" {
+		m["expand_wildcards"] = p.ExpandWildcards
+	}
+	if p.IgnoreUnavailable != nil {
+		m["ignore_unavailable"] = strconv.FormatBool(*p.IgnoreUnavailable)
+	}
+	if p.AllowNoIndices != nil {
+		m["allow_no_indices"] = strconv.FormatBool(*p.AllowNoIndices)
+	}
+	if len(m) == 0 {
+		return nil
+	}
+	return m
+}
+
 type CreatePITParams struct {
 	Routing                 string
 	Preference              string

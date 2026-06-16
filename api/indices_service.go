@@ -18,7 +18,7 @@ type IndicesService interface {
 	Delete(ctx context.Context, indices []string) (*types.AcknowledgedResponse, error)
 	Get(ctx context.Context, indices []string) (map[string]*IndicesGetResponse, error)
 	Exists(ctx context.Context, indices []string) (bool, error)
-	Open(ctx context.Context, index string) (*types.AcknowledgedResponse, error)
+	Open(ctx context.Context, index string, params ...*IndicesOpenParams) (*types.AcknowledgedResponse, error)
 	Close(ctx context.Context, index string) (*types.AcknowledgedResponse, error)
 	Rollover(ctx context.Context, alias string, body any) (*IndicesRolloverResponse, error)
 	Shrink(ctx context.Context, req *ShrinkRequest) (*types.AcknowledgedResponse, error)
@@ -170,14 +170,21 @@ func (s *DefaultIndicesService) Exists(ctx context.Context, indices []string) (b
 	}
 }
 
-func (s *DefaultIndicesService) Open(ctx context.Context, index string) (*types.AcknowledgedResponse, error) {
+// Open opens a closed index.
+//
+// See https://opensearch.org/docs/latest/api-reference/index-apis/open-index/
+func (s *DefaultIndicesService) Open(ctx context.Context, index string, params ...*IndicesOpenParams) (*types.AcknowledgedResponse, error) {
 	if index == "" {
 		return nil, fmt.Errorf("index is required")
 	}
 
-	resp, err := s.client.R().
-		SetContext(ctx).
-		Post(fmt.Sprintf("/%s/_open", index))
+	r := s.client.R().SetContext(ctx)
+	if len(params) > 0 && params[0] != nil {
+		if m := params[0].ToMap(); m != nil {
+			r.SetQueryParams(m)
+		}
+	}
+	resp, err := r.Post(fmt.Sprintf("/%s/_open", index))
 	if err != nil {
 		return nil, wrapNetworkError(s.logger, err)
 	}
