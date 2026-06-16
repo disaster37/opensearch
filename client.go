@@ -149,6 +149,17 @@ type Config struct {
 	// "connection reset by peer". Zero keeps the Go default (90s).
 	IdleConnTimeout time.Duration
 
+	// DisableHTTP2 forces the client to use HTTP/1.1 instead of negotiating
+	// HTTP/2 via TLS ALPN.
+	//
+	// HTTP/2 multiplexes every request onto a single TCP connection. When an
+	// intermediary (load balancer, firewall, ingress front proxy) resets that
+	// connection, all in-flight streams fail at once and surface as
+	// "connection reset by peer". For sequential workloads (e.g. paginated
+	// PIT/search_after exports) HTTP/2 brings no benefit, so forcing HTTP/1.1
+	// isolates each request and makes transient resets cheap to retry.
+	DisableHTTP2 bool
+
 	// RetryCount is the maximum number of retry attempts for failed requests.
 	// Default is 0 (no retries). Set to a positive integer to enable retries.
 	RetryCount int
@@ -259,6 +270,14 @@ func New(cfg *Config, logger *logrus.Entry) (Client, error) {
 	transport.TLSClientConfig = tlsConfig
 	if cfg.IdleConnTimeout > 0 {
 		transport.IdleConnTimeout = cfg.IdleConnTimeout
+	}
+	if cfg.DisableHTTP2 {
+		// Disabling HTTP/2 requires preventing ALPN negotiation of "h2" and
+		// installing a non-nil empty TLSNextProto map so net/http never
+		// upgrades the connection (the documented way to opt out of HTTP/2).
+		transport.ForceAttemptHTTP2 = false
+		transport.TLSClientConfig.NextProtos = []string{"http/1.1"}
+		transport.TLSNextProto = make(map[string]func(authority string, c *tls.Conn) http.RoundTripper)
 	}
 	c.SetTransport(transport)
 
