@@ -36,12 +36,12 @@ func TestIndicesOpenBuildURL(t *testing.T) {
 			waitForActiveShards:   "all",
 			clusterManagerTimeout: "30s",
 			expectedParams: map[string]string{
-				"wait_for_active_shards":   "all",
+				"wait_for_active_shards":  "all",
 				"cluster_manager_timeout": "30s",
 			},
 		},
 		{
-			index: "myindex",
+			index:          "myindex",
 			expectedParams: map[string]string{},
 		},
 	}
@@ -66,4 +66,3 @@ func TestIndicesOpenBuildURL(t *testing.T) {
 		}
 	}
 }
-
