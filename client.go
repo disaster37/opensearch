@@ -3,6 +3,7 @@ package opensearch
 import (
 	"crypto/tls"
 	"crypto/x509"
+	"net/http"
 	"strings"
 	"time"
 
@@ -140,6 +141,14 @@ type Config struct {
 	// Timeout is the HTTP request timeout. Zero means no timeout.
 	Timeout time.Duration
 
+	// IdleConnTimeout is the maximum amount of time an idle (keep-alive)
+	// connection is kept in the pool before being closed.
+	// Set it below the keep-alive timeout of any intermediate proxy
+	// (e.g. an nginx ingress, default 75s) to avoid reusing a connection
+	// the peer has already closed, which surfaces as
+	// "connection reset by peer". Zero keeps the Go default (90s).
+	IdleConnTimeout time.Duration
+
 	// RetryCount is the maximum number of retry attempts for failed requests.
 	// Default is 0 (no retries). Set to a positive integer to enable retries.
 	RetryCount int
@@ -223,6 +232,10 @@ func New(cfg *Config, logger *logrus.Entry) (Client, error) {
 		c.SetTimeout(cfg.Timeout)
 	}
 
+	if cfg.IdleConnTimeout == 0 {
+		cfg.IdleConnTimeout = 60 * time.Second
+	}
+
 	tlsConfig := &tls.Config{
 		InsecureSkipVerify: cfg.TLSSkipVerify,
 	}
@@ -238,6 +251,16 @@ func New(cfg *Config, logger *logrus.Entry) (Client, error) {
 	}
 
 	c.SetTLSClientConfig(tlsConfig)
+
+	// Customize the underlying transport so the connection pool can be
+	// aligned with upstream proxies. Cloning the default transport keeps
+	// resty/net-http defaults (proxy from env, dialer, HTTP/2, etc.).
+	transport := http.DefaultTransport.(*http.Transport).Clone()
+	transport.TLSClientConfig = tlsConfig
+	if cfg.IdleConnTimeout > 0 {
+		transport.IdleConnTimeout = cfg.IdleConnTimeout
+	}
+	c.SetTransport(transport)
 
 	c.OnBeforeRequest(func(_ *resty.Client, req *resty.Request) error {
 		logger.WithFields(logrus.Fields{
