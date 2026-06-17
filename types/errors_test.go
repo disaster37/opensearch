@@ -53,6 +53,74 @@ func TestOpenSearchError_Error(t *testing.T) {
 			},
 			expected: "opensearch: Error 503",
 		},
+		{
+			name: "search_phase_execution_exception with caused_by",
+			err: &OpenSearchError{
+				Status: 400,
+				Details: &OpenSearchErrorDetails{
+					Type:   "search_phase_execution_exception",
+					Reason: "all shards failed",
+					CausedBy: map[string]any{
+						"type":   "query_shard_exception",
+						"reason": "failed to create query: bad syntax",
+					},
+				},
+			},
+			expected: "opensearch: Error 400: all shards failed [type=search_phase_execution_exception]; caused by: [type=query_shard_exception] failed to create query: bad syntax",
+		},
+		{
+			name: "caused_by reason identical to top-level reason (no duplication)",
+			err: &OpenSearchError{
+				Status: 400,
+				Details: &OpenSearchErrorDetails{
+					Type:   "search_phase_execution_exception",
+					Reason: "all shards failed",
+					CausedBy: map[string]any{
+						"type":   "search_phase_execution_exception",
+						"reason": "all shards failed",
+					},
+				},
+			},
+			expected: "opensearch: Error 400: all shards failed [type=search_phase_execution_exception]",
+		},
+		{
+			name: "all shards failed with root_cause having different reason",
+			err: &OpenSearchError{
+				Status: 400,
+				Details: &OpenSearchErrorDetails{
+					Type:   "search_phase_execution_exception",
+					Reason: "all shards failed",
+					RootCause: []*OpenSearchErrorDetails{
+						{
+							Type:   "query_shard_exception",
+							Reason: "no mapping found for field: unknown_field",
+						},
+					},
+				},
+			},
+			expected: "opensearch: Error 400: all shards failed [type=search_phase_execution_exception]; caused by: [type=query_shard_exception] no mapping found for field: unknown_field",
+		},
+		{
+			name: "failed_shards with nested reason map",
+			err: &OpenSearchError{
+				Status: 400,
+				Details: &OpenSearchErrorDetails{
+					Type:   "search_phase_execution_exception",
+					Reason: "all shards failed",
+					FailedShards: []map[string]any{
+						{
+							"shard": 0,
+							"index": "my-index",
+							"reason": map[string]any{
+								"type":   "script_exception",
+								"reason": "runtime error",
+							},
+						},
+					},
+				},
+			},
+			expected: "opensearch: Error 400: all shards failed [type=search_phase_execution_exception]; caused by: [type=script_exception] runtime error",
+		},
 	}
 
 	for _, tt := range tests {
