@@ -15,9 +15,9 @@ const (
 type VersionType string
 
 const (
-	VersionTypeInternal     VersionType = "internal"
-	VersionTypeExternal     VersionType = "external"
-	VersionTypeExternalGte  VersionType = "external_gte"
+	VersionTypeInternal    VersionType = "internal"
+	VersionTypeExternal    VersionType = "external"
+	VersionTypeExternalGte VersionType = "external_gte"
 )
 
 // SearchType controls how distributed term frequencies affect scoring.

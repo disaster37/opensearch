@@ -50,4 +50,4 @@ func badJSONServer() *httptest.Server {
 	}))
 }
 
-func ptrInt(n int) *int       { return &n }
+func ptrInt(n int) *int { return &n }
