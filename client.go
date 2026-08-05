@@ -298,8 +298,8 @@ func New(cfg *Config, logger *logrus.Entry) (Client, error) {
 		return nil
 	})
 
-	// Pu client on debug if logger is set to debug level or lower.
-	if logger.Logger.IsLevelEnabled(logrus.DebugLevel) {
+	// Enable resty debug output when the logger is at trace level.
+	if logger.Logger.IsLevelEnabled(logrus.TraceLevel) {
 		c.SetDebug(true)
 	}
 
