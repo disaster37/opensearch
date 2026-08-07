@@ -51,7 +51,12 @@ func (s *DefaultSearchService) Search(ctx context.Context, req *SearchRequest) (
 		path = "/_search"
 	}
 
-	r := s.client.R().SetContext(ctx).SetBody(req.Body)
+	body, err := normalizeBody(req.Body)
+	if err != nil {
+		return nil, err
+	}
+
+	r := s.client.R().SetContext(ctx).SetBody(body)
 	for k, v := range req.Params.ToMap() {
 		r.SetQueryParam(k, v)
 	}

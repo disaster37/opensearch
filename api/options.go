@@ -2,6 +2,7 @@ package api
 
 import (
 	"fmt"
+	"reflect"
 	"strconv"
 
 	json "github.com/goccy/go-json"
@@ -15,6 +16,70 @@ import (
 // double-encode it when setting the request body.
 func rawBody(s string) json.RawMessage {
 	return json.RawMessage(s)
+}
+
+// bodyProvider is implemented by request types that can serialize themselves
+// into a JSON search body. *querydsl.SearchRequest satisfies this interface
+// via its Body() (string, error) method.
+type bodyProvider interface {
+	Body() (string, error)
+}
+
+// normalizeBody prepares a request body for transmission via resty.
+//
+//   - string, []byte, json.RawMessage and *json.RawMessage are treated as
+//     already-serialized JSON. They are wrapped as json.RawMessage so that
+//     resty transmits the exact bytes without re-marshaling (see rawBody).
+//   - A value implementing bodyProvider (e.g. *querydsl.SearchRequest) has its
+//     Body() method called and the result wrapped as json.RawMessage. An error
+//     from Body() is returned wrapped.
+//   - nil and typed-nil values yield a nil body.
+//   - Any other value (map, struct, ...) is returned unchanged so resty
+//     marshals it exactly as before.
+func normalizeBody(body any) (any, error) {
+	if body == nil {
+		return nil, nil
+	}
+
+	switch b := body.(type) {
+	case string:
+		return rawBody(b), nil
+	case []byte:
+		return rawBody(string(b)), nil
+	case json.RawMessage:
+		return b, nil
+	case *json.RawMessage:
+		if b == nil {
+			return nil, nil
+		}
+		return *b, nil
+	}
+
+	if bp, ok := body.(bodyProvider); ok {
+		// Guard against a typed nil (e.g. (*querydsl.SearchRequest)(nil))
+		// whose Body() method would panic on a nil receiver.
+		if isNilValue(body) {
+			return nil, nil
+		}
+		s, err := bp.Body()
+		if err != nil {
+			return nil, fmt.Errorf("serialize request body: %w", err)
+		}
+		return rawBody(s), nil
+	}
+
+	return body, nil
+}
+
+// isNilValue reports whether v holds a nil pointer or nil interface value
+// (a "typed nil"). It must only be called with a non-nil interface value.
+func isNilValue(v any) bool {
+	rv := reflect.ValueOf(v)
+	switch rv.Kind() {
+	case reflect.Ptr, reflect.Interface:
+		return rv.IsNil()
+	}
+	return false
 }
 
 var validate = validator.New(validator.WithRequiredStructEnabled())

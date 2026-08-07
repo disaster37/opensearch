@@ -2,7 +2,10 @@ package api
 
 import (
 	"fmt"
+	"reflect"
 	"testing"
+
+	json "github.com/goccy/go-json"
 
 	"github.com/disaster37/opensearch/v4/querydsl"
 	"github.com/disaster37/opensearch/v4/types"
@@ -505,5 +508,139 @@ func TestNewSearchRequest(t *testing.T) {
 		_, err := NewSearchRequest(qr)
 		assert.Error(t, err)
 		assert.Contains(t, err.Error(), "search request body")
+	})
+}
+
+// mockBodyProvider implements bodyProvider with a fixed result.
+type mockBodyProvider struct {
+	body string
+	err  error
+}
+
+func (m *mockBodyProvider) Body() (string, error) { return m.body, m.err }
+
+func TestNormalizeBody(t *testing.T) {
+	t.Run("nil body", func(t *testing.T) {
+		got, err := normalizeBody(nil)
+		assert.NoError(t, err)
+		assert.Nil(t, got)
+	})
+
+	t.Run("string is wrapped as raw message", func(t *testing.T) {
+		got, err := normalizeBody(`{"query":{"match_all":{}}}`)
+		assert.NoError(t, err)
+		assert.Equal(t, json.RawMessage(`{"query":{"match_all":{}}}`), got)
+	})
+
+	t.Run("empty string", func(t *testing.T) {
+		got, err := normalizeBody("")
+		assert.NoError(t, err)
+		assert.Equal(t, json.RawMessage(""), got)
+	})
+
+	t.Run("byte slice is wrapped as raw message", func(t *testing.T) {
+		got, err := normalizeBody([]byte(`{"a":1}`))
+		assert.NoError(t, err)
+		assert.Equal(t, json.RawMessage(`{"a":1}`), got)
+	})
+
+	t.Run("nil byte slice becomes empty raw message", func(t *testing.T) {
+		var b []byte
+		got, err := normalizeBody(b)
+		assert.NoError(t, err)
+		assert.Equal(t, json.RawMessage(""), got)
+	})
+
+	t.Run("json.RawMessage unchanged", func(t *testing.T) {
+		in := json.RawMessage(`{"a":1}`)
+		got, err := normalizeBody(in)
+		assert.NoError(t, err)
+		assert.Equal(t, in, got)
+	})
+
+	t.Run("pointer to json.RawMessage dereferenced", func(t *testing.T) {
+		in := json.RawMessage(`{"a":1}`)
+		got, err := normalizeBody(&in)
+		assert.NoError(t, err)
+		assert.Equal(t, json.RawMessage(`{"a":1}`), got)
+	})
+
+	t.Run("nil pointer to json.RawMessage", func(t *testing.T) {
+		var in *json.RawMessage
+		got, err := normalizeBody(in)
+		assert.NoError(t, err)
+		assert.Nil(t, got)
+	})
+
+	t.Run("querydsl request serialized via Body()", func(t *testing.T) {
+		qr := querydsl.NewSearchRequest().Query(querydsl.NewMatchAllQuery()).Size(5)
+		expected, err := qr.Body()
+		assert.NoError(t, err)
+
+		got, err := normalizeBody(qr)
+		assert.NoError(t, err)
+		assert.Equal(t, json.RawMessage(expected), got)
+	})
+
+	t.Run("querydsl request value (non-pointer) passes through unchanged", func(t *testing.T) {
+		// Body() has a pointer receiver, so a bare querydsl.SearchRequest value
+		// does not satisfy bodyProvider and is handed to resty unchanged.
+		qr := *querydsl.NewSearchRequest().Query(querydsl.NewMatchAllQuery())
+		got, err := normalizeBody(qr)
+		assert.NoError(t, err)
+		assert.Equal(t, qr, got)
+	})
+
+	t.Run("Body() error is wrapped and propagated", func(t *testing.T) {
+		qr := querydsl.NewSearchRequest().Query(mockQueryError{})
+		got, err := normalizeBody(qr)
+		assert.Error(t, err)
+		assert.Nil(t, got)
+		assert.Contains(t, err.Error(), "serialize request body")
+		assert.Contains(t, err.Error(), "mock query error")
+	})
+
+	t.Run("typed nil querydsl request does not panic", func(t *testing.T) {
+		var qr *querydsl.SearchRequest
+		got, err := normalizeBody(qr) // non-nil interface holding nil pointer
+		assert.NoError(t, err)
+		assert.Nil(t, got)
+	})
+
+	t.Run("typed nil bodyProvider does not panic", func(t *testing.T) {
+		var bp *mockBodyProvider
+		got, err := normalizeBody(bp)
+		assert.NoError(t, err)
+		assert.Nil(t, got)
+	})
+
+	t.Run("custom bodyProvider is called", func(t *testing.T) {
+		got, err := normalizeBody(&mockBodyProvider{body: `{"ok":true}`})
+		assert.NoError(t, err)
+		assert.Equal(t, json.RawMessage(`{"ok":true}`), got)
+	})
+
+	t.Run("custom bodyProvider error propagates", func(t *testing.T) {
+		_, err := normalizeBody(&mockBodyProvider{err: fmt.Errorf("boom")})
+		assert.Error(t, err)
+		assert.Contains(t, err.Error(), "serialize request body")
+	})
+
+	t.Run("map passes through unchanged", func(t *testing.T) {
+		in := map[string]any{"query": map[string]any{"match_all": map[string]any{}}}
+		got, err := normalizeBody(in)
+		assert.NoError(t, err)
+		assert.Equal(t, in, got)
+		// Same value, not copied or re-serialized: compare map pointers.
+		// (assert.Same only accepts reflect.Ptr kinds, not maps.)
+		assert.Equal(t, reflect.ValueOf(in).Pointer(), reflect.ValueOf(got).Pointer())
+	})
+
+	t.Run("bridge output (json.RawMessage) passes through unchanged", func(t *testing.T) {
+		req, err := NewSearchRequest(querydsl.NewSearchRequest().Query(querydsl.NewMatchAllQuery()))
+		assert.NoError(t, err)
+		got, err := normalizeBody(req.Body)
+		assert.NoError(t, err)
+		assert.Equal(t, req.Body, got)
 	})
 }

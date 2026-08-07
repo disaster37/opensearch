@@ -3,11 +3,13 @@ package api
 import (
 	"context"
 	"fmt"
+	"io"
 	"net/http"
 	"net/http/httptest"
 	"strings"
 	"testing"
 
+	"github.com/disaster37/opensearch/v4/querydsl"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
@@ -926,5 +928,78 @@ func TestUnitSearchServicePIT(t *testing.T) {
 		resp, err := svc.DeleteAllPITs(ctx)
 		require.NoError(t, err)
 		require.NotNil(t, resp)
+	})
+}
+
+func TestUnitSearchServiceSearchAutoSerialize(t *testing.T) {
+	respJSON := `{"took":5,"timed_out":false,"_shards":{"total":1,"successful":1,"skipped":0,"failed":0},"hits":{"total":{"value":0,"relation":"eq"},"max_score":null,"hits":[]}}`
+
+	var captured []byte
+	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		captured, _ = io.ReadAll(r.Body)
+		w.WriteHeader(200)
+		_, _ = fmt.Fprint(w, respJSON)
+	}))
+	defer srv.Close()
+
+	svc := NewSearchService(restyClient(srv), testLogger())
+	ctx := context.Background()
+
+	t.Run("querydsl request auto-serialized", func(t *testing.T) {
+		qr := querydsl.NewSearchRequest().Query(querydsl.NewMatchAllQuery()).Size(5)
+		expected, err := qr.Body()
+		require.NoError(t, err)
+
+		_, err = svc.Search(ctx, &SearchRequest{Indices: []string{"idx1"}, Body: qr})
+		require.NoError(t, err)
+		assert.JSONEq(t, expected, string(captured))
+	})
+
+	t.Run("string body sent as-is without double encoding", func(t *testing.T) {
+		_, err := svc.Search(ctx, &SearchRequest{Indices: []string{"idx1"}, Body: `{"query":{"match_all":{}}}`})
+		require.NoError(t, err)
+		assert.JSONEq(t, `{"query":{"match_all":{}}}`, string(captured))
+	})
+
+	t.Run("byte slice body sent as-is", func(t *testing.T) {
+		_, err := svc.Search(ctx, &SearchRequest{Indices: []string{"idx1"}, Body: []byte(`{"query":{"match_all":{}}}`)})
+		require.NoError(t, err)
+		assert.JSONEq(t, `{"query":{"match_all":{}}}`, string(captured))
+	})
+
+	t.Run("map body still marshaled by resty", func(t *testing.T) {
+		_, err := svc.Search(ctx, &SearchRequest{
+			Indices: []string{"idx1"},
+			Body:    map[string]any{"query": map[string]any{"match_all": map[string]any{}}},
+		})
+		require.NoError(t, err)
+		assert.JSONEq(t, `{"query":{"match_all":{}}}`, string(captured))
+	})
+
+	t.Run("bridge-built request still works", func(t *testing.T) {
+		req, err := NewSearchRequest(querydsl.NewSearchRequest().Query(querydsl.NewMatchAllQuery()))
+		require.NoError(t, err)
+		req.Indices = []string{"idx1"}
+
+		_, err = svc.Search(ctx, req)
+		require.NoError(t, err)
+		assert.JSONEq(t, `{"query":{"match_all":{}}}`, string(captured))
+	})
+
+	t.Run("Body() error propagates and no request is sent", func(t *testing.T) {
+		captured = nil
+		qr := querydsl.NewSearchRequest().Query(mockQueryError{})
+		_, err := svc.Search(ctx, &SearchRequest{Indices: []string{"idx1"}, Body: qr})
+		require.Error(t, err)
+		assert.Contains(t, err.Error(), "serialize request body")
+		assert.Empty(t, captured) // failed before any HTTP call
+	})
+
+	t.Run("typed nil querydsl request sends no body and does not panic", func(t *testing.T) {
+		captured = nil
+		var qr *querydsl.SearchRequest
+		_, err := svc.Search(ctx, &SearchRequest{Indices: []string{"idx1"}, Body: qr})
+		require.NoError(t, err)
+		assert.Empty(t, captured) // nil body: nothing was serialized into the request
 	})
 }
