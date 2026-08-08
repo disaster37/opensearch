@@ -135,6 +135,22 @@ func (a Aggregations) ValueCount(name string) (*AggregationValueMetric, bool) {
 	return nil, false
 }
 
+// MultiValueDocCount returns the multivalue_doc_count metric result named
+// name (added in OpenSearch 3.8.0). The server serializes the result as an
+// InternalValueCount ({"value": N}), identical to value_count.
+func (a Aggregations) MultiValueDocCount(name string) (*AggregationValueMetric, bool) {
+	if raw, found := a[name]; found {
+		agg := new(AggregationValueMetric)
+		if raw == nil {
+			return agg, true
+		}
+		if err := json.Unmarshal(raw, agg); err == nil {
+			return agg, true
+		}
+	}
+	return nil, false
+}
+
 // Cardinality returns cardinality aggregation results.
 // See: https://www.opensearch.co/guide/en/opensearchsearch/reference/7.0/search-aggregations-metrics-cardinality-aggregation.html
 func (a Aggregations) Cardinality(name string) (*AggregationValueMetric, bool) {

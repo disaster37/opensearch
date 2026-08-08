@@ -683,3 +683,33 @@ type ClusterDecommissionAwarenessResponse struct {
 type ClusterWeightedRoutingResponse struct {
 	Weights map[string]int `json:"weights,omitempty"`
 }
+
+// PruneBlockCacheResponse is the response from POST /_blockcache/prune
+// (OpenSearch 3.7.0+). The merged server handler accepts only `nodes` and
+// `timeout` query parameters and prunes all registered block caches.
+type PruneBlockCacheResponse struct {
+	Acknowledged bool                            `json:"acknowledged"`
+	Summary      *PruneBlockCacheSummary         `json:"summary"`
+	Nodes        map[string]*NodePruneBlockCache `json:"nodes"`
+	Failures     []PruneBlockCacheFailure        `json:"failures"`
+}
+
+// PruneBlockCacheSummary summarizes a block-cache prune operation across
+// the targeted nodes.
+type PruneBlockCacheSummary struct {
+	TotalNodesTargeted int `json:"total_nodes_targeted"`
+	SuccessfulNodes    int `json:"successful_nodes"`
+	FailedNodes        int `json:"failed_nodes"`
+}
+
+// NodePruneBlockCache reports the prune result for a single node.
+type NodePruneBlockCache struct {
+	Name    string `json:"name"`
+	Cleared bool   `json:"cleared"`
+}
+
+// PruneBlockCacheFailure describes a single node that failed the prune.
+type PruneBlockCacheFailure struct {
+	NodeId string `json:"node_id"`
+	Reason string `json:"reason"`
+}

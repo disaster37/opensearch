@@ -9,12 +9,20 @@ package querydsl
 //
 // Use NewTermsQuery(field, values...) for general term values or
 // NewTermsQueryFromStrings(field, values...) when you have a []string.
+//
+// Since OpenSearch 3.6.0 the values may be base64-encoded Roaring bitmaps
+// (32-bit for integer fields, 64-bit for long fields) when ValueType is
+// set to "bitmap" (PR #20606, "bitmap64").
 type TermsQuery struct {
 	Field       string
 	Values      []any
 	TermsLookup *TermsLookup
-	Boost       *float64
-	QueryName   string
+	// ValueType sets the value type hint for the terms values, e.g. "bitmap"
+	// to interpret values as base64-encoded serialized Roaring bitmaps
+	// (32-bit for integer fields, 64-bit for long fields since OpenSearch 3.6.0).
+	ValueType string
+	Boost     *float64
+	QueryName string
 }
 
 // NewTermsQuery creates a TermsQuery for the given field and one or more
@@ -37,6 +45,14 @@ func NewTermsQueryFromStrings(field string, values ...string) *TermsQuery {
 // WithTermsLookup sets a terms lookup to fetch term values from another document.
 func (q *TermsQuery) WithTermsLookup(lookup *TermsLookup) *TermsQuery {
 	q.TermsLookup = lookup
+	return q
+}
+
+// WithValueType sets the value type hint for the terms values, e.g. "bitmap"
+// to interpret values as base64-encoded serialized Roaring bitmaps
+// (32-bit for integer fields, 64-bit for long fields since OpenSearch 3.6.0).
+func (q *TermsQuery) WithValueType(valueType string) *TermsQuery {
+	q.ValueType = valueType
 	return q
 }
 
@@ -65,6 +81,9 @@ func (q TermsQuery) Source() (any, error) {
 		if q.QueryName != "" {
 			params["_name"] = q.QueryName
 		}
+	}
+	if q.ValueType != "" {
+		params["value_type"] = q.ValueType
 	}
 	return map[string]any{"terms": params}, nil
 }

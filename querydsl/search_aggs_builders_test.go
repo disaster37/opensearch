@@ -102,6 +102,70 @@ func TestCovValueCountAggregation_Source(t *testing.T) {
 	require.NoError(t, err)
 }
 
+func TestMultiValueDocCountAggregation_Source(t *testing.T) {
+	t.Run("field only", func(t *testing.T) {
+		a := NewMultiValueDocCountAggregation().WithField("tags")
+		src, err := a.Source()
+		require.NoError(t, err)
+		m := src.(map[string]any)
+		body := m["multivalue_doc_count"].(map[string]any)
+		assert.Equal(t, "tags", body["field"])
+		_, present := body["format"]
+		assert.False(t, present, "multivalue_doc_count has no format field")
+	})
+
+	t.Run("field and missing", func(t *testing.T) {
+		a := NewMultiValueDocCountAggregation().WithField("tags").WithMissing("N/A")
+		src, err := a.Source()
+		require.NoError(t, err)
+		m := src.(map[string]any)
+		body := m["multivalue_doc_count"].(map[string]any)
+		assert.Equal(t, "N/A", body["missing"])
+	})
+
+	t.Run("with script", func(t *testing.T) {
+		a := NewMultiValueDocCountAggregation().WithField("tags").WithScript(NewScript("doc['tags'].value"))
+		src, err := a.Source()
+		require.NoError(t, err)
+		m := src.(map[string]any)
+		body := m["multivalue_doc_count"].(map[string]any)
+		assert.Contains(t, body, "script")
+	})
+
+	t.Run("with sub-aggs and meta", func(t *testing.T) {
+		a := NewMultiValueDocCountAggregation().
+			WithField("tags").
+			WithSubAggs(map[string]Aggregation{"sub": NewMinAggregation()}).
+			WithMeta(map[string]any{"k": "v"})
+		src, err := a.Source()
+		require.NoError(t, err)
+		m := src.(map[string]any)
+		body := m["multivalue_doc_count"].(map[string]any)
+		assert.Contains(t, body, "aggregations")
+		assert.Equal(t, map[string]any{"k": "v"}, body["meta"])
+	})
+
+	t.Run("empty", func(t *testing.T) {
+		src, err := NewMultiValueDocCountAggregation().Source()
+		require.NoError(t, err)
+		assert.NotNil(t, src)
+	})
+}
+
+func TestAggregations_MultiValueDocCount(t *testing.T) {
+	aggs := Aggregations{
+		"mv": json.RawMessage(`{"value":2}`),
+	}
+	mv, ok := aggs.MultiValueDocCount("mv")
+	require.True(t, ok)
+	require.NotNil(t, mv)
+	require.NotNil(t, mv.Value)
+	assert.Equal(t, float64(2), *mv.Value)
+
+	_, ok = aggs.MultiValueDocCount("missing")
+	assert.False(t, ok)
+}
+
 func TestCovCardinalityAggregation_Source(t *testing.T) {
 	a := NewCardinalityAggregation()
 	a.Field = "author"

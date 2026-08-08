@@ -3,11 +3,13 @@ package api
 import (
 	"context"
 	"fmt"
+	"io"
 	"net/http"
 	"net/http/httptest"
 	"strings"
 	"testing"
 
+	json "github.com/goccy/go-json"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
@@ -2865,4 +2867,147 @@ func TestUnitIndicesServiceNetworkErrors(t *testing.T) {
 		require.Error(t, err)
 	})
 	t.Run("DataStreamsStats", func(t *testing.T) { _, err := s.DataStreamsStats(ctx, []string{"ds"}); require.Error(t, err) })
+	t.Run("ModifyDataStream", func(t *testing.T) {
+		_, err := s.ModifyDataStream(ctx, &ModifyDataStreamRequest{
+			Actions: []*ModifyDataStreamAction{
+				{Type: DataStreamActionAddBackingIndex, DataStream: "ds", Index: "i"},
+			},
+		})
+		require.Error(t, err)
+	})
+}
+
+func TestUnitIndicesServiceModifyDataStream(t *testing.T) {
+	var capturedMethod, capturedPath string
+	var capturedBody []byte
+	var capturedParams = map[string]string{}
+	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		capturedMethod = r.Method
+		capturedPath = r.URL.Path
+		for k, vs := range r.URL.Query() {
+			if len(vs) > 0 {
+				capturedParams[k] = vs[0]
+			}
+		}
+		body, _ := io.ReadAll(r.Body)
+		capturedBody = body
+		w.WriteHeader(200)
+		_, _ = fmt.Fprint(w, `{"acknowledged":true}`)
+	}))
+	defer srv.Close()
+
+	svc := NewIndicesService(restyClient(srv), testLogger())
+	ctx := context.Background()
+
+	t.Run("success with both action types and params", func(t *testing.T) {
+		for k := range capturedParams {
+			delete(capturedParams, k)
+		}
+		resp, err := svc.ModifyDataStream(ctx, &ModifyDataStreamRequest{
+			Actions: []*ModifyDataStreamAction{
+				{Type: DataStreamActionRemoveBackingIndex, DataStream: "my-ds", Index: ".ds-my-ds-000001"},
+				{Type: DataStreamActionAddBackingIndex, DataStream: "my-ds", Index: "restored-index"},
+			},
+			Params: &ModifyDataStreamParams{
+				ClusterManagerTimeout: "30s",
+				Timeout:               "60s",
+			},
+		})
+		require.NoError(t, err)
+		require.NotNil(t, resp)
+		assert.True(t, resp.Acknowledged)
+		assert.Equal(t, http.MethodPost, capturedMethod)
+		assert.Equal(t, "/_data_stream/_modify", capturedPath)
+		assert.Equal(t, "30s", capturedParams["cluster_manager_timeout"])
+		assert.Equal(t, "60s", capturedParams["timeout"])
+
+		var parsed map[string]any
+		require.NoError(t, json.Unmarshal(capturedBody, &parsed))
+		actions := parsed["actions"].([]any)
+		assert.Len(t, actions, 2)
+		first := actions[0].(map[string]any)
+		assert.Contains(t, first, "remove_backing_index")
+		second := actions[1].(map[string]any)
+		assert.Contains(t, second, "add_backing_index")
+	})
+
+	t.Run("success without params", func(t *testing.T) {
+		resp, err := svc.ModifyDataStream(ctx, &ModifyDataStreamRequest{
+			Actions: []*ModifyDataStreamAction{
+				{Type: DataStreamActionAddBackingIndex, DataStream: "ds", Index: "i"},
+			},
+		})
+		require.NoError(t, err)
+		require.NotNil(t, resp)
+	})
+}
+
+func TestUnitIndicesServiceModifyDataStream_ValidationErrors(t *testing.T) {
+	svc := NewIndicesService(deadClient(), testLogger())
+	ctx := context.Background()
+
+	t.Run("nil request", func(t *testing.T) {
+		_, err := svc.ModifyDataStream(ctx, nil)
+		require.Error(t, err)
+	})
+
+	t.Run("empty actions", func(t *testing.T) {
+		_, err := svc.ModifyDataStream(ctx, &ModifyDataStreamRequest{})
+		require.Error(t, err)
+		assert.Contains(t, err.Error(), "validation")
+	})
+
+	t.Run("bad action type", func(t *testing.T) {
+		_, err := svc.ModifyDataStream(ctx, &ModifyDataStreamRequest{
+			Actions: []*ModifyDataStreamAction{
+				{Type: "bogus", DataStream: "ds", Index: "i"},
+			},
+		})
+		require.Error(t, err)
+		assert.Contains(t, err.Error(), "validation")
+	})
+
+	t.Run("empty data stream", func(t *testing.T) {
+		_, err := svc.ModifyDataStream(ctx, &ModifyDataStreamRequest{
+			Actions: []*ModifyDataStreamAction{
+				{Type: DataStreamActionAddBackingIndex, Index: "i"},
+			},
+		})
+		require.Error(t, err)
+		assert.Contains(t, err.Error(), "validation")
+	})
+
+	t.Run("empty index", func(t *testing.T) {
+		_, err := svc.ModifyDataStream(ctx, &ModifyDataStreamRequest{
+			Actions: []*ModifyDataStreamAction{
+				{Type: DataStreamActionAddBackingIndex, DataStream: "ds"},
+			},
+		})
+		require.Error(t, err)
+		assert.Contains(t, err.Error(), "validation")
+	})
+}
+
+func TestUnitIndicesServiceModifyDataStream_HTTPError(t *testing.T) {
+	srv := errServer(500)
+	defer srv.Close()
+	svc := NewIndicesService(restyClient(srv), testLogger())
+	ctx := context.Background()
+	_, err := svc.ModifyDataStream(ctx, &ModifyDataStreamRequest{
+		Actions: []*ModifyDataStreamAction{
+			{Type: DataStreamActionAddBackingIndex, DataStream: "ds", Index: "i"},
+		},
+	})
+	require.Error(t, err)
+}
+
+func TestUnitIndicesServiceModifyDataStream_NetworkError(t *testing.T) {
+	svc := NewIndicesService(deadClient(), testLogger())
+	ctx := context.Background()
+	_, err := svc.ModifyDataStream(ctx, &ModifyDataStreamRequest{
+		Actions: []*ModifyDataStreamAction{
+			{Type: DataStreamActionAddBackingIndex, DataStream: "ds", Index: "i"},
+		},
+	})
+	require.Error(t, err)
 }

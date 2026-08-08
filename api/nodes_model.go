@@ -244,6 +244,13 @@ type NodesStatsNode struct {
 	ScriptStats      *NodesStatsScriptStats               `json:"script"`
 	Discovery        *NodesStatsDiscovery                 `json:"discovery"`
 	Ingest           *NodesStatsIngest                    `json:"ingest"`
+	// FileCache holds warm-node file cache statistics (file_cache metric).
+	// Shape varies with the detailed flag and loaded block-cache plugins, so
+	// it is intentionally a loose map (OpenSearch 3.7.0+).
+	FileCache map[string]any `json:"file_cache"`
+	// NativeMemory reports native (off-heap) allocator statistics when a
+	// native bridge is loaded (OpenSearch 3.7.0+).
+	NativeMemory *NodesStatsNativeMemory `json:"native_memory"`
 }
 
 // NodesStatsIndex represents index-level statistics for a node, including
@@ -723,6 +730,21 @@ type NodesStatsDiscoveryStats struct {
 type NodesStatsIngest struct {
 	Total     *NodesStatsIngestStats `json:"total"`
 	Pipelines any                    `json:"pipelines"`
+}
+
+// NodesStatsNativeMemory reports native (off-heap) allocator statistics when
+// a native bridge is loaded (OpenSearch 3.7.0+). Shape verified from server
+// XContent tests (PR #21637).
+type NodesStatsNativeMemory struct {
+	TotalEstimatedBytes int64                          `json:"total_estimated_bytes"`
+	AnalyticsBackend    *NodesStatsAnalyticsBackendMem `json:"analytics_backend"`
+}
+
+// NodesStatsAnalyticsBackendMem reports native memory allocated and resident
+// bytes for the analytics backend (OpenSearch 3.7.0+).
+type NodesStatsAnalyticsBackendMem struct {
+	AllocatedBytes int64 `json:"allocated_bytes"`
+	ResidentBytes  int64 `json:"resident_bytes"`
 }
 
 // NodesStatsIngestStats holds aggregate ingest processing statistics

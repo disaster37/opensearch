@@ -1,6 +1,7 @@
 package opensearch
 
 import (
+	"bytes"
 	"crypto/ecdsa"
 	"crypto/elliptic"
 	"crypto/rand"
@@ -82,6 +83,8 @@ func TestNew(t *testing.T) {
 		assert.NotNil(t, dc.AsyncSearch())
 		assert.NotNil(t, dc.KNN())
 		assert.NotNil(t, dc.Neural())
+		assert.NotNil(t, dc.Tiering())
+		assert.NotNil(t, dc.Ingestion())
 	})
 
 	t.Run("with minimal config", func(t *testing.T) {
@@ -182,4 +185,119 @@ func TestNew_ContentTypeHeader(t *testing.T) {
 
 	assert.Equal(t, "application/json", capturedContentType,
 		"Content-Type must be application/json even when body is a raw string")
+}
+
+func TestRedactURL(t *testing.T) {
+	tests := []struct {
+		name     string
+		input    string
+		expected string
+	}{
+		{
+			name:     "with user and password",
+			input:    "https://admin:secret@opensearch.svc:9200/_search",
+			expected: "https://opensearch.svc:9200/_search",
+		},
+		{
+			name:     "with token as username only",
+			input:    "https://api-key-12345@host.example.com:9200/idx",
+			expected: "https://host.example.com:9200/idx",
+		},
+		{
+			name:     "without credentials",
+			input:    "https://opensearch.svc:9200/_search?pretty=true",
+			expected: "https://opensearch.svc:9200/_search?pretty=true",
+		},
+		{
+			name:     "invalid url returned unchanged",
+			input:    "not a url ://",
+			expected: "not a url ://",
+		},
+	}
+	for _, tc := range tests {
+		t.Run(tc.name, func(t *testing.T) {
+			assert.Equal(t, tc.expected, RedactURL(tc.input))
+		})
+	}
+}
+
+func TestRedactSensitiveHeaders(t *testing.T) {
+	msg := "~~~ REQUEST ~~~\n" +
+		"GET  /_search  HTTP/1.1\n" +
+		"HOST   : opensearch.svc:9200\n" +
+		"HEADERS:\n" +
+		"\t            Authorization: Basic YWRtaW46c2VjcmV0\n" +
+		"\t          Content-Type: application/json\n" +
+		"\t       X-Amz-Security-Token: IQoJb3JpZ2lu\n" +
+		"\t                  Cookie: session=abc123\n" +
+		"\t              Set-Cookie: refresh=def456\n" +
+		"BODY   :\n" +
+		"{\"query\":{}}\n"
+
+	out := redactSensitiveHeaders(msg)
+
+	assert.Contains(t, out, "Authorization: [REDACTED]")
+	assert.Contains(t, out, "X-Amz-Security-Token: [REDACTED]")
+	assert.Contains(t, out, "Cookie: [REDACTED]")
+	assert.Contains(t, out, "Set-Cookie: [REDACTED]")
+	assert.NotContains(t, out, "YWRtaW46c2VjcmV0")
+	assert.NotContains(t, out, "IQoJb3JpZ2lu")
+	assert.NotContains(t, out, "abc123")
+	assert.NotContains(t, out, "def456")
+	// Non-sensitive headers and structural lines are preserved.
+	assert.Contains(t, out, "Content-Type: application/json")
+	assert.Contains(t, out, "HOST   : opensearch.svc:9200")
+	assert.Contains(t, out, "~~~ REQUEST ~~~")
+}
+
+func TestRedactingRestyLogger_RedactsAuthorization(t *testing.T) {
+	// Capture logrus output to verify the redacting logger scrubs the
+	// Authorization header from resty's debug dump before it is written.
+	log := logrus.New()
+	log.SetLevel(logrus.TraceLevel)
+	var buf bytes.Buffer
+	log.SetOutput(&buf)
+
+	entry := logrus.NewEntry(log)
+	rl := &redactingRestyLogger{entry: entry}
+
+	debugDump := "~~~ REQUEST ~~~\n" +
+		"HEADERS:\n" +
+		"\t            Authorization: Basic YWRtaW46c2VjcmV0\n" +
+		"\t          Content-Type: application/json\n"
+
+	rl.Debugf("%s", debugDump)
+
+	out := buf.String()
+	assert.Contains(t, out, "Authorization: [REDACTED]")
+	assert.NotContains(t, out, "YWRtaW46c2VjcmV0")
+	assert.NotContains(t, out, "Basic")
+}
+
+func TestNew_OnAfterResponse_RedactsURLWithUserinfo(t *testing.T) {
+	// When Config.URL carries userinfo, the OnAfterResponse debug log must
+	// not contain the credentials.
+	log := logrus.New()
+	log.SetLevel(logrus.DebugLevel)
+	var buf bytes.Buffer
+	log.SetOutput(&buf)
+
+	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.WriteHeader(http.StatusOK)
+	}))
+	defer server.Close()
+
+	client, err := New(&Config{
+		URL:      server.URL,
+		Username: "admin",
+		Password: "supersecret",
+	}, logrus.NewEntry(log))
+	require.NoError(t, err)
+
+	_, err = client.RestyClient().R().Get(server.URL + "/_test")
+	require.NoError(t, err)
+
+	out := buf.String()
+	assert.NotContains(t, out, "supersecret", "password must not leak into logs")
+	assert.NotContains(t, out, "admin:supersecret@", "userinfo must not leak into logs")
 }

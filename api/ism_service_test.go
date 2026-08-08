@@ -297,3 +297,63 @@ func TestUnitIsmService_ListPolicies(t *testing.T) {
 	assert.Len(t, resp.Policies, 1)
 	assert.Equal(t, "p1", *resp.Policies[0].ID)
 }
+
+func TestUnitIsmService_RefreshSearchAnalyzers(t *testing.T) {
+	respJSON := `{"successful_refresh_details":[{"index":"books","refreshed_analyzers":["movie_titles"]}]}`
+
+	var capturedPath, capturedMethod string
+	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		capturedPath = r.URL.Path
+		capturedMethod = r.Method
+		w.Header().Set("Content-Type", "application/json")
+		_, _ = w.Write([]byte(respJSON))
+	}))
+	defer srv.Close()
+
+	ctx := context.Background()
+	svc := NewIsmService(restyClient(srv), testLogger())
+
+	t.Run("success", func(t *testing.T) {
+		resp, err := svc.RefreshSearchAnalyzers(ctx, "books")
+		require.NoError(t, err)
+		require.NotNil(t, resp)
+		require.Len(t, resp.SuccessfulRefreshDetails, 1)
+		assert.Equal(t, "books", resp.SuccessfulRefreshDetails[0].Index)
+		assert.Equal(t, []string{"movie_titles"}, resp.SuccessfulRefreshDetails[0].RefreshedAnalyzers)
+		assert.Equal(t, "/_plugins/_refresh_search_analyzers/books", capturedPath)
+		assert.Equal(t, http.MethodPost, capturedMethod)
+	})
+
+	t.Run("empty index validation error", func(t *testing.T) {
+		_, err := svc.RefreshSearchAnalyzers(ctx, "")
+		require.Error(t, err)
+		assert.Contains(t, err.Error(), "index is required")
+	})
+}
+
+func TestUnitIsmService_RefreshSearchAnalyzers_ErrorPaths(t *testing.T) {
+	ctx := context.Background()
+
+	t.Run("server error", func(t *testing.T) {
+		srv := errServer(500)
+		defer srv.Close()
+		s := NewIsmService(restyClient(srv), testLogger())
+		_, err := s.RefreshSearchAnalyzers(ctx, "idx")
+		require.Error(t, err)
+	})
+
+	t.Run("unmarshal error", func(t *testing.T) {
+		srv := badJSONServer()
+		defer srv.Close()
+		s := NewIsmService(restyClient(srv), testLogger())
+		_, err := s.RefreshSearchAnalyzers(ctx, "idx")
+		require.Error(t, err)
+		assert.Contains(t, err.Error(), "unmarshal")
+	})
+
+	t.Run("network error", func(t *testing.T) {
+		s := NewIsmService(deadClient(), testLogger())
+		_, err := s.RefreshSearchAnalyzers(ctx, "idx")
+		require.Error(t, err)
+	})
+}

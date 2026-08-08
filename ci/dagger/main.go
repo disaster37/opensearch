@@ -26,7 +26,7 @@ import (
 )
 
 const (
-	OpensearchVersion string = "3.4.0"
+	OpensearchVersion string = "3.8.0"
 	username          string = "admin"
 	password          string = "vLPeJYa8.3RqtZCcAK6jNz"
 	gitUsername       string = "ci"

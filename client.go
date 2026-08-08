@@ -3,7 +3,9 @@ package opensearch
 import (
 	"crypto/tls"
 	"crypto/x509"
+	"fmt"
 	"net/http"
+	"net/url"
 	"strings"
 	"time"
 
@@ -76,6 +78,77 @@ func PITSearchRetryConditions() []resty.RetryConditionFunc {
 	)
 }
 
+// RedactURL strips any embedded userinfo (username and/or password) from a
+// raw URL. This is more aggressive than net/url.Redacted, which preserves
+// the username when no password is present — we remove the entire userinfo
+// section because tokens, API keys, and short-lived credentials are often
+// placed in the username slot alone (e.g. "https://api-key-12345@host"),
+// and we must not leak them into logs or exported telemetry attributes.
+// If the URL cannot be parsed it is returned unchanged.
+func RedactURL(rawURL string) string {
+	u, err := url.Parse(rawURL)
+	if err != nil {
+		return rawURL
+	}
+	u.User = nil
+	return u.String()
+}
+
+// sensitiveHeaderNames is the set of HTTP headers whose values must never be
+// written to logs. The lookup is case-insensitive.
+var sensitiveHeaderNames = map[string]struct{}{
+	"authorization":        {},
+	"x-amz-security-token": {},
+	"cookie":              {},
+	"set-cookie":           {},
+}
+
+// redactSensitiveHeaders scans a (potentially multi-line) message and replaces
+// the values of sensitive HTTP headers with "[REDACTED]". It is used to scrub
+// resty's debug dump, which formats each header on its own line as
+// "\t<right-aligned name>: <value>". Any line whose leading token (before the
+// first colon) matches a sensitive header name (case-insensitive) has its
+// value stripped. Lines without a colon, or whose key is not sensitive, are
+// passed through unchanged.
+func redactSensitiveHeaders(msg string) string {
+	if !strings.Contains(msg, ":") {
+		return msg
+	}
+	lines := strings.Split(msg, "\n")
+	for i, line := range lines {
+		idx := strings.Index(line, ":")
+		if idx < 0 {
+			continue
+		}
+		key := strings.ToLower(strings.TrimSpace(line[:idx]))
+		if _, ok := sensitiveHeaderNames[key]; ok {
+			lines[i] = line[:idx] + ": [REDACTED]"
+		}
+	}
+	return strings.Join(lines, "\n")
+}
+
+// redactingRestyLogger adapts a logrus.Entry to resty's Logger interface while
+// redacting sensitive HTTP headers from every message before it is forwarded.
+// resty emits its full request/response debug dump (including all headers)
+// through a single Debugf call, so scrubbing here prevents Authorization,
+// security tokens, and cookies from leaking into logs at trace level.
+type redactingRestyLogger struct {
+	entry *logrus.Entry
+}
+
+func (l *redactingRestyLogger) Errorf(format string, v ...interface{}) {
+	l.entry.Errorf("%s", redactSensitiveHeaders(fmt.Sprintf(format, v...)))
+}
+
+func (l *redactingRestyLogger) Warnf(format string, v ...interface{}) {
+	l.entry.Warnf("%s", redactSensitiveHeaders(fmt.Sprintf(format, v...)))
+}
+
+func (l *redactingRestyLogger) Debugf(format string, v ...interface{}) {
+	l.entry.Debugf("%s", redactSensitiveHeaders(fmt.Sprintf(format, v...)))
+}
+
 // Client is the main entry point for all OpenSearch operations.
 //
 // Obtain a Client via [New]. All API groups are accessible as methods on this
@@ -116,6 +189,8 @@ type Client interface {
 	AsyncSearch() api.AsyncSearchService
 	KNN() api.KnnService
 	Neural() api.NeuralService
+	Tiering() api.TieringService
+	Ingestion() api.IngestionService
 }
 
 // Config holds configuration for the OpenSearch client.
@@ -175,6 +250,11 @@ type Config struct {
 	// RetryConditions are custom functions that determine if a request should be retried.
 	// By default, resty retries on network errors, 429 Too Many Requests, and 5xx server errors.
 	// Add custom conditions to extend the default behavior.
+	//
+	// Note: since OpenSearch 3.8.0 (PR #22064) OpenSearchTimeoutException
+	// returns HTTP 504 instead of 500. DefaultRetryConditions already retries
+	// status >= 500 && status != 501, so 504 timeouts are retried transparently
+	// when RetryCount > 0.
 	RetryConditions []resty.RetryConditionFunc
 }
 
@@ -206,6 +286,8 @@ type DefaultClient struct {
 	asyncSearch api.AsyncSearchService
 	knn         api.KnnService
 	neural      api.NeuralService
+	tiering     api.TieringService
+	ingestion   api.IngestionService
 }
 
 // New creates a new [Client] connecting to an OpenSearch cluster.
@@ -284,23 +366,29 @@ func New(cfg *Config, logger *logrus.Entry) (Client, error) {
 	c.OnBeforeRequest(func(_ *resty.Client, req *resty.Request) error {
 		logger.WithFields(logrus.Fields{
 			"http_method": req.Method,
-			"http_path":   req.URL,
+			"http_path":   RedactURL(req.URL),
 		}).Debug("Sending request to OpenSearch")
 		return nil
 	})
 	c.OnAfterResponse(func(_ *resty.Client, resp *resty.Response) error {
 		logger.WithFields(logrus.Fields{
 			"http_method":   resp.Request.Method,
-			"http_path":     resp.Request.URL,
+			"http_path":     RedactURL(resp.Request.URL),
 			"http_status":   resp.StatusCode(),
 			"http_duration": resp.Time().String(),
 		}).Debug("Received response from OpenSearch")
 		return nil
 	})
 
+	// Route all resty logging (including the debug dump) through a logger that
+	// redacts sensitive headers, and disable body dumping in debug mode as
+	// defense in depth — request/response bodies may also carry credentials.
+	c.SetLogger(&redactingRestyLogger{entry: logger})
+
 	// Enable resty debug output when the logger is at trace level.
 	if logger.Logger.IsLevelEnabled(logrus.TraceLevel) {
 		c.SetDebug(true)
+		c.SetDebugBodyLimit(0)
 	}
 
 	// Configure retry settings if specified
@@ -349,6 +437,8 @@ func New(cfg *Config, logger *logrus.Entry) (Client, error) {
 		asyncSearch: api.NewAsyncSearchService(c, logger),
 		knn:         api.NewKnnService(c, logger),
 		neural:      api.NewNeuralService(c, logger),
+		tiering:     api.NewTieringService(c, logger),
+		ingestion:   api.NewIngestionService(c, logger),
 	}, nil
 }
 
@@ -377,3 +467,5 @@ func (c *DefaultClient) AD() api.AdService                   { return c.ad }
 func (c *DefaultClient) AsyncSearch() api.AsyncSearchService { return c.asyncSearch }
 func (c *DefaultClient) KNN() api.KnnService                 { return c.knn }
 func (c *DefaultClient) Neural() api.NeuralService           { return c.neural }
+func (c *DefaultClient) Tiering() api.TieringService         { return c.tiering }
+func (c *DefaultClient) Ingestion() api.IngestionService     { return c.ingestion }

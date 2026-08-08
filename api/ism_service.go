@@ -21,6 +21,11 @@ type IsmService interface {
 	ChangePolicy(ctx context.Context, index string, body any) (*IsmActionResponse, error)
 	RetryFailedIndex(ctx context.Context, index string, body any) (*IsmActionResponse, error)
 	ListPolicies(ctx context.Context) (*IsmListPoliciesResponse, error)
+	// RefreshSearchAnalyzers reloads updateable search analyzers (e.g. synonym
+	// or hunspell dictionaries) for the given index via
+	// POST /_plugins/_refresh_search_analyzers/{index} (ISM-plugin endpoint;
+	// hunspell hot-reload supported since OpenSearch 3.7.0).
+	RefreshSearchAnalyzers(ctx context.Context, index string) (*RefreshSearchAnalyzersResponse, error)
 }
 
 type DefaultIsmService struct {
@@ -242,6 +247,32 @@ func (s *DefaultIsmService) ListPolicies(ctx context.Context) (*IsmListPoliciesR
 	}
 
 	var result IsmListPoliciesResponse
+	if err := json.Unmarshal(resp.Body(), &result); err != nil {
+		return nil, wrapUnmarshalError(s.logger, resp, err)
+	}
+	return &result, nil
+}
+
+// RefreshSearchAnalyzers reloads updateable search analyzers (e.g. synonym
+// or hunspell dictionaries) for the given index via
+// POST /_plugins/_refresh_search_analyzers/{index} (ISM-plugin endpoint;
+// hunspell hot-reload supported since OpenSearch 3.7.0).
+func (s *DefaultIsmService) RefreshSearchAnalyzers(ctx context.Context, index string) (*RefreshSearchAnalyzersResponse, error) {
+	if index == "" {
+		return nil, fmt.Errorf("index is required")
+	}
+
+	resp, err := s.client.R().
+		SetContext(ctx).
+		Post(fmt.Sprintf("/_plugins/_refresh_search_analyzers/%s", index))
+	if err != nil {
+		return nil, wrapNetworkError(s.logger, err)
+	}
+	if resp.IsError() {
+		return nil, logAndReturnError(s.logger, resp)
+	}
+
+	var result RefreshSearchAnalyzersResponse
 	if err := json.Unmarshal(resp.Body(), &result); err != nil {
 		return nil, wrapUnmarshalError(s.logger, resp, err)
 	}

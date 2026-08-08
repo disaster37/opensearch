@@ -900,3 +900,79 @@ func TestUnitClusterServiceVotingConfigExclusions(t *testing.T) {
 		assert.True(t, resp.Acknowledged)
 	})
 }
+
+func TestUnitClusterServicePruneBlockCache(t *testing.T) {
+	respJSON := `{"acknowledged":true,"summary":{"total_nodes_targeted":2,"successful_nodes":1,"failed_nodes":1},"nodes":{"n1":{"name":"warm-1","cleared":true}},"failures":[{"node_id":"n2","reason":"not a warm node"}]}`
+
+	var capturedPath, capturedMethod string
+	var capturedNodes, capturedTimeout string
+	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		capturedPath = r.URL.Path
+		capturedMethod = r.Method
+		capturedNodes = r.URL.Query().Get("nodes")
+		capturedTimeout = r.URL.Query().Get("timeout")
+		w.WriteHeader(200)
+		_, _ = fmt.Fprint(w, respJSON)
+	}))
+	defer srv.Close()
+
+	svc := NewClusterService(restyClient(srv), testLogger())
+	ctx := context.Background()
+
+	t.Run("success with params", func(t *testing.T) {
+		resp, err := svc.PruneBlockCache(ctx, &PruneBlockCacheParams{
+			Nodes:   []string{"n1", "n2"},
+			Timeout: "30s",
+		})
+		require.NoError(t, err)
+		require.NotNil(t, resp)
+		assert.True(t, resp.Acknowledged)
+		require.NotNil(t, resp.Summary)
+		assert.Equal(t, 2, resp.Summary.TotalNodesTargeted)
+		assert.Equal(t, 1, resp.Summary.SuccessfulNodes)
+		assert.Equal(t, 1, resp.Summary.FailedNodes)
+		require.Contains(t, resp.Nodes, "n1")
+		assert.True(t, resp.Nodes["n1"].Cleared)
+		require.Len(t, resp.Failures, 1)
+		assert.Equal(t, "n2", resp.Failures[0].NodeId)
+		assert.Equal(t, "not a warm node", resp.Failures[0].Reason)
+		assert.Equal(t, "/_blockcache/prune", capturedPath)
+		assert.Equal(t, http.MethodPost, capturedMethod)
+		assert.Equal(t, "n1,n2", capturedNodes)
+		assert.Equal(t, "30s", capturedTimeout)
+	})
+
+	t.Run("success without params", func(t *testing.T) {
+		resp, err := svc.PruneBlockCache(ctx)
+		require.NoError(t, err)
+		require.NotNil(t, resp)
+		assert.True(t, resp.Acknowledged)
+	})
+}
+
+func TestUnitClusterServicePruneBlockCache_ErrorPaths(t *testing.T) {
+	ctx := context.Background()
+
+	t.Run("server error", func(t *testing.T) {
+		srv := errServer(500)
+		defer srv.Close()
+		s := NewClusterService(restyClient(srv), testLogger())
+		_, err := s.PruneBlockCache(ctx)
+		require.Error(t, err)
+	})
+
+	t.Run("unmarshal error", func(t *testing.T) {
+		srv := badJSONServer()
+		defer srv.Close()
+		s := NewClusterService(restyClient(srv), testLogger())
+		_, err := s.PruneBlockCache(ctx)
+		require.Error(t, err)
+		assert.Contains(t, err.Error(), "unmarshal")
+	})
+
+	t.Run("network error", func(t *testing.T) {
+		s := NewClusterService(deadClient(), testLogger())
+		_, err := s.PruneBlockCache(ctx)
+		require.Error(t, err)
+	})
+}

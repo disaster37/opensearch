@@ -11,6 +11,7 @@ import (
 	"strings"
 	"testing"
 
+	"github.com/disaster37/opensearch/v4/types"
 	"github.com/go-resty/resty/v2"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
@@ -779,6 +780,28 @@ func TestParseErrorResponseZeroStatus(t *testing.T) {
 
 	osErr := parseErrorResponse(resp)
 	require.NotNil(t, osErr)
+}
+
+// TestParseErrorResponse504 verifies that an HTTP 504 Gateway Timeout
+// response (the new OpenSearchTimeoutException status in OpenSearch 3.8.0,
+// PR #22064) is parsed into an *types.OpenSearchError with StatusCode() == 504.
+func TestParseErrorResponse504(t *testing.T) {
+	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.WriteHeader(http.StatusGatewayTimeout)
+		_, _ = fmt.Fprint(w, `{"error":{"type":"timeout_exception","reason":"request timed out"},"status":504}`)
+	}))
+	defer srv.Close()
+
+	client := resty.New().SetBaseURL(srv.URL)
+	resp, err := client.R().Get("/test")
+	require.NoError(t, err)
+	require.Equal(t, http.StatusGatewayTimeout, resp.StatusCode())
+
+	osErr := parseErrorResponse(resp)
+	require.NotNil(t, osErr)
+	osError, ok := osErr.(*types.OpenSearchError)
+	require.True(t, ok)
+	assert.Equal(t, 504, osError.StatusCode())
 }
 
 func TestWrapUnmarshalErrorLongBody(t *testing.T) {

@@ -39,3 +39,7 @@ _testmain.go
 /CHANGELOG-3.0.html
 
 coverage.out
+
+# Generated mocks (produced by `go generate ./...` for consumers; not
+# committed because go.uber.org/mock/gomock is not a runtime dependency).
+/mock/

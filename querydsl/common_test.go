@@ -173,6 +173,37 @@ func TestTermsQuery_Source(t *testing.T) {
 		inner := m["terms"].(map[string]any)
 		assert.Equal(t, "my-q", inner["_name"])
 	})
+
+	t.Run("with value_type bitmap on values", func(t *testing.T) {
+		q := NewTermsQuery("employee_id", "AgAAAAAAAADoAAAA").WithValueType("bitmap")
+		src, err := q.Source()
+		require.NoError(t, err)
+		m := src.(map[string]any)
+		inner := m["terms"].(map[string]any)
+		assert.Equal(t, "bitmap", inner["value_type"])
+	})
+
+	t.Run("with value_type bitmap on lookup", func(t *testing.T) {
+		lookup := NewTermsLookup().Index("idx").Id("1").Path("field").Store(true)
+		q := NewTermsQuery("employee_id").WithTermsLookup(lookup).WithValueType("bitmap")
+		src, err := q.Source()
+		require.NoError(t, err)
+		m := src.(map[string]any)
+		inner := m["terms"].(map[string]any)
+		assert.Equal(t, "bitmap", inner["value_type"])
+		lookupMap := inner["employee_id"].(map[string]any)
+		assert.Equal(t, true, lookupMap["store"])
+	})
+
+	t.Run("no value_type omits key", func(t *testing.T) {
+		q := NewTermsQuery("status", "a")
+		src, err := q.Source()
+		require.NoError(t, err)
+		m := src.(map[string]any)
+		inner := m["terms"].(map[string]any)
+		_, present := inner["value_type"]
+		assert.False(t, present)
+	})
 }
 
 func TestRangeQuery_Source(t *testing.T) {
@@ -1331,6 +1362,23 @@ func TestTermsLookup_Source(t *testing.T) {
 	m := src.(map[string]any)
 	assert.Equal(t, "my-index", m["index"])
 	assert.Equal(t, "followers", m["path"])
+
+	t.Run("with store", func(t *testing.T) {
+		tl := NewTermsLookup().Index("idx").Id("1").Path("field").Store(true)
+		src, err := tl.Source()
+		require.NoError(t, err)
+		m := src.(map[string]any)
+		assert.Equal(t, true, m["store"])
+	})
+
+	t.Run("without store omits key", func(t *testing.T) {
+		tl := NewTermsLookup().Index("idx").Id("1").Path("field")
+		src, err := tl.Source()
+		require.NoError(t, err)
+		m := src.(map[string]any)
+		_, present := m["store"]
+		assert.False(t, present)
+	})
 }
 
 func TestSortInfo_Extended(t *testing.T) {

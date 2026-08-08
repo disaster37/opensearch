@@ -55,6 +55,42 @@ func TestUnitSearchServiceSearch(t *testing.T) {
 	})
 }
 
+func TestUnitSearchServiceSearch_RequestId(t *testing.T) {
+	respJSON := `{"took":5,"timed_out":false,"_shards":{"total":1,"successful":1,"skipped":0,"failed":0},"hits":{"total":{"value":0,"relation":"eq"},"max_score":null,"hits":[]}}`
+
+	var capturedRequestId string
+	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		capturedRequestId = r.Header.Get("X-Request-Id")
+		w.WriteHeader(200)
+		_, _ = fmt.Fprint(w, respJSON)
+	}))
+	defer srv.Close()
+
+	svc := NewSearchService(restyClient(srv), testLogger())
+	ctx := context.Background()
+
+	t.Run("RequestId header sent when set", func(t *testing.T) {
+		capturedRequestId = ""
+		_, err := svc.Search(ctx, &SearchRequest{
+			Indices:   []string{"idx1"},
+			Body:      map[string]any{},
+			RequestId: "4bf92f3577b34da6a3ce929d0e0e4736",
+		})
+		require.NoError(t, err)
+		assert.Equal(t, "4bf92f3577b34da6a3ce929d0e0e4736", capturedRequestId)
+	})
+
+	t.Run("RequestId header absent when empty", func(t *testing.T) {
+		capturedRequestId = "__sentinel__"
+		_, err := svc.Search(ctx, &SearchRequest{
+			Indices: []string{"idx1"},
+			Body:    map[string]any{},
+		})
+		require.NoError(t, err)
+		assert.Equal(t, "", capturedRequestId)
+	})
+}
+
 func TestUnitSearchServiceMultiSearch(t *testing.T) {
 	respJSON := `{"responses":[{"took":5,"timed_out":false,"_shards":{"total":1,"successful":1,"skipped":0,"failed":0},"hits":{"total":{"value":0,"relation":"eq"},"max_score":null,"hits":[]}}]}`
 

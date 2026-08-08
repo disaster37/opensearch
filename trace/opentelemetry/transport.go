@@ -2,10 +2,10 @@ package opentelemetry
 
 import (
 	"context"
-	"net/url"
 	"runtime"
 	"sync"
 
+	"github.com/disaster37/opensearch/v4"
 	"github.com/go-resty/resty/v2"
 	"go.opentelemetry.io/otel"
 	"go.opentelemetry.io/otel/attribute"
@@ -77,7 +77,7 @@ func Middleware(tracerName string) (resty.RequestMiddleware, resty.ResponseMiddl
 		req.SetContext(context.WithValue(ctx, contextKey{}, holder))
 
 		span.SetAttributes(
-			attribute.String("http.url", redactURL(req.URL)),
+			attribute.String("http.url", opensearch.RedactURL(req.URL)),
 			attribute.String("http.method", req.Method),
 		)
 		return nil
@@ -107,21 +107,4 @@ func Middleware(tracerName string) (resty.RequestMiddleware, resty.ResponseMiddl
 	}
 
 	return before, after
-}
-
-// redactURL strips any embedded userinfo (username and/or password) from a
-// raw URL. This is more aggressive than net/url.Redacted, which preserves
-// the username when no password is present — we remove the entire userinfo
-// section because tokens, API keys, and short-lived credentials are often
-// placed in the username slot alone (e.g. "https://api-key-12345@host"),
-// and we must not leak them into exported OTel span attributes per the OTel
-// HTTP semantic conventions. If the URL cannot be parsed it is returned
-// unchanged.
-func redactURL(rawURL string) string {
-	u, err := url.Parse(rawURL)
-	if err != nil {
-		return rawURL
-	}
-	u.User = nil
-	return u.String()
 }

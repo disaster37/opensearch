@@ -16,7 +16,7 @@ The project is split into **five packages** chosen to give each concern a clean 
 github.com/disaster37/opensearch/v4/
 ├── client.go, common.go, errors.go, doc.go, generate.go    # package opensearch  (entry point)
 ├── types/                                                    # package types      (shared foundation, 0 internal imports)
-├── api/                                                      # package api        (16 service interfaces + models)
+├── api/                                                      # package api        (26 service interfaces + models)
 │   ├── options.go                                            #   request param structs with validator tags
 │   ├── {group}_service.go                                    #   service interfaces + impls
 │   └── {group}_model.go                                      #   response/model structs
@@ -489,7 +489,7 @@ Each request gets a span named `opensearch.request` with attributes `http.url`, 
 
 The recipe is the same for any new OpenSearch endpoint. Example: adding `indices.ResolveIndex` (a hypothetical new endpoint).
 
-1. **Decide the owning service.** Most endpoints slot into one of the 16 existing groups. A brand-new plugin deserves a new pair: `{plugin}_service.go` + `{plugin}_model.go`, plus a new accessor on the `Client` interface and a new line in `generate.go`.
+1. **Decide the owning service.** Most endpoints slot into one of the 26 existing groups. A brand-new plugin deserves a new pair: `{plugin}_service.go` + `{plugin}_model.go`, plus a new accessor on the `Client` interface and a new line in `generate.go`.
 
 2. **Add request/response types** to the group's `{group}_model.go`:
    ```go
@@ -680,7 +680,7 @@ package api
 
 #### `api/` test organization
 
-Each of the 16 API services has its own test file (`{group}_service_test.go`) containing:
+Each of the 26 API services has its own test file (`{group}_service_test.go`) containing:
 - **Success tests** — one `TestUnit{Service}{Method}` function per service method, using `httptest.NewServer` with route handlers that return valid JSON responses
 - **Validation tests** — subtests that omit required fields and assert `require.Error`
 - **HTTP error tests** — subtests where the mock server returns 500, exercising `logAndReturnError`

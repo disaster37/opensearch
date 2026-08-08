@@ -66,6 +66,10 @@ type IndicesService interface {
 	SimulateIndexTemplate(ctx context.Context, req *SimulateIndexTemplateRequest) (*IndicesSimulateTemplateResponse, error)
 	SimulateTemplate(ctx context.Context, req *SimulateTemplateRequest) (*IndicesSimulateTemplateResponse, error)
 	DataStreamsStats(ctx context.Context, names []string) (*IndicesDataStreamsStatsResponse, error)
+	// ModifyDataStream adds or removes backing indices of a data stream via
+	// metadata-only actions (POST /_data_stream/_modify, experimental,
+	// OpenSearch 3.8.0+).
+	ModifyDataStream(ctx context.Context, req *ModifyDataStreamRequest) (*types.AcknowledgedResponse, error)
 }
 
 type DefaultIndicesService struct {
@@ -222,6 +226,8 @@ func (s *DefaultIndicesService) Close(ctx context.Context, index string) (*types
 }
 
 func (s *DefaultIndicesService) Rollover(ctx context.Context, alias string, body any) (*IndicesRolloverResponse, error) {
+	// Note: since OpenSearch 3.8.0 (PR #21838) the rollover checkBlock
+	// operation is scoped to the write index.
 	if alias == "" {
 		return nil, fmt.Errorf("alias is required")
 	}
@@ -1293,6 +1299,47 @@ func (s *DefaultIndicesService) DataStreamsStats(ctx context.Context, names []st
 	}
 
 	var result IndicesDataStreamsStatsResponse
+	if err := json.Unmarshal(resp.Body(), &result); err != nil {
+		return nil, wrapUnmarshalError(s.logger, resp, err)
+	}
+	return &result, nil
+}
+
+// ModifyDataStream adds or removes backing indices of a data stream via
+// metadata-only actions (POST /_data_stream/_modify, experimental,
+// OpenSearch 3.8.0+).
+func (s *DefaultIndicesService) ModifyDataStream(ctx context.Context, req *ModifyDataStreamRequest) (*types.AcknowledgedResponse, error) {
+	if err := req.Validate(); err != nil {
+		return nil, err
+	}
+
+	actions := make([]map[string]any, 0, len(req.Actions))
+	for _, a := range req.Actions {
+		actions = append(actions, map[string]any{
+			string(a.Type): map[string]any{
+				"data_stream": a.DataStream,
+				"index":       a.Index,
+			},
+		})
+	}
+	body := map[string]any{"actions": actions}
+
+	r := s.client.R().SetContext(ctx).SetBody(body)
+	if req.Params != nil {
+		if m := req.Params.ToMap(); m != nil {
+			r.SetQueryParams(m)
+		}
+	}
+
+	resp, err := r.Post("/_data_stream/_modify")
+	if err != nil {
+		return nil, wrapNetworkError(s.logger, err)
+	}
+	if resp.IsError() {
+		return nil, logAndReturnError(s.logger, resp)
+	}
+
+	var result types.AcknowledgedResponse
 	if err := json.Unmarshal(resp.Body(), &result); err != nil {
 		return nil, wrapUnmarshalError(s.logger, resp, err)
 	}

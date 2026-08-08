@@ -745,3 +745,108 @@ func TestIndicesService_DeleteDataStream(t *testing.T) {
 	require.NoError(t, err)
 	assert.True(t, resp.Acknowledged)
 }
+
+// TestIndicesService_ModifyDataStream exercises POST /_data_stream/_modify
+// (OpenSearch 3.8.0+, experimental). It creates a data stream, rolls it over
+// twice to produce three backing indices, removes the first backing index,
+// verifies the data stream now has two backing indices and the detached
+// index still exists, then re-adds it.
+func TestIndicesService_ModifyDataStream(t *testing.T) {
+	client := newIntegrationClient()
+	ctx := context.Background()
+	svc := client.Indices()
+
+	const dsName = "test-idx-svc-modify-ds"
+	const tplName = "test-idx-svc-modify-tpl"
+
+	_, err := svc.PutIndexTemplate(ctx, &api.PutIndexTemplateRequest{
+		Name: tplName,
+		Body: map[string]any{
+			"index_patterns": []string{dsName + "*"},
+			"priority":       600,
+			"data_stream": map[string]any{
+				"timestamp_field": map[string]any{"name": "@timestamp"},
+			},
+			"template": map[string]any{
+				"settings": map[string]any{
+					"number_of_shards":   1,
+					"number_of_replicas": 0,
+				},
+			},
+		},
+	})
+	require.NoError(t, err)
+
+	_, err = svc.CreateDataStream(ctx, dsName)
+	require.NoError(t, err)
+
+	t.Cleanup(func() {
+		_, _ = svc.DeleteDataStream(ctx, []string{dsName})
+		_, _ = svc.DeleteIndexTemplate(ctx, tplName)
+	})
+
+	// Index a doc to ensure the first backing index exists, then rollover twice.
+	_, err = client.Document().Index(ctx, &api.IndexRequest{
+		Index: dsName,
+		Body:  map[string]any{"@timestamp": "2026-01-01T00:00:00Z", "msg": "first"},
+	})
+	require.NoError(t, err)
+	_, err = svc.Rollover(ctx, dsName, nil)
+	require.NoError(t, err)
+	_, err = svc.Rollover(ctx, dsName, nil)
+	require.NoError(t, err)
+
+	getResp, err := svc.GetDataStream(ctx, []string{dsName})
+	require.NoError(t, err)
+	require.NotEmpty(t, getResp.DataStreams)
+	var ds *api.DataStream
+	for _, d := range getResp.DataStreams {
+		ds = &d
+		break
+	}
+	require.NotNil(t, ds)
+	require.GreaterOrEqual(t, len(ds.Indices), 3)
+
+	firstBacking := ds.Indices[0].IndexName
+
+	// Remove the first backing index from the data stream.
+	_, err = svc.ModifyDataStream(ctx, &api.ModifyDataStreamRequest{
+		Actions: []*api.ModifyDataStreamAction{
+			{Type: api.DataStreamActionRemoveBackingIndex, DataStream: dsName, Index: firstBacking},
+		},
+	})
+	require.NoError(t, err)
+
+	// Verify the data stream now has 2 backing indices.
+	getResp, err = svc.GetDataStream(ctx, []string{dsName})
+	require.NoError(t, err)
+	for _, d := range getResp.DataStreams {
+		ds = &d
+		break
+	}
+	require.NotNil(t, ds)
+	assert.Equal(t, 2, len(ds.Indices))
+
+	// Verify the detached index still exists.
+	exists, err := svc.Exists(ctx, []string{firstBacking})
+	require.NoError(t, err)
+	assert.True(t, exists)
+	t.Cleanup(func() { _, _ = svc.Delete(ctx, []string{firstBacking}) })
+
+	// Re-add the detached index.
+	_, err = svc.ModifyDataStream(ctx, &api.ModifyDataStreamRequest{
+		Actions: []*api.ModifyDataStreamAction{
+			{Type: api.DataStreamActionAddBackingIndex, DataStream: dsName, Index: firstBacking},
+		},
+	})
+	require.NoError(t, err)
+
+	getResp, err = svc.GetDataStream(ctx, []string{dsName})
+	require.NoError(t, err)
+	for _, d := range getResp.DataStreams {
+		ds = &d
+		break
+	}
+	require.NotNil(t, ds)
+	assert.Equal(t, 3, len(ds.Indices))
+}

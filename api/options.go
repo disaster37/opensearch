@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"reflect"
 	"strconv"
+	"strings"
 
 	json "github.com/goccy/go-json"
 
@@ -687,6 +688,10 @@ type SearchRequest struct {
 	Indices []string
 	Body    any
 	Params  *SearchParams
+	// RequestId is sent as the X-Request-Id HTTP header. OpenSearch >=3.5.0
+	// records it in slow logs and tasks; >=3.6.0 accepts arbitrary values
+	// up to search.request_id.max_length (no client-side validation).
+	RequestId string
 }
 
 // NewSearchRequest creates a SearchRequest from a *querydsl.SearchRequest.
@@ -1008,6 +1013,9 @@ type NodesInfoRequest struct {
 type NodesStatsRequest struct {
 	NodeIds []string
 	Metrics []string
+	// Detailed requests detailed file-cache stats on warm nodes
+	// (?detailed=true, OpenSearch 3.7.0+).
+	Detailed bool
 }
 
 type NodesUsageRequest struct {
@@ -1183,4 +1191,187 @@ func (r *SimulateIndexTemplateRequest) Validate() error {
 type SimulateTemplateRequest struct {
 	Name string
 	Body any
+}
+
+// setClusterTimeoutParams populates m with cluster_manager_timeout and
+// timeout when they are non-empty. Used by params types that share these
+// two fields (ModifyDataStreamParams, TierOperationParams, IngestionStateParams).
+func setClusterTimeoutParams(m map[string]string, clusterManagerTimeout, timeout string) {
+	if clusterManagerTimeout != "" {
+		m["cluster_manager_timeout"] = clusterManagerTimeout
+	}
+	if timeout != "" {
+		m["timeout"] = timeout
+	}
+}
+
+// ModifyDataStreamAction describes a single add or remove backing-index action
+// for POST /_data_stream/_modify (OpenSearch 3.8.0+, experimental).
+type ModifyDataStreamAction struct {
+	Type       DataStreamActionType `validate:"required,oneof=add_backing_index remove_backing_index"`
+	DataStream string               `validate:"required"`
+	Index      string               `validate:"required"`
+}
+
+// ModifyDataStreamParams holds the optional query parameters for
+// POST /_data_stream/_modify.
+type ModifyDataStreamParams struct {
+	ClusterManagerTimeout string
+	Timeout               string
+}
+
+// ToMap converts ModifyDataStreamParams to a query-parameter map for resty
+// SetQueryParams. Returns nil if no params are set.
+func (p *ModifyDataStreamParams) ToMap() map[string]string {
+	if p == nil {
+		return nil
+	}
+	m := make(map[string]string)
+	setClusterTimeoutParams(m, p.ClusterManagerTimeout, p.Timeout)
+	if len(m) == 0 {
+		return nil
+	}
+	return m
+}
+
+// ModifyDataStreamRequest is the request body for POST /_data_stream/_modify.
+type ModifyDataStreamRequest struct {
+	Actions []*ModifyDataStreamAction `validate:"required,min=1,dive"`
+	Params  *ModifyDataStreamParams
+}
+
+// Validate validates the ModifyDataStreamRequest.
+func (r *ModifyDataStreamRequest) Validate() error {
+	return validationError(validate.Struct(r))
+}
+
+// TierOperationParams holds the optional query parameters for tiering
+// operations (POST /{index}/_tier/warm, /_tier/_cancel/{index}, etc.).
+type TierOperationParams struct {
+	ClusterManagerTimeout string
+	Timeout               string
+}
+
+// ToMap converts TierOperationParams to a query-parameter map for resty
+// SetQueryParams. Returns nil if no params are set.
+func (p *TierOperationParams) ToMap() map[string]string {
+	if p == nil {
+		return nil
+	}
+	m := make(map[string]string)
+	setClusterTimeoutParams(m, p.ClusterManagerTimeout, p.Timeout)
+	if len(m) == 0 {
+		return nil
+	}
+	return m
+}
+
+// PruneBlockCacheParams holds the optional query parameters for
+// POST /_blockcache/prune (OpenSearch 3.7.0+).
+type PruneBlockCacheParams struct {
+	// Nodes restricts the prune to specific warm node IDs.
+	Nodes []string
+	// Timeout is the operation timeout.
+	Timeout string
+}
+
+// ToMap converts PruneBlockCacheParams to a query-parameter map for resty
+// SetQueryParams. Returns nil if no params are set.
+func (p *PruneBlockCacheParams) ToMap() map[string]string {
+	if p == nil {
+		return nil
+	}
+	m := make(map[string]string)
+	if len(p.Nodes) > 0 {
+		m["nodes"] = strings.Join(p.Nodes, ",")
+	}
+	if p.Timeout != "" {
+		m["timeout"] = p.Timeout
+	}
+	if len(m) == 0 {
+		return nil
+	}
+	return m
+}
+
+// IngestionStateParams holds the optional query parameters for the
+// pull-based ingestion pause/resume endpoints (GA in OpenSearch 3.6.0).
+type IngestionStateParams struct {
+	ClusterManagerTimeout string
+	Timeout               string
+}
+
+// ToMap converts IngestionStateParams to a query-parameter map for resty
+// SetQueryParams. Returns nil if no params are set.
+func (p *IngestionStateParams) ToMap() map[string]string {
+	if p == nil {
+		return nil
+	}
+	m := make(map[string]string)
+	setClusterTimeoutParams(m, p.ClusterManagerTimeout, p.Timeout)
+	if len(m) == 0 {
+		return nil
+	}
+	return m
+}
+
+// IngestionGetStateParams holds the optional query parameters for
+// GET /{index}/ingestion/_state.
+type IngestionGetStateParams struct {
+	Timeout   string
+	Size      *int
+	NextToken string
+}
+
+// ToMap converts IngestionGetStateParams to a query-parameter map for resty
+// SetQueryParams. Returns nil if no params are set.
+func (p *IngestionGetStateParams) ToMap() map[string]string {
+	if p == nil {
+		return nil
+	}
+	m := make(map[string]string)
+	if p.Timeout != "" {
+		m["timeout"] = p.Timeout
+	}
+	if p.Size != nil {
+		m["size"] = strconv.Itoa(*p.Size)
+	}
+	if p.NextToken != "" {
+		m["next_token"] = p.NextToken
+	}
+	if len(m) == 0 {
+		return nil
+	}
+	return m
+}
+
+// IngestionResetSettings describes a single shard reset setting for the
+// pull-based ingestion resume request body.
+type IngestionResetSettings struct {
+	Shard int                `json:"shard"`
+	Mode  IngestionResetMode `json:"mode"`
+	Value string             `json:"value"`
+}
+
+// IngestionResumeRequest is the request for POST /{index}/ingestion/_resume.
+type IngestionResumeRequest struct {
+	Index         string                    `validate:"required"`
+	ResetSettings []*IngestionResetSettings // optional; becomes request body
+	Params        *IngestionStateParams
+}
+
+// Validate validates the IngestionResumeRequest.
+func (r *IngestionResumeRequest) Validate() error {
+	return validationError(validate.Struct(r))
+}
+
+// IngestionGetStateRequest is the request for GET /{index}/ingestion/_state.
+type IngestionGetStateRequest struct {
+	Index  string `validate:"required"`
+	Params *IngestionGetStateParams
+}
+
+// Validate validates the IngestionGetStateRequest.
+func (r *IngestionGetStateRequest) Validate() error {
+	return validationError(validate.Struct(r))
 }

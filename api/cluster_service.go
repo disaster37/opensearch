@@ -32,6 +32,9 @@ type ClusterService interface {
 	DeleteWeightedRouting(ctx context.Context) (*types.AcknowledgedResponse, error)
 	PostVotingConfigExclusions(ctx context.Context, params map[string]string) (*types.AcknowledgedResponse, error)
 	DeleteVotingConfigExclusions(ctx context.Context, waitForRemoval bool) (*types.AcknowledgedResponse, error)
+	// PruneBlockCache prunes all registered block caches on the targeted
+	// warm nodes (POST /_blockcache/prune, OpenSearch 3.7.0+).
+	PruneBlockCache(ctx context.Context, params ...*PruneBlockCacheParams) (*PruneBlockCacheResponse, error)
 }
 
 type DefaultClusterService struct {
@@ -408,6 +411,32 @@ func (s *DefaultClusterService) DeleteVotingConfigExclusions(ctx context.Context
 	}
 
 	var result types.AcknowledgedResponse
+	if err := json.Unmarshal(resp.Body(), &result); err != nil {
+		return nil, wrapUnmarshalError(s.logger, resp, err)
+	}
+	return &result, nil
+}
+
+// PruneBlockCache prunes all registered block caches on the targeted warm
+// nodes (POST /_blockcache/prune, OpenSearch 3.7.0+). The merged server
+// handler accepts only `nodes` and `timeout` query parameters.
+func (s *DefaultClusterService) PruneBlockCache(ctx context.Context, params ...*PruneBlockCacheParams) (*PruneBlockCacheResponse, error) {
+	r := s.client.R().SetContext(ctx)
+	if len(params) > 0 && params[0] != nil {
+		if m := params[0].ToMap(); m != nil {
+			r.SetQueryParams(m)
+		}
+	}
+
+	resp, err := r.Post("/_blockcache/prune")
+	if err != nil {
+		return nil, wrapNetworkError(s.logger, err)
+	}
+	if resp.IsError() {
+		return nil, logAndReturnError(s.logger, resp)
+	}
+
+	var result PruneBlockCacheResponse
 	if err := json.Unmarshal(resp.Body(), &result); err != nil {
 		return nil, wrapUnmarshalError(s.logger, resp, err)
 	}

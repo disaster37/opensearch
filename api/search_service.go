@@ -60,6 +60,9 @@ func (s *DefaultSearchService) Search(ctx context.Context, req *SearchRequest) (
 	for k, v := range req.Params.ToMap() {
 		r.SetQueryParam(k, v)
 	}
+	if req.RequestId != "" {
+		r.SetHeader("X-Request-Id", req.RequestId)
+	}
 
 	resp, err := r.Post(path)
 	if err != nil {
@@ -125,6 +128,8 @@ func (s *DefaultSearchService) Count(ctx context.Context, indices []string, body
 }
 
 func (s *DefaultSearchService) Scroll(ctx context.Context, req *ScrollRequest) (*querydsl.SearchResult, error) {
+	// Note: since OpenSearch 3.8.0 (PR #22396) scroll_id validation is
+	// stricter server-side.
 	if err := req.Validate(); err != nil {
 		return nil, err
 	}
@@ -265,6 +270,8 @@ func (s *DefaultSearchService) FieldCaps(ctx context.Context, req *FieldCapsRequ
 }
 
 func (s *DefaultSearchService) SearchTemplate(ctx context.Context, req *SearchTemplateRequest) (*querydsl.SearchResult, error) {
+	// Note: since OpenSearch 3.8.0 (PR #22438) Mustache partial resolution is
+	// disabled server-side in search templates.
 	if err := req.Validate(); err != nil {
 		return nil, err
 	}

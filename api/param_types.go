@@ -35,3 +35,30 @@ const (
 	ExpandWildcardNone   = "none"
 	ExpandWildcardAll    = "all"
 )
+
+// DataStreamActionType identifies a modify action for POST /_data_stream/_modify
+// (OpenSearch 3.8.0+).
+type DataStreamActionType string
+
+const (
+	DataStreamActionAddBackingIndex    DataStreamActionType = "add_backing_index"
+	DataStreamActionRemoveBackingIndex DataStreamActionType = "remove_backing_index"
+)
+
+// TierTarget selects the destination tier filter for TieringService.ListStatus
+// (OpenSearch 3.7.0+).
+type TierTarget string
+
+const (
+	TierTargetHot  TierTarget = "_hot"
+	TierTargetWarm TierTarget = "_warm"
+)
+
+// IngestionResetMode selects how a consumer position is reset on resume
+// (pull-based ingestion, GA in OpenSearch 3.6.0).
+type IngestionResetMode string
+
+const (
+	IngestionResetModeOffset    IngestionResetMode = "OFFSET"
+	IngestionResetModeTimestamp IngestionResetMode = "TIMESTAMP"
+)

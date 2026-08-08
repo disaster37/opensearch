@@ -8,6 +8,7 @@ import (
 	"sync"
 	"testing"
 
+	"github.com/disaster37/opensearch/v4"
 	"github.com/go-resty/resty/v2"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
@@ -296,7 +297,7 @@ func TestRedactURL_StripsCredentials(t *testing.T) {
 	}
 	for _, tc := range tests {
 		t.Run(tc.name, func(t *testing.T) {
-			assert.Equal(t, tc.expected, redactURL(tc.input))
+			assert.Equal(t, tc.expected, opensearch.RedactURL(tc.input))
 		})
 	}
 }

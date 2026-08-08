@@ -24,20 +24,19 @@
 // Use the builder pattern to construct queries:
 //
 //	// Simple match query
-//	query := querydsl.MatchQuery("title", "OpenSearch")
+//	query := querydsl.NewMatchQuery("title", "OpenSearch")
 //
 //	// Bool query with multiple clauses
-//	boolQuery := querydsl.BoolQuery().
-//	    Must(querydsl.MatchQuery("status", "published")).
-//	    Filter(querydsl.RangeQuery("date").Gte("2024-01-01")).
-//	    Should(querydsl.TermQuery("tags", "elasticsearch")).
-//	    Should(querydsl.TermQuery("tags", "opensearch")).
+//	boolQuery := querydsl.NewBoolQuery().
+//	    Must(querydsl.NewMatchQuery("status", "published")).
+//	    Filter(querydsl.NewRangeQuery("date").Gte("2024-01-01")).
+//	    Should(querydsl.NewTermQuery("tags", "elasticsearch")).
+//	    Should(querydsl.NewTermQuery("tags", "opensearch")).
 //	    MinimumShouldMatch("1")
 //
 //	// Nested query
-//	nestedQuery := querydsl.NestedQuery("comments",
-//	    querydsl.MatchQuery("comments.text", "bug"),
-//	    "avg", // score_mode
+//	nestedQuery := querydsl.NewNestedQuery("comments",
+//	    querydsl.NewMatchQuery("comments.text", "bug"),
 //	)
 //
 // # Aggregations
@@ -45,20 +44,22 @@
 // Build analytics aggregations using the same pattern:
 //
 //	// Terms aggregation with sub-aggregation
-//	agg := querydsl.TermsAggregation("status").
+//	agg := querydsl.NewTermsAggregation().
+//	    Field("status").
 //	    Size(10).
 //	    SubAggregation("avg_score",
-//	        querydsl.AvgAggregation("score"),
+//	        querydsl.NewAvgAggregation().Field("score"),
 //	    )
 //
 //	// Date histogram with moving average
-//	timeSeries := querydsl.DateHistogramAggregation("timestamp").
+//	timeSeries := querydsl.NewDateHistogramAggregation().
+//	    Field("timestamp").
 //	    CalendarInterval("1d").
 //	    SubAggregation("avg_value",
-//	        querydsl.AvgAggregation("value"),
+//	        querydsl.NewAvgAggregation().Field("value"),
 //	    ).
 //	    SubAggregation("moving_avg",
-//	        querydsl.MovAvgAggregation("avg_value").
+//	        querydsl.NewMovAvgAggregation().
 //	            Window(7).
 //	            Predict(3),
 //	    )
@@ -68,22 +69,21 @@
 // Sort results using the sort builders:
 //
 //	// Sort by score descending, then by date ascending
-//	searchSource := querydsl.SearchSource().
+//	searchSource := querydsl.NewSearchSource().
 //	    Query(boolQuery).
-//	    Sort(querydsl.ScoreSort(false)).       // descending
-//	    Sort(querydsl.FieldSort("date").Asc()) // ascending
+//	    Sort(querydsl.NewScoreSort().Desc()).   // descending
+//	    Sort(querydsl.NewFieldSort("date").Asc()) // ascending
 //
 // # Scripting
 //
 // Use Script to reference inline or stored scripts:
 //
 //	// Inline script
-//	script := querydsl.Script().
-//	    Source("doc['price'].value * doc['quantity'].value").
+//	script := querydsl.NewScript("doc['price'].value * doc['quantity'].value").
 //	    Lang("painless")
 //
 //	// Stored script
-//	storedScript := querydsl.Script().
+//	storedScript := querydsl.NewScript("").
 //	    Id("calculate_total").
 //	    Params(map[string]any{
 //	        "tax_rate": 0.08,
@@ -93,8 +93,8 @@
 //
 // Use PointInTime for consistent search across changing data:
 //
-//	pit := querydsl.PointInTime("pit-id-here", "5m")
-//	searchSource := querydsl.SearchSource().
-//	    Query(querydsl.MatchAllQuery()).
+//	pit := querydsl.NewPointInTimeWithKeepAlive("pit-id-here", "5m")
+//	searchSource := querydsl.NewSearchSource().
+//	    Query(querydsl.NewMatchAllQuery()).
 //	    Pit(pit)
 package querydsl

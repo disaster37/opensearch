@@ -10,6 +10,7 @@ type TermsLookup struct {
 	id      string
 	path    string
 	routing string
+	store   *bool
 }
 
 // NewTermsLookup creates and initializes a new TermsLookup.
@@ -50,6 +51,13 @@ func (t *TermsLookup) Routing(routing string) *TermsLookup {
 	return t
 }
 
+// Store indicates the lookup path points at a stored binary field
+// (used with bitmap value_type since OpenSearch 3.6.0).
+func (t *TermsLookup) Store(store bool) *TermsLookup {
+	t.store = &store
+	return t
+}
+
 // Source creates the JSON source of the builder.
 func (t *TermsLookup) Source() (any, error) {
 	src := make(map[string]any)
@@ -67,6 +75,9 @@ func (t *TermsLookup) Source() (any, error) {
 	}
 	if t.routing != "" {
 		src["routing"] = t.routing
+	}
+	if t.store != nil {
+		src["store"] = *t.store
 	}
 	return src, nil
 }

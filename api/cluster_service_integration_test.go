@@ -53,3 +53,17 @@ func TestClusterService_GetSettings(t *testing.T) {
 	require.NoError(t, err)
 	assert.NotNil(t, result)
 }
+
+// TestClusterService_PruneBlockCache exercises POST /_blockcache/prune
+// (OpenSearch 3.7.0+). On a cluster without warm nodes the call still
+// succeeds with TotalNodesTargeted == 0.
+func TestClusterService_PruneBlockCache(t *testing.T) {
+	client := newIntegrationClient()
+	ctx := context.Background()
+
+	resp, err := client.Cluster().PruneBlockCache(ctx)
+	require.NoError(t, err)
+	require.NotNil(t, resp)
+	assert.True(t, resp.Acknowledged)
+	require.NotNil(t, resp.Summary)
+}

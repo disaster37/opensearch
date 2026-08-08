@@ -214,3 +214,17 @@ type IsmPolicySummary struct {
 	SchemaVersion   *int64 `json:"schema_version,omitempty"`
 	LastUpdatedTime *int64 `json:"last_updated_time,omitempty"`
 }
+
+// RefreshSearchAnalyzersResponse is the response from
+// POST /_plugins/_refresh_search_analyzers/{index} (ISM-plugin endpoint;
+// hunspell hot-reload supported since OpenSearch 3.7.0).
+type RefreshSearchAnalyzersResponse struct {
+	SuccessfulRefreshDetails []RefreshSearchAnalyzersDetail `json:"successful_refresh_details"`
+}
+
+// RefreshSearchAnalyzersDetail describes the analyzers refreshed for a
+// single index.
+type RefreshSearchAnalyzersDetail struct {
+	Index              string   `json:"index"`
+	RefreshedAnalyzers []string `json:"refreshed_analyzers"`
+}

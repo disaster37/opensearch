@@ -58,6 +58,16 @@ func TestUnitNodesService_Stats(t *testing.T) {
 		w.Header().Set("Content-Type", "application/json")
 		_, _ = w.Write([]byte(`{"cluster_name":"test-cluster","nodes":{}}`))
 	})
+	mux.HandleFunc("/_nodes/stats/file_cache", func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", "application/json")
+		// Echo the detailed query param so the test can assert it.
+		detailed := r.URL.Query().Get("detailed")
+		body := `{"cluster_name":"test-cluster","nodes":{"n1":{"name":"node1","file_cache":{"store_size":"1mb"},"native_memory":{"total_estimated_bytes":1024,"analytics_backend":{"allocated_bytes":512,"resident_bytes":256}}}}}`
+		if detailed != "" {
+			body = `{"cluster_name":"test-cluster","nodes":{"n1":{"name":"node1","file_cache":{"store_size":"1mb","block_cache":{"evictions":0},"detailed":true},"native_memory":{"total_estimated_bytes":1024,"analytics_backend":{"allocated_bytes":512,"resident_bytes":256}}}}}`
+		}
+		_, _ = w.Write([]byte(body))
+	})
 
 	ts := httptest.NewServer(mux)
 	defer ts.Close()
@@ -81,6 +91,31 @@ func TestUnitNodesService_Stats(t *testing.T) {
 		resp, err := svc.Stats(ctx, &NodesStatsRequest{Metrics: []string{"os"}})
 		require.NoError(t, err)
 		assert.NotNil(t, resp)
+	})
+
+	t.Run("detailed=true sends query param", func(t *testing.T) {
+		resp, err := svc.Stats(ctx, &NodesStatsRequest{Metrics: []string{"file_cache"}, Detailed: true})
+		require.NoError(t, err)
+		require.NotNil(t, resp)
+		require.Contains(t, resp.Nodes, "n1")
+		fc := resp.Nodes["n1"].FileCache
+		require.NotNil(t, fc)
+		assert.Equal(t, true, fc["detailed"])
+		require.NotNil(t, resp.Nodes["n1"].NativeMemory)
+		assert.Equal(t, int64(1024), resp.Nodes["n1"].NativeMemory.TotalEstimatedBytes)
+		require.NotNil(t, resp.Nodes["n1"].NativeMemory.AnalyticsBackend)
+		assert.Equal(t, int64(512), resp.Nodes["n1"].NativeMemory.AnalyticsBackend.AllocatedBytes)
+	})
+
+	t.Run("detailed=false omits query param", func(t *testing.T) {
+		resp, err := svc.Stats(ctx, &NodesStatsRequest{Metrics: []string{"file_cache"}, Detailed: false})
+		require.NoError(t, err)
+		require.NotNil(t, resp)
+		require.Contains(t, resp.Nodes, "n1")
+		fc := resp.Nodes["n1"].FileCache
+		require.NotNil(t, fc)
+		_, hasDetailed := fc["detailed"]
+		assert.False(t, hasDetailed)
 	})
 }
 

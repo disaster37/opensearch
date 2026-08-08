@@ -53,20 +53,28 @@
 // Access OpenSearch features through service methods on the Client interface:
 //
 //	// Document operations
-//	client.Document().Index(ctx, "my-index", doc, "doc-id", nil)
-//	client.Document().Get(ctx, "my-index", "doc-id", nil)
-//	client.Document().Delete(ctx, "my-index", "doc-id", nil)
+//	client.Document().Index(ctx, &api.IndexRequest{
+//		Index: "my-index", Id: "doc-id", Body: doc,
+//	})
+//	client.Document().Get(ctx, &api.GetRequest{
+//		Index: "my-index", Id: "doc-id",
+//	})
+//	client.Document().Delete(ctx, &api.DeleteRequest{
+//		Index: "my-index", Id: "doc-id",
+//	})
 //
 //	// Search operations
-//	client.Search().Search(ctx, []string{"my-index"}, query, nil)
+//	client.Search().Search(ctx, &api.SearchRequest{
+//		Indices: []string{"my-index"}, Body: query,
+//	})
 //	client.Search().Count(ctx, []string{"my-index"}, query)
 //
 //	// Index operations
 //	client.Indices().Create(ctx, "my-index", nil)
-//	client.Indices().Delete(ctx, "my-index", nil)
+//	client.Indices().Delete(ctx, []string{"my-index"})
 //
 //	// Cluster operations
-//	client.Cluster().Health(ctx, []string{"my-index"}, nil)
+//	client.Cluster().Health(ctx, []string{"my-index"})
 //	client.Cluster().Stats(ctx, nil)
 //
 // # Using the Query DSL
@@ -76,20 +84,25 @@
 //	import "github.com/disaster37/opensearch/v4/querydsl"
 //
 //	// Build a bool query
-//	query := querydsl.BoolQuery().
-//	    Must(querydsl.MatchQuery("status", "published")).
-//	    Filter(querydsl.RangeQuery("date").Gte("2024-01-01")).
-//	    Should(querydsl.TermQuery("featured", true))
+//	query := querydsl.NewBoolQuery().
+//	    Must(querydsl.NewMatchQuery("status", "published")).
+//	    Filter(querydsl.NewRangeQuery("date").Gte("2024-01-01")).
+//	    Should(querydsl.NewTermQuery("featured", true))
 //
 //	// Execute the search
-//	result, err := client.Search().Search(ctx, []string{"my-index"}, query.JSON(), nil)
+//	src, _ := query.Source()
+//	result, err := client.Search().Search(ctx, &api.SearchRequest{
+//	    Indices: []string{"my-index"}, Body: src},
+//	)
 //
 // # Error Handling
 //
 // All operations can return an OpenSearchError. Use the helper functions to
 // check for specific error conditions:
 //
-//	result, err := client.Document().Get(ctx, "my-index", "doc-id", nil)
+//	result, err := client.Document().Get(ctx, &api.GetRequest{
+//	    Index: "my-index", Id: "doc-id",
+//	})
 //	if err != nil {
 //	    if os.IsNotFound(err) {
 //	        log.Println("Document not found")
@@ -113,6 +126,11 @@
 //
 // You can use these directly without importing the types package:
 //
-//	version := os.DocumentVersion{SeqNo: 1, PrimaryTerm: 1}
-//	client.Document().Index(ctx, "my-index", doc, "doc-id", &version)
+//	params := &api.IndexParams{
+//	    IfSeqNo:       ptr(&version.SeqNo),
+//	    IfPrimaryTerm: ptr(&version.PrimaryTerm),
+//	}
+//	client.Document().Index(ctx, &api.IndexRequest{
+//	    Index: "my-index", Id: "doc-id", Body: doc, Params: params,
+//	})
 package opensearch

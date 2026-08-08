@@ -67,7 +67,12 @@ func (s *DefaultNodesService) Stats(ctx context.Context, req *NodesStatsRequest)
 		path = "/_nodes/stats"
 	}
 
-	resp, err := s.client.R().SetContext(ctx).Get(path)
+	r := s.client.R().SetContext(ctx)
+	if req.Detailed {
+		r.SetQueryParam("detailed", "true")
+	}
+
+	resp, err := r.Get(path)
 	if err != nil {
 		return nil, wrapNetworkError(s.logger, err)
 	}
