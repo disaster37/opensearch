@@ -55,9 +55,11 @@ func TestNodesService_StatsDetailed(t *testing.T) {
 }
 
 // TestNodesService_StatsResourceUsage exercises GET /_nodes/stats/resource_usage_stats.
-// The resource tracker samples on a window (default 5s), so shortly after
-// container boot the nested map can be empty; the test retries for up to six
-// seconds before giving up.
+// OpenSearch only publishes the metric once every resource tracker has filled
+// its moving-average window: CPU/JVM/native-memory default to 30s windows and
+// I/O defaults to a 120s window polled every 5s. A freshly booted node can
+// therefore take around three minutes to report values, so poll with a deadline
+// that covers those defaults instead of assuming a short warmup.
 func TestNodesService_StatsResourceUsage(t *testing.T) {
 	client := newIntegrationClient()
 	ctx := context.Background()
@@ -71,11 +73,8 @@ func TestNodesService_StatsResourceUsage(t *testing.T) {
 		usage  *api.NodesStatsResourceUsage
 	)
 
-	for attempt := 0; attempt < 6; attempt++ {
-		if attempt > 0 {
-			time.Sleep(time.Second)
-		}
-
+	deadline := time.Now().Add(4 * time.Minute)
+	for {
 		result, err := client.Nodes().Stats(ctx, request)
 		require.NoError(t, err)
 		require.NotNil(t, result)
@@ -87,9 +86,10 @@ func TestNodesService_StatsResourceUsage(t *testing.T) {
 				break
 			}
 		}
-		if usage != nil {
+		if usage != nil || !time.Now().Before(deadline) {
 			break
 		}
+		time.Sleep(2 * time.Second)
 	}
 
 	require.NotNil(t, usage, "resource_usage_stats was not populated after retries")
