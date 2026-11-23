@@ -92,3 +92,11 @@ replace go.opentelemetry.io/otel/exporters/otlp/otlplog/otlploghttp => go.opente
 replace go.opentelemetry.io/otel/log => go.opentelemetry.io/otel/log v0.16.0
 
 replace go.opentelemetry.io/otel/sdk/log => go.opentelemetry.io/otel/sdk/log v0.16.0
+
+replace go.opentelemetry.io/otel => go.opentelemetry.io/otel v1.43.0
+
+replace go.opentelemetry.io/otel/trace => go.opentelemetry.io/otel/trace v1.43.0
+
+replace go.opentelemetry.io/otel/metric => go.opentelemetry.io/otel/metric v1.43.0
+
+replace go.opentelemetry.io/otel/sdk => go.opentelemetry.io/otel/sdk v1.43.0
