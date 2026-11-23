@@ -1,6 +1,6 @@
 {
   "name": "opensearch",
-  "engineVersion": "v0.20.8",
+  "engineVersion": "v0.21.12",
   "sdk": {
     "source": "go"
   },
