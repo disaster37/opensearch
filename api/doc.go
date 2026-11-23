@@ -139,6 +139,18 @@
 //	    Detailed: true,
 //	})
 //
+// Cgroup-aware node CPU utilization (OpenSearch 3.x, containerized clusters
+// where os.cpu.percent is -1):
+//
+//	resp, err := client.Nodes().Stats(ctx, &api.NodesStatsRequest{
+//	    Metrics: []string{api.NodesStatsMetricResourceUsageStats},
+//	})
+//	for nodeID, node := range resp.Nodes {
+//	    if cpu := node.ResourceCPUUtilization(nodeID); cpu != nil {
+//	        fmt.Printf("%s: %.1f%% CPU\n", nodeID, *cpu)
+//	    }
+//	}
+//
 // Refresh search analyzers (ISM plugin, OpenSearch 3.7.0+):
 //
 //	resp, err := client.ISM().RefreshSearchAnalyzers(ctx, "my-index")

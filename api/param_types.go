@@ -62,3 +62,9 @@ const (
 	IngestionResetModeOffset    IngestionResetMode = "OFFSET"
 	IngestionResetModeTimestamp IngestionResetMode = "TIMESTAMP"
 )
+
+// NodesStatsMetricResourceUsageStats is the metric name for
+// GET /_nodes/stats/resource_usage_stats. It returns cgroup-aware per-node CPU,
+// memory, native-memory (OpenSearch 3.7.0+), and max I/O utilization percentages
+// tracked over node.resource.tracker.global_cpu_usage.window_duration.
+const NodesStatsMetricResourceUsageStats = "resource_usage_stats"

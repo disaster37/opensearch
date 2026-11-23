@@ -1,6 +1,15 @@
 package api
 
-import "time"
+import (
+	"bytes"
+	"fmt"
+	"math"
+	"strconv"
+	"strings"
+	"time"
+
+	json "github.com/goccy/go-json"
+)
 
 // NodesInfoResponse represents the result of a nodes info request.
 // It contains the cluster name and a map of node IDs to their info details.
@@ -215,8 +224,10 @@ type NodesInfoNodeIngestProcessorInfo struct {
 }
 
 // NodesStatsResponse represents the result of a nodes stats request.
-// It contains the cluster name and a map of node IDs to their runtime statistics.
+// It contains node response counts, the cluster name, and a map of node IDs to
+// their runtime statistics.
 type NodesStatsResponse struct {
+	NodesStats  *ClusterStatsNodesResponse `json:"_nodes,omitempty"`
 	ClusterName string                     `json:"cluster_name"`
 	Nodes       map[string]*NodesStatsNode `json:"nodes"`
 }
@@ -251,6 +262,12 @@ type NodesStatsNode struct {
 	// NativeMemory reports native (off-heap) allocator statistics when a
 	// native bridge is loaded (OpenSearch 3.7.0+).
 	NativeMemory *NodesStatsNativeMemory `json:"native_memory"`
+	// ResourceUsageStats reports cgroup-aware resource utilization metrics
+	// keyed by node ID (resource_usage_stats metric). OpenSearch nests a map
+	// keyed by node ID under each node entry (nodes.<id>.resource_usage_stats.<id>)
+	// and serializes percentages as JSON strings. Use [NodesStatsNode.ResourceUsage]
+	// or [NodesStatsNode.ResourceCPUUtilization] to read a node's own entry safely.
+	ResourceUsageStats map[string]*NodesStatsResourceUsage `json:"resource_usage_stats,omitempty"`
 }
 
 // NodesStatsIndex represents index-level statistics for a node, including
@@ -745,6 +762,203 @@ type NodesStatsNativeMemory struct {
 type NodesStatsAnalyticsBackendMem struct {
 	AllocatedBytes int64 `json:"allocated_bytes"`
 	ResidentBytes  int64 `json:"resident_bytes"`
+}
+
+// FloatString represents a numeric metric that OpenSearch serializes as a JSON
+// string on the wire (for example "0.2" in resource_usage_stats) while its
+// REST documentation describes the field as a float.
+//
+// UnmarshalJSON accepts both JSON strings and RFC 8259 JSON numbers, storing
+// the raw token losslessly so malformed or sentinel strings ("", "-1", "NaN")
+// never fail full-response deserialization. MarshalJSON always emits a JSON string.
+type FloatString string
+
+// UnmarshalJSON decodes a JSON string, JSON number, or null into f.
+func (f *FloatString) UnmarshalJSON(b []byte) error {
+	trimmed := bytes.TrimSpace(b)
+	if len(trimmed) == 0 {
+		return fmt.Errorf("empty JSON value for FloatString")
+	}
+	if bytes.Equal(trimmed, []byte("null")) {
+		return nil
+	}
+	if trimmed[0] == '"' {
+		var s string
+		if err := json.Unmarshal(trimmed, &s); err != nil {
+			return err
+		}
+		*f = FloatString(s)
+		return nil
+	}
+	if !isValidJSONNumber(trimmed) {
+		return fmt.Errorf("cannot unmarshal %s into FloatString", string(trimmed))
+	}
+	*f = FloatString(trimmed)
+	return nil
+}
+
+// MarshalJSON encodes f as a JSON string, matching OpenSearch's wire format.
+func (f FloatString) MarshalJSON() ([]byte, error) {
+	return json.Marshal(string(f))
+}
+
+// String returns the raw wire string, or "" if f is nil.
+func (f *FloatString) String() string {
+	if f == nil {
+		return ""
+	}
+	return string(*f)
+}
+
+// Float64 parses f as a finite float64. It returns an error if f is nil,
+// empty, syntactically invalid, overflows float64, or is NaN/Inf. Negative
+// finite numbers (such as "-1" sentinels) are returned as-is without error.
+func (f *FloatString) Float64() (float64, error) {
+	if f == nil {
+		return 0, fmt.Errorf("nil FloatString")
+	}
+	s := strings.TrimSpace(string(*f))
+	if s == "" {
+		return 0, fmt.Errorf("empty FloatString")
+	}
+	v, err := strconv.ParseFloat(s, 64)
+	if err != nil {
+		return 0, err
+	}
+	if math.IsNaN(v) || math.IsInf(v, 0) {
+		return 0, fmt.Errorf("non-finite FloatString %q", s)
+	}
+	if v == 0 {
+		v = 0 // normalize IEEE-754 -0.0 to +0.0
+	}
+	return v, nil
+}
+
+// isValidJSONNumber reports whether b is a valid RFC 8259 §6 JSON number token.
+func isValidJSONNumber(b []byte) bool {
+	i, n := 0, len(b)
+	if i < n && b[i] == '-' {
+		i++
+	}
+	if i == n {
+		return false
+	}
+	switch {
+	case b[i] == '0':
+		i++
+	case b[i] >= '1' && b[i] <= '9':
+		i++
+		for i < n && b[i] >= '0' && b[i] <= '9' {
+			i++
+		}
+	default:
+		return false
+	}
+	if i < n && b[i] == '.' {
+		i++
+		if i == n || b[i] < '0' || b[i] > '9' {
+			return false
+		}
+		for i < n && b[i] >= '0' && b[i] <= '9' {
+			i++
+		}
+	}
+	if i < n && (b[i] == 'e' || b[i] == 'E') {
+		i++
+		if i < n && (b[i] == '+' || b[i] == '-') {
+			i++
+		}
+		if i == n || b[i] < '0' || b[i] > '9' {
+			return false
+		}
+		for i < n && b[i] >= '0' && b[i] <= '9' {
+			i++
+		}
+	}
+	return i == n
+}
+
+// parseUtilizationPercent parses f and returns nil for nil, negative, or
+// non-finite values so callers only observe usable utilization percentages.
+func parseUtilizationPercent(f *FloatString) *float64 {
+	v, err := f.Float64()
+	if err != nil || v < 0 {
+		return nil
+	}
+	return &v
+}
+
+// NodesStatsResourceUsage represents cgroup-aware resource utilization metrics
+// for a single node reported under nodes.<nodeId>.resource_usage_stats.<nodeId>
+// by GET /_nodes/stats/resource_usage_stats.
+type NodesStatsResourceUsage struct {
+	Timestamp                      *int64                     `json:"timestamp,omitempty"`
+	CPUUtilizationPercent          *FloatString               `json:"cpu_utilization_percent,omitempty"`
+	MemoryUtilizationPercent       *FloatString               `json:"memory_utilization_percent,omitempty"`
+	NativeMemoryUtilizationPercent *FloatString               `json:"native_memory_utilization_percent,omitempty"`
+	IOUsageStats                   *NodesStatsResourceUsageIO `json:"io_usage_stats,omitempty"`
+}
+
+// NodesStatsResourceUsageIO holds I/O utilization statistics inside
+// [NodesStatsResourceUsage].
+type NodesStatsResourceUsageIO struct {
+	MaxIOUtilizationPercent *FloatString `json:"max_io_utilization_percent,omitempty"`
+}
+
+// CPUUtilization returns the parsed cgroup-aware CPU utilization percentage
+// (>= 0, finite), or nil if unavailable, negative (e.g. "-1"), or non-numeric.
+func (r *NodesStatsResourceUsage) CPUUtilization() *float64 {
+	if r == nil {
+		return nil
+	}
+	return parseUtilizationPercent(r.CPUUtilizationPercent)
+}
+
+// MemoryUtilization returns the parsed JVM/heap memory utilization percentage
+// (>= 0, finite), or nil if unavailable, negative, or non-numeric.
+func (r *NodesStatsResourceUsage) MemoryUtilization() *float64 {
+	if r == nil {
+		return nil
+	}
+	return parseUtilizationPercent(r.MemoryUtilizationPercent)
+}
+
+// NativeMemoryUtilization returns the parsed native (off-heap) memory
+// utilization percentage (OpenSearch 3.7.0+, >= 0, finite), or nil if
+// unavailable, negative, or non-numeric.
+func (r *NodesStatsResourceUsage) NativeMemoryUtilization() *float64 {
+	if r == nil {
+		return nil
+	}
+	return parseUtilizationPercent(r.NativeMemoryUtilizationPercent)
+}
+
+// MaxIOUtilization returns the parsed maximum I/O utilization percentage
+// (>= 0, finite), or nil if IOUsageStats is absent, negative, or non-numeric.
+func (r *NodesStatsResourceUsage) MaxIOUtilization() *float64 {
+	if r == nil || r.IOUsageStats == nil {
+		return nil
+	}
+	return parseUtilizationPercent(r.IOUsageStats.MaxIOUtilizationPercent)
+}
+
+// ResourceUsage returns the [NodesStatsResourceUsage] entry matching nodeID
+// from n.ResourceUsageStats, or nil if n is nil, nodeID is empty, or no
+// matching entry exists. It never falls back to another node's key so callers
+// cannot accidentally misattribute cross-node tracker entries.
+func (n *NodesStatsNode) ResourceUsage(nodeID string) *NodesStatsResourceUsage {
+	if n == nil || nodeID == "" || len(n.ResourceUsageStats) == 0 {
+		return nil
+	}
+	return n.ResourceUsageStats[nodeID]
+}
+
+// ResourceCPUUtilization returns the sanitized cgroup-aware CPU utilization
+// percentage (>= 0, finite) for nodeID from resource_usage_stats, or nil if
+// the metric was not requested, has not been sampled yet, or carries an
+// unavailable sentinel.
+func (n *NodesStatsNode) ResourceCPUUtilization(nodeID string) *float64 {
+	return n.ResourceUsage(nodeID).CPUUtilization()
 }
 
 // NodesStatsIngestStats holds aggregate ingest processing statistics
