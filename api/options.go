@@ -1005,11 +1005,15 @@ type ClusterStateRequest struct {
 	Indices []string
 }
 
+// NodesInfoRequest selects nodes and metrics for NodesService.Info.
 type NodesInfoRequest struct {
 	NodeIds []string
 	Metrics []string
 }
 
+// NodesStatsRequest selects nodes and metrics for NodesService.Stats.
+// Metrics may include [NodesStatsMetricResourceUsageStats] to collect
+// cgroup-aware CPU, memory, and I/O utilization.
 type NodesStatsRequest struct {
 	NodeIds []string
 	Metrics []string
@@ -1018,6 +1022,7 @@ type NodesStatsRequest struct {
 	Detailed bool
 }
 
+// NodesUsageRequest selects nodes and metrics for NodesService.Usage.
 type NodesUsageRequest struct {
 	NodeIds []string
 	Metrics []string

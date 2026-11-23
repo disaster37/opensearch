@@ -825,3 +825,28 @@ func ExampleNeuralService_NeuralWarmup() {
 	// Output:
 	// NeuralService.NeuralWarmup(ctx, index)
 }
+
+func ExampleNodesService_Stats() {
+	ctx := context.Background()
+
+	var nodesSvc api.NodesService
+	if nodesSvc == nil {
+		fmt.Println("NodesService.Stats(ctx, *NodesStatsRequest)")
+		return
+	}
+
+	resp, err := nodesSvc.Stats(ctx, &api.NodesStatsRequest{
+		Metrics: []string{api.NodesStatsMetricResourceUsageStats},
+	})
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	for nodeID, node := range resp.Nodes {
+		if cpu := node.ResourceCPUUtilization(nodeID); cpu != nil {
+			fmt.Printf("%s cpu=%.1f%%\n", nodeID, *cpu)
+		}
+	}
+	// Output:
+	// NodesService.Stats(ctx, *NodesStatsRequest)
+}
