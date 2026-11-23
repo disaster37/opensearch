@@ -2880,7 +2880,7 @@ func TestUnitIndicesServiceNetworkErrors(t *testing.T) {
 func TestUnitIndicesServiceModifyDataStream(t *testing.T) {
 	var capturedMethod, capturedPath string
 	var capturedBody []byte
-	var capturedParams = map[string]string{}
+	capturedParams := map[string]string{}
 	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		capturedMethod = r.Method
 		capturedPath = r.URL.Path

@@ -99,7 +99,7 @@ func RedactURL(rawURL string) string {
 var sensitiveHeaderNames = map[string]struct{}{
 	"authorization":        {},
 	"x-amz-security-token": {},
-	"cookie":              {},
+	"cookie":               {},
 	"set-cookie":           {},
 }
 
